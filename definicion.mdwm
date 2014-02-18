@@ -1,0 +1,61 @@
+# enie:  enies's not in english
+
+enie (enie's not in english) es un lenguaje de programación inspirado en C
+y Haskell, en español. Por simplicidad, se omiten manejos dinámicos de memoria, 
+compilación separada y tipos apuntadores. Sin embargo, conserva
+muchas otras características de otros lenguajes, tales como funciones, 
+estructuras arbitrariamente anidadas por el usuario, arreglos multidimensionales, 
+y selección múltiple.
+
+##Estructura de un programa
+
+La estructura de un programa en enie es la siguiente:
+
+\<funciones\>
+
+Es decir, un conjunto de definiciones de funciones, cuya última debe ser
+la función *programa*:
+
+
+    programa :: ent narg, cadena argv[] {  
+        .
+        .
+        .
+    }
+
+
+Un programa válido en enie es el siguiente:
+
+    fib :: ent n -> ent { 
+        si (n < 0) {
+            escribe "Error: n tiene que ser >= 0"
+        } o si ((n == 0) || ( n == 1)) {
+            retorna 1
+        }
+        retorna fib(n-1) + fib(n-2)
+    }
+
+    programa :: ent narg, cadena argv[] {
+        fib(10)
+    }
+
+
+## Identificadores
+
+Un identificador de variable es una cadena de caracteres de cualquier longitud,
+con caracteres desde de la A hasta la Z (minúsculas o mayúsculas), dígitos,
+y el caracter _. El primer caracter no puede ser un dígito, y son sensibles a
+mayúsculas; por ejemplo, la variable **foo** es distinta a la variable **FoO**.
+Además, se permite el uso de caracteres acentuados y la letra ñ.
+
+
+## Palabras reservadas
+
+
+Este es el conjunto de palabras reservadas en el lenguaje:
+
+*    nada, bool, ent, flot, car, cadena, registro, {, }, (,), &&, ||, si, o si, 
+     o (sino), mientras, para, ::, =, ==, <, <=, >, >=, programa, leer,
+     escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _.
+
+* * *  

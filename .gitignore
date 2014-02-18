@@ -1,0 +1,6 @@
+*.pdf
+.*
+
+!.gitignore
+*.out
+*.o
