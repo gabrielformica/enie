@@ -11,34 +11,27 @@ y selección múltiple.
 
 La estructura de un programa en enie es la siguiente:
 
-\<funciones\>
+\<Funciones\>
 
 Es decir, un conjunto de definiciones de funciones, cuya última debe ser
 la función *programa*:
 
-
-    programa :: ent narg, cadena argv[] {  
-        .
-        .
-        .
-    }
-
+        programa :: ent narg, cadena argv[] {}
 
 Un programa válido en enie es el siguiente:
 
-    fib :: ent n -> ent { 
-        si (n < 0) {
-            escribe "Error: n tiene que ser >= 0"
-        } o si ((n == 0) || ( n == 1)) {
-            retorna 1
+        fib :: ent n -> ent { 
+            si (n < 0) {
+                escribe "Error: n tiene que ser >= 0"
+            } o si ((n == 0) || ( n == 1)) {
+                retorna 1
+            }
+            retorna fib(n-1) + fib(n-2)
         }
-        retorna fib(n-1) + fib(n-2)
-    }
 
-    programa :: ent narg, cadena argv[] {
-        fib(10)
-    }
-
+        programa :: ent narg, cadena argv[] {
+            fib(10)
+        }
 
 ## Identificadores
 
@@ -58,4 +51,22 @@ Este es el conjunto de palabras reservadas en el lenguaje:
      o (sino), mientras, para, ::, =, ==, <, <=, >, >=, programa, leer,
      escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _.
 
-* * *  
+##Tipos de datos
+
+Se disponen de 7 tipos de datos primitivos en el lenguaje:
+
+*    nada: es el tipo de dato que representa que no hay dato, y solo 
+     se usa para indicar que una función no tiene valor de retorno. 
+
+*    bool: representa un valor booleano, es decir, *cierto* o *false*.
+
+*    ent: representa números enteros con signo, y de 32 bits.
+
+*    flot: representa números en punto flotante de 32 bits.
+
+*    car: representa un caracter.
+
+*    cadena: representa una cadena de caracteres.
+
+*    registro: contiene datos heterogénos, llamados campos. Se explicará 
+     en profundidad más adelante.
