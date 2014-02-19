@@ -70,6 +70,7 @@ Se disponen de 7 tipos de datos primitivos en el lenguaje:
 
 *    registro: contiene datos heterogénos, llamados campos. Se explicará 
      en profundidad más adelante.
+     
 
 #Instrucciones
 ###Asignación
@@ -82,3 +83,26 @@ Ejecutar una *asignación* tiene el efecto de evaluar la expresión del lado
 derecho y almacenarla en la variable del lado izquierdo. La variable
 ha de haber sido previamente declarada, o en su defecto, declararla
 in situ. 
+
+Para los efectos prácticos, la asignación se considera una 
+
+###Selección
+
+La instrucción de selección usará la palabra reservada **si** y tendrá la
+siguiente forma:
+
+        si (Condición) {
+           Instrucciones
+        }
+
+En el caso de la consideración de otras guardas, se usarán las palabras 
+reservadas **o si** y **sino** de la siguiente manera:
+
+        si (Condición1) {
+            Instrucciones
+        } o si (Condición2) {
+            Instrucciones
+        } sino {
+            Instrucciones
+        }
+
