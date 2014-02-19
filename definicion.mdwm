@@ -92,17 +92,26 @@ La instrucción de selección usará la palabra reservada **si** y tendrá la
 siguiente forma:
 
         si (Condición) {
-           Instrucciones
+           Instrucción
         }
 
 En el caso de la consideración de otras guardas, se usarán las palabras 
 reservadas **o si** y **sino** de la siguiente manera:
 
         si (Condición1) {
-            Instrucciones
+            Instrucción
         } o si (Condición2) {
-            Instrucciones
+            Instrucción
         } sino {
-            Instrucciones
+            Instrucción
         }
 
+###Iteración indeterminada
+
+Las instrucciones de iteración indeterminada son de la forma
+
+        mientras (Condición) {
+            Instrucción
+        }
+
+	
