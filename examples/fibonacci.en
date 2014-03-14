@@ -1,0 +1,13 @@
+fib :: ent n -> ent { 
+    si (n < 0) {
+        escribe "Error: n tiene que ser >= 0"
+    } osi ((n == 0) || ( n == 1)) {
+        retorna 1
+    }
+    retorna fib(n-1) + fib(n-2)
+}
+
+programa :: ent narg, cadena argv[] {
+    fib(10)
+}
+
