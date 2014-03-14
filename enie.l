@@ -1,11 +1,10 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include "y.tab.h"
 %}
 
 %%
-[0-9]+						yylval=atoi(yytext); printf("NUMBER");
+[0-9]+						printf("NUMBER");
 ent							printf("ENT");
 bool						printf("BOOL");
 flot						printf("FLOT");
@@ -44,5 +43,5 @@ retorna						printf("RETORNA");
 \"							printf("QUOTA");
 %							printf("PERCEN");
 \\							printf("BSLASH");
-[a-zA-Z][a-zA-Z0-9_]*	    yylval=stdup(yytext); printf("ID");
+[a-zA-Z][a-zA-Z0-9_]*	    printf("ID");
 %%
