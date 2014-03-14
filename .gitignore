@@ -4,3 +4,5 @@
 !.gitignore
 *.out
 *.o
+enie
+lex.yy.c
