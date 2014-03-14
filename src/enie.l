@@ -25,7 +25,7 @@ mientras					return MIENTRAS;
 para						return PARA;
 ::							return COLONCOLON;
 =							return EQUAL;
-==							return EQUALEQUAL;
+==							return EQUIVALEN;
 \<							return LTHAN;
 \>							return GTHAN;
 \<=							return LETHAN;
@@ -45,4 +45,6 @@ retorna						return RETORNA;
 %							return PERCEN;
 \\							return BSLASH;
 [a-zA-Z][a-zA-Z0-9_]*	    yylval=stdup(yytext); return ID;
+\/\*                        return OCOMENT
+\*\/                        return CCOMENT
 %%
