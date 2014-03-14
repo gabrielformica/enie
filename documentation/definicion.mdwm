@@ -1,0 +1,117 @@
+# enie:  enies's not in english
+
+enie (enie's not in english) es un lenguaje de programación inspirado en C
+y Haskell, en español. Por simplicidad, se omiten manejos dinámicos de memoria, 
+compilación separada y tipos apuntadores. Sin embargo, conserva
+muchas otras características de otros lenguajes, tales como funciones, 
+estructuras arbitrariamente anidadas por el usuario, arreglos multidimensionales, 
+y selección múltiple.
+
+##Estructura de un programa
+
+La estructura de un programa en enie es la siguiente:
+
+\<Funciones\>
+
+Es decir, un conjunto de definiciones de funciones, cuya última debe ser
+la función *programa*:
+
+        programa :: ent narg, cadena argv[] {}
+
+Un programa válido en enie es el siguiente:
+
+        fib :: ent n -> ent { 
+            si (n < 0) {
+                escribe "Error: n tiene que ser >= 0"
+            } o si ((n == 0) || ( n == 1)) {
+                retorna 1
+            }
+            retorna fib(n-1) + fib(n-2)
+        }
+
+        programa :: ent narg, cadena argv[] {
+            fib(10)
+        }
+
+## Identificadores
+
+Un identificador de variable es una cadena de caracteres de cualquier longitud,
+con caracteres desde de la A hasta la Z (minúsculas o mayúsculas), dígitos,
+y el caracter _. El primer caracter no puede ser un dígito, y son sensibles a
+mayúsculas; por ejemplo, la variable **foo** es distinta a la variable **FoO**.
+Además, se permite el uso de caracteres acentuados y la letra ñ.
+
+
+## Palabras reservadas
+
+
+Este es el conjunto de palabras reservadas en el lenguaje:
+
+*    nada, bool, ent, flot, car, cadena, registro, {, }, (,), &&, ||, si, o si, 
+     o (sino), mientras, para, ::, =, ==, <, <=, >, >=, programa, leer,
+     escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _.
+
+##Tipos de datos
+
+Se disponen de 7 tipos de datos primitivos en el lenguaje:
+
+*    nada: es el tipo de dato que representa que no hay dato, y solo 
+     se usa para indicar que una función no tiene valor de retorno. 
+
+*    bool: representa un valor booleano, es decir, *cierto* o *false*.
+
+*    ent: representa números enteros con signo, y de 32 bits.
+
+*    flot: representa números en punto flotante de 32 bits.
+
+*    car: representa un caracter.
+
+*    cadena: representa una cadena de caracteres.
+
+*    registro: contiene datos heterogénos, llamados campos. Se explicará 
+     en profundidad más adelante.
+     
+
+#Instrucciones
+###Asignación
+
+\<tipo\> \<variable\> = \<expresión\>
+
+\<variable\> = \<expresión\>
+
+Ejecutar una *asignación* tiene el efecto de evaluar la expresión del lado
+derecho y almacenarla en la variable del lado izquierdo. La variable
+ha de haber sido previamente declarada, o en su defecto, declararla
+in situ. 
+
+Para los efectos prácticos, la asignación se considera una 
+
+###Selección
+
+La instrucción de selección usará la palabra reservada **si** y tendrá la
+siguiente forma:
+
+        si (Condición) {
+           Instrucción
+        }
+
+En el caso de la consideración de otras guardas, se usarán las palabras 
+reservadas **o si** y **sino** de la siguiente manera:
+
+        si (Condición1) {
+            Instrucción
+        } o si (Condición2) {
+            Instrucción
+        } sino {
+            Instrucción
+        }
+
+###Iteración indeterminada
+
+Las instrucciones de iteración indeterminada son de la forma
+
+        mientras (Condición) {
+            Instrucción
+        }
+
+	
