@@ -24,7 +24,7 @@ mientras					printf("MIENTRAS");
 para						printf("PARA");
 ::							printf("COLONCOLON");
 =							printf("EQUAL");
-==							printf("EQUALEQUAL");
+==							printf("EQUIVALEN");
 \<							printf("LTHAN");
 \>							printf("GTHAN");
 \<=							printf("LETHAN");
