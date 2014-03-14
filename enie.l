@@ -44,4 +44,7 @@ retorna						printf("RETORNA");
 %							printf("PERCEN");
 \\							printf("BSLASH");
 [a-zA-Z][a-zA-Z0-9_]*	    printf("ID");
+\/\*                        printf("OCOMMENT");
+\*\/                        printf("CCOMMENT");
+
 %%
