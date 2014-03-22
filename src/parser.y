@@ -6,8 +6,15 @@
     #include <string>
 }
 
+%code {
+    void yyerror(char const *);
+}
+
+
 /* Tokens de las palabras reservadas */
 
+%token NUMBER
+%token ID
 %token SI           "si"
 %token OSI          "osi"
 %token SINO         "sino"
@@ -50,8 +57,27 @@
 %token GETHAN       ">="
 
 /* Segun documentacion, el caracter de newline se deja especificado asi */
-%token SEP                   
+%token SEP         
 
-void main (int argc, char **argv) {
+/* Precedencias */
+%left MINUS MAS
+%left MULT DIV
+
+
+%% /* Gramatica empieza aqui */
+exp : term              { $$ = $1;} 
+    | exp MAS exp       { $$ = $1 + $3;}
+    | exp MINUS exp     { $$ = $1 - $3;}
+    | exp MULT exp      { $$ = $1 * $3;}
+    ; 
+
+term : ID               { $$ = $1; }
+     | NUMBER           { $$ = $1; }
+     ;
+
+
+%% /* Epilogo comienza aca */
+
+void main (int argc; char **argv) {
     yyparse();
 }
