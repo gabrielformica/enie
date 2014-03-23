@@ -55,26 +55,31 @@
 %token GTHAN        ">"
 %token LETHAN       "<="       
 %token GETHAN       ">="
-
-/* Segun documentacion, el caracter de newline se deja especificado asi */
-%token SEP         
+%token NEGADO       "!"
 
 /* Precedencias */
 %left MINUS MAS
 %left MULT DIV
+%left NEGADO 
 
 
 %% /* Gramatica empieza aqui */
+
+/* A pesar de que las expresiones unarias estan definidas con sus propias reglas
+   en la gramatica, esas reglas son inutiles por si solas una vez asignadas
+   las reglas de precedencia */ 
+
 exp : term              { $$ = $1;} 
     | exp MAS exp       { $$ = $1 + $3;}
     | exp MINUS exp     { $$ = $1 - $3;}
     | exp MULT exp      { $$ = $1 * $3;}
+    | NEGADO exp        { $$ = new Not($2); }
+    | MINUS exp         { $$ = new Minus($2); }
     ; 
 
 term : ID               { $$ = $1; }
      | NUMBER           { $$ = $1; }
      ;
-
 
 %% /* Epilogo comienza aca */
 
