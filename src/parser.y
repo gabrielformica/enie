@@ -69,17 +69,51 @@
    en la gramatica, esas reglas son inutiles por si solas una vez asignadas
    las reglas de precedencia */ 
 
+
+inst : decl
+     | asign
+     | selec
+     ;
+
 exp : term              { $$ = $1;} 
     | exp MAS exp       { $$ = $1 + $3;}
     | exp MINUS exp     { $$ = $1 - $3;}
     | exp MULT exp      { $$ = $1 * $3;}
-    | NEGADO exp        { $$ = new Not($2); }
-    | MINUS exp         { $$ = new Minus($2); }
+    | NEGADO exp        { $$ = $2; } /* hay que hacer el negado */
+    | MINUS exp         { $$ = (-1)*($2); }
     ; 
 
 term : ID               { $$ = $1; }
      | NUMBER           { $$ = $1; }
      ;
+
+type : ENT
+     | FLOT
+     | NADA
+     | BOOL
+     | CAR
+     | REGISTRO
+     ;
+
+/* Reglas para instrucciones */
+
+decl : type ID
+     ;
+
+asign : ID EQUAL exp
+     ;
+
+selec : SI LPAR exp RPAR inst oselect sinoselect
+      ;
+
+oselect : OSI LPAR exp RPAR inst
+        |  
+        ;
+
+sinoselect : SINO inst
+           | 
+           ;
+
 
 %% /* Epilogo comienza aca */
 
