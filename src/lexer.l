@@ -6,7 +6,7 @@
 %}
 
 %%
-[0-9]+						yylval.num=atoi(yytext); return NUMBER;
+[0-9]+					/*	yylval=strdup(yytext);*/ return NUMBER;
 ent							return ENT;
 bool						return BOOL;
 flot						return FLOT;
@@ -46,7 +46,7 @@ retorna						return RETORNO;
 \"							return QUOTA;
 %							return MOD;
 \\							return BSLASH;
-[a-zA-Z][a-zA-Z0-9_]*	    yylval.str=strdup(yytext); return ID;
+[a-zA-Z][a-zA-Z0-9_]*	    /*yylval=strdup(yytext);*/ return ID;
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
 %%
