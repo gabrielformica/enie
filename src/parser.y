@@ -7,7 +7,8 @@
 }
 
 %code {
-    void yyerror(char const *);
+    void yyerror(char const *s);
+    int yylex(void);
 }
 
 
@@ -31,7 +32,8 @@
 %token RETORNO      "retorno"
 %token CIERTO       "cierto"
 %token FALSO        "falso"
-
+%token PROGRAMA     "programa"
+%token LEER         "leer"
 
 
 /* Tokens para caracteres especiales */
@@ -43,9 +45,11 @@
 %token LPAR         "("
 %token RPAR         ")"
 %token EQUAL        "="
+%token EQUIVALEN    "=="
 %token COLCOL       "::"
 %token ARROW        "->"
 %token SEMICOL      ";"
+%token COMA         ","
 %token MINUS        "-"
 %token MAS          "+"
 %token MULT         "*"
@@ -56,6 +60,13 @@
 %token LETHAN       "<="       
 %token GETHAN       ">="
 %token NEGADO       "!"
+%token AND          "&&"
+%token OR           "||"
+%token QUOTA        "\""
+%token APOST        "\'"
+%token BSLASH       "\\"
+%token OCOMENT     "\\*"
+%token CCOMENT     "*/"
 
 /* Precedencias */
 %left MINUS MAS
@@ -73,12 +84,14 @@
 inst : decl
      | asign
      | selec
+     | indite
+     | detite
      ;
 
-exp : term              { $$ = $1;} 
-    | exp MAS exp       { $$ = $1 + $3;}
-    | exp MINUS exp     { $$ = $1 - $3;}
-    | exp MULT exp      { $$ = $1 * $3;}
+exp : term              { $$ = $1; } 
+    | exp MAS exp       { $$ = $1 + $3; }
+    | exp MINUS exp     { $$ = $1 - $3; }
+    | exp MULT exp      { $$ = $1 * $3; }
     | NEGADO exp        { $$ = $2; } /* hay que hacer el negado */
     | MINUS exp         { $$ = (-1)*($2); }
     ; 
@@ -107,16 +120,25 @@ selec : SI LPAR exp RPAR inst oselect sinoselect
       ;
 
 oselect : OSI LPAR exp RPAR inst
-        |  
+        | 
         ;
 
 sinoselect : SINO inst
            | 
            ;
 
+indite : MIENTRAS LPAR exp RPAR inst
+       ;
+
+detite : PARA LPAR decl SEMICOL exp SEMICOL exp RPAR inst
+       ;
 
 %% /* Epilogo comienza aca */
 
-void main (int argc; char **argv) {
+void yyerror (const char *s) {
+    std::cout << s;
+} 
+
+int main (int argc, char **argv) {
     yyparse();
 }
