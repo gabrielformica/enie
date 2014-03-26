@@ -11,7 +11,10 @@
     int yylex(void);
 }
 
-
+%union {
+    int num;
+    std::string *str;
+}
 /* Tokens de las palabras reservadas */
 
 %token NUMBER
@@ -73,7 +76,9 @@
 %left MULT DIV
 %left NEGADO 
 
-
+/* La directiva type para el union */
+%type<num> exp term NUMBER
+%type<str> ID
 %% /* Gramatica empieza aqui */
 
 /* A pesar de que las expresiones unarias estan definidas con sus propias reglas
