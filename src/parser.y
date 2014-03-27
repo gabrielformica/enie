@@ -4,8 +4,6 @@
 %code requires {
     #include <iostream>
     #include <string>
-    #include <stdio.h>
-    extern FILE *yyin;
 }
 
 %code {
@@ -14,36 +12,7 @@
     using namespace std;
 }
 
-/*
-%union {
-    int num;
-    std::string *str;
-}
-*/
 /* Tokens de las palabras reservadas */
-%printer { fprintf (yyoutput, "%s", $$); } NUMBER    ; 
-%printer { fprintf (yyoutput, "%s", $$); } ID        ;
-%printer { fprintf (yyoutput, "%s", $$); } SI       ;   
-%printer { fprintf (yyoutput, "%s", $$); } OSI       ;   
-%printer { fprintf (yyoutput, "%s", $$); } SINO      ;   
-%printer { fprintf (yyoutput, "%s", $$); } MIENTRAS  ;   
-%printer { fprintf (yyoutput, "%s", $$); } PARA      ;   
-%printer { fprintf (yyoutput, "%s", $$); } CASO      ;   
-%printer { fprintf (yyoutput, "%s", $$); } ENT       ;   
-%printer { fprintf (yyoutput, "%s", $$); } FLOT      ;   
-%printer { fprintf (yyoutput, "%s", $$); } NADA      ;   
-%printer { fprintf (yyoutput, "%s", $$); } BOOL      ;   
-%printer { fprintf (yyoutput, "%s", $$); } CAR       ;   
-%printer { fprintf (yyoutput, "%s", $$); } CADENA    ;   
-%printer { fprintf (yyoutput, "%s", $$); } REGISTRO  ;   
-%printer { fprintf (yyoutput, "%s", $$); } RETORNO   ;   
-%printer { fprintf (yyoutput, "%s", $$); } CIERTO    ;   
-%printer { fprintf (yyoutput, "%s", $$); } FALSO     ;   
-%printer { fprintf (yyoutput, "%s", $$); } PROGRAMA  ;   
-%printer { fprintf (yyoutput, "%s", $$); } LEER      ;  
-
-
-
 
 %token NUMBER
 %token ID
@@ -60,12 +29,11 @@
 %token CAR          
 %token CADENA       
 %token REGISTRO     
-%token RETORNO      
+%token RETORNA      
 %token CIERTO       
 %token FALSO        
 %token PROGRAMA     
 %token LEER        
-
 
 /* Tokens para caracteres especiales */
 
@@ -76,13 +44,13 @@
 %token LPAR         
 %token RPAR         
 %token EQUAL        
-%token EQUIVALEN    
+%token EQUIV    
 %token COLCOL       
 %token ARROW        
 %token SEMICOL      
-%token COMA         
+%token COMMA         
 %token MINUS        
-%token MAS          
+%token PLUS          
 %token MULT         
 %token DIV          
 %token MOD          
@@ -90,7 +58,7 @@
 %token GTHAN        
 %token LETHAN              
 %token GETHAN       
-%token NEGADO       
+%token NEGATION 
 %token AND          
 %token OR           
 %token QUOTA        
@@ -98,41 +66,32 @@
 %token BSLASH      
 %token OCOMENT     
 %token CCOMENT     
+%token SEP
 
 /* Precedencias */
-%left MINUS MAS
-%left MULT DIV
-%left NEGADO 
+%left OR
+%left AND
+%left EQUIV INEQUIV
+%left LTHAN GTHAN GETHAN LETHAN
+%left MINUS PLUS 
+%left MULT DIV MOD
+%right POWER
+%right NEGATION
 
-/* La directiva type para el union */
-/*
-%type<num> exp term NUMBER
-%type<str> ID
-*/
-%% /* Gramatica empieza aqui */
+ /* Gramatica empieza aqui */
+%%
 
-/* A pesar de que las expresiones unarias estan definidas con sus propias reglas
-   en la gramatica, esas reglas son inutiles por si solas una vez asignadas
-   las reglas de precedencia */ 
-s    : all funcl
-     ;
-
-all  : funcl all
-     | decfunc all
-     ;
-
-decfunc : header
+enie    : funcl
         ;
 
-funcl   : func '\n' funcl
+
+funcl   : funcl func
         | func
         ;
 
 func    : header instbl
         ;
 
-instbl  : OBRACE instlist CBRACE
-        ;
 
 header  : ID COLCOL signa
         ;
@@ -141,32 +100,35 @@ signa   : arglist ARROW type
         | arglist
         ;
 
-arglist : type ID ',' arglist
-        |  
+arglist : arglist COMMA type ID
+        | type ID
         ;
 
-instlist : inst '\n' instlist
+instlist : instlist SEP inst
          | inst
          ;
 
-inst : decl            { $$ = $1; }
-     | asign
+instbl  : OBRACE SEP instlist SEP CBRACE
+        | OBRACE instlist CBRACE
+        ;
+
+inst : asign  { $$ = $1; }
+     | decl
      | selec
      | indite
      | detite
+     | return
      ;
 
-exp : term              { $$ = $1; } 
-    | exp MAS exp       { $$ = $1 + $3; }
-    | exp MINUS exp     { $$ = $1 - $3; }
-    | exp MULT exp      { $$ = $1 * $3; }
-    | NEGADO exp        { $$ = $2; } /* hay que hacer el negado */
-    | MINUS exp         { $$ = (-1)*($2); }
-    ; 
 
-term : ID               { $$ = $1; }
-     | NUMBER           { $$ = $1; }
+
+asign : ID EQUAL exp
+      ;
+
+decl : type ID
+     | type asign 
      ;
+
 
 type : ENT              { $$ = $1; }
      | FLOT
@@ -176,39 +138,59 @@ type : ENT              { $$ = $1; }
      | REGISTRO
      ;
 
-/* Reglas para instrucciones */
 
-decl : type ID
-     ;
-
-asign : ID EQUAL exp
-     ;
-
-selec : SI LPAR exp RPAR inst oselect sinoselect
+selec : SI LPAR exp RPAR instbl oselect sinoselect
       ;
 
-oselect : OSI LPAR exp RPAR inst
+oselect : OSI LPAR exp RPAR instbl
         | 
         ;
 
-sinoselect : SINO inst
+sinoselect : SINO instbl
            | 
            ;
 
-indite : MIENTRAS LPAR exp RPAR inst
+indite : MIENTRAS LPAR exp RPAR instbl
        ;
 
-detite : PARA LPAR decl SEMICOL exp SEMICOL exp RPAR inst
+detite : PARA LPAR decl SEMICOL exp SEMICOL exp RPAR instbl
        ;
 
-%% /* Epilogo comienza aca */
+return : RETORNA
+       | RETORNA exp
+       ;
+
+exp : term              { $$ = $1; } 
+    | exp PLUS exp      { $$ = $1 + $3; }
+    | exp MINUS exp     { $$ = $1 - $3; }
+    | exp MULT exp      { $$ = $1 * $3; }
+    | exp MOD exp
+    | exp POWER exp
+    | exp OR exp
+    | exp AND exp
+    | exp LTHAN exp
+    | exp GTHAN exp
+    | exp LETHAN exp
+    | exp GETHAN exp
+    | NEGATION exp       { $$ = $2; } /* hay que hacer el negado */
+    | MINUS exp          { $$ = (-1)*($2); }
+    | LPAR exp RPAR
+    ; 
+
+
+term : ID               { $$ = $1; }
+     | NUMBER           { $$ = $1; }
+     | ID OBRACK exp CBRACK   
+     ;
+
+
+%% 
 
 void yyerror (const char *s) {
     cerr << s;
 } 
 
 int main (int argc, char **argv) {
-    yyin=fopen(argv[1],"r");
     yyparse();
 }
 
