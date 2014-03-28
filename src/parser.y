@@ -180,6 +180,8 @@ exp : term              { $$ = $1; }
 
 term : ID               { $$ = $1; }
      | NUMBER           { $$ = $1; }
+     | CIERTO           { $$ = $1; }
+     | FALSO            { $$ = $1; }
      | ID OBRACK exp CBRACK   
      ;
 
