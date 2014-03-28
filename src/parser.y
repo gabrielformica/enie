@@ -4,6 +4,10 @@
 %code requires {
     #include <iostream>
     #include <string>
+    #include <stdlib.h>
+    #include <stdio.h>
+
+    #define YYSTYPE std::string;
 }
 
 %code {
@@ -113,7 +117,8 @@ instbl  : OBRACE SEP instlist SEP CBRACE
         | OBRACE instlist CBRACE
         ;
 
-inst : asign  { $$ = $1; }
+inst : asign  
+     | exp
      | decl
      | selec
      | indite
@@ -131,7 +136,7 @@ decl : type ID
      ;
 
 
-type : ENT              { $$ = $1; }
+type : ENT              
      | FLOT
      | NADA
      | BOOL
@@ -161,10 +166,10 @@ return : RETORNA
        | RETORNA exp
        ;
 
-exp : term              { $$ = $1; } 
-    | exp PLUS exp      { $$ = $1 + $3; }
-    | exp MINUS exp     { $$ = $1 - $3; }
-    | exp MULT exp      { $$ = $1 * $3; }
+exp : term            
+    | exp PLUS exp      
+    | exp MINUS exp     
+    | exp MULT exp      
     | exp MOD exp
     | exp POWER exp
     | exp OR exp
@@ -173,17 +178,25 @@ exp : term              { $$ = $1; }
     | exp GTHAN exp
     | exp LETHAN exp
     | exp GETHAN exp
-    | NEGATION exp       { $$ = $2; } /* hay que hacer el negado */
-    | MINUS exp          { $$ = (-1)*($2); }
+    | NEGATION exp     
+    | MINUS exp        
     | LPAR exp RPAR
     ; 
 
 
+<<<<<<< HEAD
 term : ID               { $$ = $1; }
      | NUMENT           { $$ = $1; }
      | NUMFLOT          { $$ = $1; }
      | CIERTO           { $$ = $1; }
      | FALSO            { $$ = $1; }
+=======
+term : ID            
+     | NUMENT
+     | NUMFLOT       
+     | CIERTO      
+     | FALSO      
+>>>>>>> 24e7e355d570baa9014bb70a02f4fdc024857a9a
      | ID OBRACK exp CBRACK   
      ;
 
@@ -195,6 +208,9 @@ void yyerror (const char *s) {
 } 
 
 int main (int argc, char **argv) {
+    if (! yyin = fopen(argv[1], 'r')) {
+        cerr << "Fallo apertura de archivo" << '\n' ;
+    }    
     yyparse();
 }
 
