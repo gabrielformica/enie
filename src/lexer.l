@@ -54,7 +54,7 @@ retorna						return RETORNA;
 \^                          return POWER;
 %							return MOD;
 \\							return BSLASH;
-[a-zA-Z][a-zA-Z0-9_]*	    yylval=strdup(yytext); return ID;
+[a-zA-Z][a-zA-Z0-9_]*	    yylval.str=strdup(yytext); return ID;
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
 %%

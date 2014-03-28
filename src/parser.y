@@ -7,7 +7,6 @@
     #include <stdlib.h>
     #include <stdio.h>
 
-    #define YYSTYPE std::string;
 }
 
 %code {
@@ -16,11 +15,15 @@
     using namespace std;
 }
 
+%union {
+    char *str;
+}
+
 /* Tokens de las palabras reservadas */
 
 %token NUMENT
 %token NUMFLOT
-%token ID
+%token <str> ID
 %token SI           
 %token OSI          
 %token SINO         
@@ -184,19 +187,11 @@ exp : term
     ; 
 
 
-<<<<<<< HEAD
-term : ID               { $$ = $1; }
-     | NUMENT           { $$ = $1; }
-     | NUMFLOT          { $$ = $1; }
-     | CIERTO           { $$ = $1; }
-     | FALSO            { $$ = $1; }
-=======
 term : ID            
      | NUMENT
      | NUMFLOT       
      | CIERTO      
      | FALSO      
->>>>>>> 24e7e355d570baa9014bb70a02f4fdc024857a9a
      | ID OBRACK exp CBRACK   
      ;
 
@@ -208,9 +203,6 @@ void yyerror (const char *s) {
 } 
 
 int main (int argc, char **argv) {
-    if (! yyin = fopen(argv[1], 'r')) {
-        cerr << "Fallo apertura de archivo" << '\n' ;
-    }    
     yyparse();
 }
 
