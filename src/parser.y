@@ -14,7 +14,8 @@
 
 /* Tokens de las palabras reservadas */
 
-%token NUMBER
+%token NUMENT
+%token NUMFLOT
 %token ID
 %token SI           
 %token OSI          
@@ -179,7 +180,8 @@ exp : term              { $$ = $1; }
 
 
 term : ID               { $$ = $1; }
-     | NUMBER           { $$ = $1; }
+     | NUMENT           { $$ = $1; }
+     | NUMFLOT          { $$ = $1; }
      | CIERTO           { $$ = $1; }
      | FALSO            { $$ = $1; }
      | ID OBRACK exp CBRACK   

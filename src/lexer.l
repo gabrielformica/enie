@@ -7,7 +7,8 @@
 %%
 [ \t]+                      /*eat whitespaces*/
 [\n]+                       return SEP;
-[0-9]+					/*	yylval=strdup(yytext);*/ return NUMBER;
+[0-9]+					/*	yylval=strdup(yytext);*/ return NUMENT;
+[0-9]+.[0-9]+               return NUMFLOT
 ent							return ENT;
 bool						return BOOL;
 flot						return FLOT;
