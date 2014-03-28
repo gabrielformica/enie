@@ -7,9 +7,12 @@
 %%
 [ \t]+                      /*eat whitespaces*/
 [\n]+                       return SEP;
-[0-9]+					/*	yylval=strdup(yytext);*/ return NUMBER;
+[0-9]+				        return NUMENT;
+[0-9]+.[0-9]+               return NUMFLOT;
 ent							return ENT;
 bool						return BOOL;
+cierto                      return CIERTO;
+falso                       return FALSO;
 flot						return FLOT;
 car							return CAR;
 cadena						return CADENA;
@@ -51,7 +54,7 @@ retorna						return RETORNA;
 \^                          return POWER;
 %							return MOD;
 \\							return BSLASH;
-[a-zA-Z][a-zA-Z0-9_]*	    /*yylval=strdup(yytext);*/ return ID;
+[a-zA-Z][a-zA-Z0-9_]*	    yylval=strdup(yytext); return ID;
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
 %%
