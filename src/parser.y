@@ -1,5 +1,8 @@
+%language "C++"
 %defines
 %locations
+
+%define parser_class_name {parser}
 
 %code requires {
     #include <iostream>
@@ -86,12 +89,26 @@
 %right POWER
 %right NEGATION
 
+%{
+extern int yylex(yy::parser::sematic_type *yylval,
+                yy::parser::location_type *yyloc);
+%}
+
+
+%initial-action {
+    @$.begin.filename = @$.end.filename = new std::string("stdin");
+}
  /* Gramatica empieza aqui */
 %%
 
-enie    : funcl
+enie    : prog
         ;
 
+prog    : prog SEP funcl
+        | prog SEP header 
+        | header
+        | funcl
+        ;
 
 funcl   : funcl func
         | func
@@ -203,8 +220,9 @@ void yyerror (const char *s) {
 } 
 
 int main (int argc, char **argv) {
-    if (! (yyin = fopen(argv[1],"r"))) {
+    if  (!(yyin = fopen(argv[1],"r"))) {
         cout << "Fallo en la apertura de archivo" << endl;
+        exit;
     }
     yyparse();
 }

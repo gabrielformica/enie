@@ -1,0 +1,7 @@
+hola :: ent arg1, ent arg2 -> nada
+chao :: ent arg1, bool arg2 -> bool
+programa :: ent narg, cadena argv[] {
+    3+4
+    2+2
+    ent a = b+4
+}
