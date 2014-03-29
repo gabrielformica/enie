@@ -21,6 +21,7 @@ car							return CAR;
 cadena						return CADENA;
 registro					return REGISTRO;
 nada                        return NADA;
+\.\.                        return DOTDOT;
 \{							return OBRACE;
 \}							return CBRACE;
 \(							return LPAR;

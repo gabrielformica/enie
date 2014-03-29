@@ -56,7 +56,7 @@
 %token RPAR         
 %token EQUAL        
 %token EQUIV    
-
+%token DOTDOT
 %token COLCOL       
 %token TILDE
 %token ARROW        
@@ -86,9 +86,10 @@
 %left AND
 %left EQUIV INEQUIV
 %left LTHAN GTHAN GETHAN LETHAN
-%left MINUS PLUS 
+%left MINUS PLUS DOTDOT
 %left MULT DIV MOD
 %right POWER
+%left NEG
 %right NEGATION
 
  /* Gramatica empieza aqui */
@@ -141,6 +142,8 @@ asign : ID EQUAL exp
 
 decl : type ID
      | type ID EQUAL exp
+     | type ID arr
+     | type ID arr EQUAL exp
      ;
 
 
@@ -187,8 +190,9 @@ exp : term
     | exp GTHAN exp
     | exp LETHAN exp
     | exp GETHAN exp
+    | exp DOTDOT exp
     | NEGATION exp     
-    | MINUS exp        
+    | MINUS exp  %prec NEG     
     | LPAR exp RPAR
     ; 
 
