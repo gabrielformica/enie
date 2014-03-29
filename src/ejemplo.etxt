@@ -1,0 +1,9 @@
+sumar :: ent a, ent b -> ent {
+    retorna a + b
+}
+
+programa :: ~ {
+    ent a
+    ent b
+    ent c = sumar(a,b)
+}

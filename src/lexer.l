@@ -2,7 +2,7 @@
 %{
     #include <iostream>
     #include <string>
-    #include "parser.tab.hh"
+    #include "parser.tab.h"
 
     typedef yy::parser::token token;
 %}

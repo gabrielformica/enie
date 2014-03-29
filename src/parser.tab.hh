@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.0.2.
+// A Bison parser, made by GNU Bison 3.0.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
@@ -40,7 +40,7 @@
 #ifndef YY_YY_PARSER_TAB_HH_INCLUDED
 # define YY_YY_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 7 "parser.y" // lalr1.cc:372
+#line 7 "parser.y" // lalr1.cc:371
 
     #include <iostream>
     #include <string>
@@ -48,7 +48,7 @@
     #include <stdio.h>
     extern FILE* yyin;
 
-#line 52 "parser.tab.hh" // lalr1.cc:372
+#line 52 "parser.tab.hh" // lalr1.cc:371
 
 
 # include <vector>
@@ -59,59 +59,6 @@
 # include "location.hh"
 
 
-#ifndef YY_ATTRIBUTE
-# if (defined __GNUC__                                               \
-      && (2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)))  \
-     || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
-#  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
-# else
-#  define YY_ATTRIBUTE(Spec) /* empty */
-# endif
-#endif
-
-#ifndef YY_ATTRIBUTE_PURE
-# define YY_ATTRIBUTE_PURE   YY_ATTRIBUTE ((__pure__))
-#endif
-
-#ifndef YY_ATTRIBUTE_UNUSED
-# define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
-#endif
-
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
-# else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
-# endif
-#endif
-
-/* Suppress unused-variable warnings by "using" E.  */
-#if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
-#else
-# define YYUSE(E) /* empty */
-#endif
-
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
-/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
-    _Pragma ("GCC diagnostic push") \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
-    _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
-    _Pragma ("GCC diagnostic pop")
-#else
-# define YY_INITIAL_VALUE(Value) Value
-#endif
-#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END
-#endif
-#ifndef YY_INITIAL_VALUE
-# define YY_INITIAL_VALUE(Value) /* Nothing. */
-#endif
-
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -119,7 +66,7 @@
 
 
 namespace yy {
-#line 123 "parser.tab.hh" // lalr1.cc:372
+#line 70 "parser.tab.hh" // lalr1.cc:371
 
 
 
@@ -133,11 +80,11 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 21 "parser.y" // lalr1.cc:372
+    #line 21 "parser.y" // lalr1.cc:371
 
     char *str;
 
-#line 141 "parser.tab.hh" // lalr1.cc:372
+#line 88 "parser.tab.hh" // lalr1.cc:371
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -170,46 +117,53 @@ namespace yy {
         FLOT = 268,
         NADA = 269,
         BOOL = 270,
-        CAR = 271,
-        CADENA = 272,
-        REGISTRO = 273,
-        RETORNA = 274,
-        CIERTO = 275,
-        FALSO = 276,
-        PROGRAMA = 277,
-        LEER = 278,
-        OBRACK = 279,
-        CBRACK = 280,
-        OBRACE = 281,
-        CBRACE = 282,
-        LPAR = 283,
-        RPAR = 284,
-        EQUAL = 285,
-        EQUIV = 286,
-        COLCOL = 287,
-        ARROW = 288,
-        SEMICOL = 289,
-        COMMA = 290,
-        MINUS = 291,
-        PLUS = 292,
-        MULT = 293,
-        DIV = 294,
-        MOD = 295,
-        LTHAN = 296,
-        GTHAN = 297,
-        LETHAN = 298,
-        GETHAN = 299,
-        NEGATION = 300,
-        AND = 301,
-        OR = 302,
-        QUOTA = 303,
-        APOST = 304,
-        BSLASH = 305,
-        OCOMENT = 306,
-        CCOMENT = 307,
-        SEP = 308,
-        INEQUIV = 309,
-        POWER = 310
+        VAR = 271,
+        CAR = 272,
+        CADENA = 273,
+        REGISTRO = 274,
+        RETORNA = 275,
+        CIERTO = 276,
+        FALSO = 277,
+        ARREGLO = 278,
+        UNION = 279,
+        PROGRAMA = 280,
+        LEER = 281,
+        OBRACK = 282,
+        CBRACK = 283,
+        OBRACE = 284,
+        CBRACE = 285,
+        LPAR = 286,
+        RPAR = 287,
+        EQUAL = 288,
+        EQUIV = 289,
+        DOTDOT = 290,
+        ONEDOT = 291,
+        COLCOL = 292,
+        TILDE = 293,
+        ARROW = 294,
+        SEMICOL = 295,
+        COMMA = 296,
+        MINUS = 297,
+        PLUS = 298,
+        MULT = 299,
+        DIV = 300,
+        MOD = 301,
+        LTHAN = 302,
+        GTHAN = 303,
+        LETHAN = 304,
+        GETHAN = 305,
+        NEGATION = 306,
+        AND = 307,
+        OR = 308,
+        QUOTA = 309,
+        APOST = 310,
+        BSLASH = 311,
+        OCOMENT = 312,
+        CCOMENT = 313,
+        SEP = 314,
+        INEQUIV = 315,
+        POWER = 316,
+        NEG = 317
       };
     };
 
@@ -311,14 +265,14 @@ namespace yy {
 
 #if YYDEBUG
     /// The current debugging stream.
-    std::ostream& debug_stream () const YY_ATTRIBUTE_PURE;
+    std::ostream& debug_stream () const;
     /// Set the current debugging stream.
     void set_debug_stream (std::ostream &);
 
     /// Type for debugging levels.
     typedef int debug_level_type;
     /// The current debugging level.
-    debug_level_type debug_level () const YY_ATTRIBUTE_PURE;
+    debug_level_type debug_level () const;
     /// Set the current debugging level.
     void set_debug_level (debug_level_type l);
 #endif
@@ -347,8 +301,8 @@ namespace yy {
 
     /// Compute post-reduction state.
     /// \param yystate   the current state
-    /// \param yysym     the nonterminal to push on the stack
-    state_type yy_lr_goto_state_ (state_type yystate, int yysym);
+    /// \param yylhs     the nonterminal to push on the stack
+    state_type yy_lr_goto_state_ (state_type yystate, int yylhs);
 
     /// Whether the given \c yypact_ value indicates a defaulted state.
     /// \param yyvalue   the value to check
@@ -378,14 +332,14 @@ namespace yy {
   static const short int yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
-  static const signed char yydefgoto_[];
+  static const short int yydefgoto_[];
 
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const unsigned char yytable_[];
 
-  static const signed char yycheck_[];
+  static const short int yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -423,7 +377,7 @@ namespace yy {
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg     Why this token is reclaimed.
     ///                  If null, print nothing.
-    /// \param yysym     The symbol.
+    /// \param s         The symbol.
     template <typename Base>
     void yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const;
 
@@ -497,13 +451,13 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 308,     ///< Last index in yytable_.
-      yynnts_ = 22,  ///< Number of nonterminal symbols.
+      yylast_ = 398,           //< Last index in yytable_.
+      yynnts_ = 28,  //< Number of nonterminal symbols.
       yyempty_ = -2,
-      yyfinal_ = 8, ///< Termination state number.
+      yyfinal_ = 8, //< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 56  ///< Number of tokens.
+      yyntokens_ = 63    //< Number of tokens.
     };
 
 
@@ -512,7 +466,7 @@ namespace yy {
 
 
 } // yy
-#line 516 "parser.tab.hh" // lalr1.cc:372
+#line 470 "parser.tab.hh" // lalr1.cc:371
 
 
 

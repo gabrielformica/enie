@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.0.2.
+// A Bison parser, made by GNU Bison 3.0.
 
 // Positions for Bison parsers in C++
 
@@ -42,11 +42,11 @@
 # include <iostream>
 # include <string>
 
-# ifndef YY_NULLPTR
+# ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+#   define YY_NULL nullptr
 #  else
-#   define YY_NULLPTR 0
+#   define YY_NULL 0
 #  endif
 # endif
 
@@ -58,7 +58,7 @@ namespace yy {
   {
   public:
     /// Construct a position.
-    explicit position (std::string* f = YY_NULLPTR,
+    explicit position (std::string* f = YY_NULL,
                        unsigned int l = 1u,
                        unsigned int c = 1u)
       : filename (f)
@@ -69,7 +69,7 @@ namespace yy {
 
 
     /// Initialization.
-    void initialize (std::string* fn = YY_NULLPTR,
+    void initialize (std::string* fn = YY_NULL,
                      unsigned int l = 1u,
                      unsigned int c = 1u)
     {
