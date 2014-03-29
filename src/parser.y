@@ -57,6 +57,7 @@
 %token EQUAL        
 %token EQUIV    
 %token DOTDOT
+%token ONEDOT
 %token COLCOL       
 %token TILDE
 %token ARROW        
@@ -195,7 +196,6 @@ exp : term
     | NEGATION exp     
     | MINUS exp  %prec NEG     
     | LPAR exp RPAR
-    | callfunc
     ; 
 
 
@@ -205,6 +205,8 @@ term : ID
      | CIERTO      
      | FALSO      
      | ID arr 
+     | boxelem
+     | callfunc
      ;
 
 arr : arr OBRACK exp CBRACK 
@@ -224,6 +226,9 @@ callfunc : ID LPAR explist RPAR
 
 explist : explist COMMA exp
         | exp
+        ;
+
+boxelem : term ONEDOT ID
         ;
 %% 
 
