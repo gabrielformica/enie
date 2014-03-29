@@ -4,21 +4,25 @@
 %code requires {
     #include <iostream>
     #include <string>
+    #include <list>
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
+    #define YY_STYPE
+    #define STR_ERROR1 "Variable re-declarada"
     extern FILE* yyin;
 }
 
 %code {
     SymbolTable *symtable = new SymbolTable();
+    std::list<std::string> *errors;
     void yyerror(char const *);
     int yylex(void);
     using namespace std;
 }
 
 %union {
-    char *str;
+    std::string *str;
 }
 
 /* Tokens de las palabras reservadas */
@@ -151,7 +155,17 @@ asign : ID EQUAL exp
       ;
 
 
-decl : type ID
+decl : type ID 
+     {
+         int currentScope = symtable->getCurrentScope();
+         std::string id = new std::string(*$2);
+         if (! symtable->IdIsInScope(id, currentScope)) {
+            symtable->addSymbol(new Symbol(id,currentScope,0,0));
+         }
+         else {
+            errors->push_back(STR_ERROR1);
+         }
+     }
      | type ID EQUAL exp
      | type ID arr
      | type ID arr EQUAL exp
@@ -254,4 +268,10 @@ int main (int argc, char **argv) {
         cout << "Fallo en la apertura de archivo" << endl;
     }
     yyparse();
+    if (! errors->empty()) {
+        for (list<std::string>::reverse_iterator it = errors->rbegin(); 
+            it != errors->rend(); ++it) {
+            cout << *it << endl;
+        }
+    }
 }
