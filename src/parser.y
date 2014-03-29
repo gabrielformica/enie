@@ -92,6 +92,7 @@
 %left NEG
 %right NEGATION
 
+
  /* Gramatica empieza aqui */
 %%
 
@@ -140,10 +141,12 @@ inst : asign
 asign : ID EQUAL exp
       ;
 
+
 decl : type ID
      | type ID EQUAL exp
      | type ID arr
      | type ID arr EQUAL exp
+     | declbox
      ;
 
 
@@ -152,9 +155,7 @@ type : ENT
      | NADA
      | BOOL
      | CAR
-     | REGISTRO
      | ARREGLO
-     | UNION
      ;
 
 selec : SI LPAR exp RPAR instbl oselect sinoselect
@@ -209,6 +210,13 @@ arr : arr OBRACK exp CBRACK
     | OBRACK exp CBRACK 
     ;
 
+declbox : UNION ID OBRACE declist CBRACE 
+        | REGISTRO ID OBRACE declist CBRACE 
+        ;
+
+declist : declist SEP decl
+        | decl
+        ;
 %% 
 
 void yyerror (const char *s) {
