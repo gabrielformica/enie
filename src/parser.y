@@ -37,12 +37,15 @@
 %token FLOT         
 %token NADA         
 %token BOOL         
+%token VAR
 %token CAR          
 %token CADENA       
 %token REGISTRO     
 %token RETORNA      
 %token CIERTO       
 %token FALSO        
+%token ARREGLO
+%token UNION
 %token PROGRAMA     
 %token LEER        
 
@@ -56,7 +59,9 @@
 %token RPAR         
 %token EQUAL        
 %token EQUIV    
+%token DOTDOT
 %token COLCOL       
+%token TILDE
 %token ARROW        
 %token SEMICOL      
 %token COMMA         
@@ -84,20 +89,12 @@
 %left AND
 %left EQUIV INEQUIV
 %left LTHAN GTHAN GETHAN LETHAN
-%left MINUS PLUS 
+%left MINUS PLUS DOTDOT
 %left MULT DIV MOD
 %right POWER
+%left NEG
 %right NEGATION
 
-%{
-extern int yylex(yy::parser::sematic_type *yylval,
-                yy::parser::location_type *yyloc);
-%}
-
-
-%initial-action {
-    @$.begin.filename = @$.end.filename = new std::string("stdin");
-}
  /* Gramatica empieza aqui */
 %%
 
@@ -123,10 +120,13 @@ header  : ID COLCOL signa
 
 signa   : arglist ARROW type
         | arglist
+        | TILDE
+        | TILDE ARROW type
         ;
 
 arglist : arglist COMMA type ID
         | type ID
+        | VAR type ID
         ;
 
 instlist : instlist SEP inst
@@ -134,7 +134,6 @@ instlist : instlist SEP inst
          ;
 
 instbl  : OBRACE SEP instlist SEP CBRACE
-        | OBRACE instlist CBRACE
         ;
 
 inst : asign  
@@ -146,13 +145,15 @@ inst : asign
      | return
      ;
 
-
-
 asign : ID EQUAL exp
       ;
 
+
 decl : type ID
-     | type asign 
+     | type ID EQUAL exp
+     | type ID arr
+     | type ID arr EQUAL exp
+     | declbox
      ;
 
 
@@ -161,9 +162,8 @@ type : ENT
      | NADA
      | BOOL
      | CAR
-     | REGISTRO
+     | ARREGLO
      ;
-
 
 selec : SI LPAR exp RPAR instbl oselect sinoselect
       ;
@@ -198,9 +198,11 @@ exp : term
     | exp GTHAN exp
     | exp LETHAN exp
     | exp GETHAN exp
+    | exp DOTDOT exp
     | NEGATION exp     
-    | MINUS exp        
+    | MINUS exp  %prec NEG     
     | LPAR exp RPAR
+    | callfunc
     ; 
 
 
@@ -209,10 +211,27 @@ term : ID
      | NUMFLOT       
      | CIERTO      
      | FALSO      
-     | ID OBRACK exp CBRACK   
+     | ID arr 
      ;
 
+arr : arr OBRACK exp CBRACK 
+    | OBRACK exp CBRACK 
+    ;
 
+declbox : UNION ID OBRACE declist CBRACE 
+        | REGISTRO ID OBRACE declist CBRACE 
+        ;
+
+declist : declist SEP decl
+        | decl
+        ;
+
+callfunc : ID LPAR explist RPAR
+         ;
+
+explist : explist COMMA exp
+        | exp
+        ;
 %% 
 
 void yyerror (const char *s) {
