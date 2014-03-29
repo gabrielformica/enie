@@ -60,7 +60,7 @@ retorna						return RETORNA;
 \^                          return POWER;
 %							return MOD;
 \\							return BSLASH;
-[a-zA-Z][a-zA-Z0-9_]*	    yylval->str=new std::string(yytext); return ID;
+[a-zA-Z][a-zA-Z0-9_]*	    yylval.str = new std::string(yytext); return ID;  
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
 %%

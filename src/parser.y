@@ -8,7 +8,6 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
-    #define YY_STYPE
     #define STR_ERROR1 "Variable re-declarada"
     extern FILE* yyin;
 }
@@ -156,16 +155,15 @@ asign : ID EQUAL exp
 
 
 decl : type ID 
-     {
+      {
          int currentScope = symtable->getCurrentScope();
-         std::string id = new std::string(*$2);
-         if (! symtable->IdIsInScope(id, currentScope)) {
-            symtable->addSymbol(new Symbol(id,currentScope,0,0));
+         if (! symtable->IdIsInScope(*$2, currentScope)) {
+            symtable->addSymbol(new Symbol(*$2,currentScope,0,0));
          }
          else {
             errors->push_back(STR_ERROR1);
          }
-     }
+     } 
      | type ID EQUAL exp
      | type ID arr
      | type ID arr EQUAL exp
@@ -268,10 +266,10 @@ int main (int argc, char **argv) {
         cout << "Fallo en la apertura de archivo" << endl;
     }
     yyparse();
-    if (! errors->empty()) {
+  /*  if (! errors->empty()) {
         for (list<std::string>::reverse_iterator it = errors->rbegin(); 
             it != errors->rend(); ++it) {
             cout << *it << endl;
         }
-    }
+    } */
 }
