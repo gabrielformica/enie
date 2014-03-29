@@ -22,10 +22,16 @@ class Symbol {
     int column;
   public:
     Symbol(std::string,int,int,int);
+    int getScope();
+    int getLine();
+    int getColumn();
+    void setScope(int);
+    void setLine(int);
+    void setColumn(int);
 }
 
 /* Hash table for symbols */
-typedef std::unordered_multimap<std::string,int> MapTable;
+typedef std::unordered_multimap<std::string,Symbol> MapTable;
 
 
 /*
@@ -42,6 +48,6 @@ class SymbolTable {
     void enterScope();
     void leaveScope();
     int  getActualScope();
-    Symbol lookup();
+    Symbol *lookup(std::string);
 }
 #endif
