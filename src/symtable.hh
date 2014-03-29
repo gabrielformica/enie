@@ -41,7 +41,7 @@ typedef std::unordered_multimap<std::string,Symbol *> MapTable;
 
 class SymbolTable {
   private:
-    int currentScope;
+    int scopeCounter;
     MapTable table;
     std::stack<int> scopeStack;
   public:
@@ -49,8 +49,9 @@ class SymbolTable {
     void enterScope();
     void leaveScope();
     void addSymbol(Symbol *);
-    int  getActualScope();
+    int  getCurrentScope();
     Symbol *lookup(std::string, int);
     bool IdIsInScope(std::string, int);
+    void printStack();
 };
 #endif

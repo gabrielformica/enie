@@ -71,7 +71,7 @@ void Symbol::setColumn(int x) {
 
 /* Class constructor*/
 SymbolTable::SymbolTable() {
-    this->currentScope = 0;
+    this->scopeCounter = 0;
     this->table = {};
     this->scopeStack.push(0);  //first scope is 0
 }
@@ -79,7 +79,7 @@ SymbolTable::SymbolTable() {
 /* Add new scope*/
 
 void SymbolTable::enterScope() {
-    int cs = ++this->currentScope;
+    int cs = ++this->scopeCounter;
     this->scopeStack.push(cs);
 }
 
@@ -91,7 +91,7 @@ void SymbolTable::leaveScope() {
 
 /* Return scope of the program */
 
-int SymbolTable::getActualScope() {
+int SymbolTable::getCurrentScope() {
     return this->scopeStack.top();
 }
 
@@ -119,4 +119,13 @@ Symbol *SymbolTable::lookup(string id, int scope) {
         }
     } 
     return NULL;
+}
+
+void SymbolTable::printStack() {
+    cout << "STACK" << endl;
+    auto its = this->scopeStack;
+    for (auto it = this->scopeStack.begin(); 
+            it != this->scopeStack.end(); ++it) {
+        cout << it << endl;
+    }
 }

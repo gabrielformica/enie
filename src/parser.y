@@ -6,10 +6,12 @@
     #include <string>
     #include <stdlib.h>
     #include <stdio.h>
+    #include "symtable.hh"
     extern FILE* yyin;
 }
 
 %code {
+    SymbolTable *symtable = new SymbolTable();
     void yyerror(char const *);
     int yylex(void);
     using namespace std;
@@ -97,24 +99,25 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : funcl END
+enie    : enterscope funcl END leavescope 
         ;
+
 
 END     : SEP
         |
         ;
 
 
-funcl   : funcl SEP func
-        | func
+funcl   : funcl SEP func leavescope 
+        | func leavescope
         ;
 
 func    : header instbl
         ;
 
 
-header  : ID COLCOL signa
-        | ENIE COLCOL signa
+header  : ID COLCOL enterscope signa
+        | ENIE COLCOL enterscope signa
         ;
 
 signa   : arglist ARROW type
@@ -164,7 +167,7 @@ type : ENT
      | ARREGLO
      ;
 
-selec : SI LPAR exp RPAR instbl oselect sinoselect
+selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
       ;
 
 oselect : OSI LPAR exp RPAR instbl
@@ -235,6 +238,11 @@ explist : explist COMMA exp
 
 boxelem : term ONEDOT ID
         ;
+
+
+enterscope : {symtable.enterScope()}
+leavescope : {symtable.leaveScope()}
+
 %% 
 
 void yyerror (const char *s) {
@@ -247,5 +255,3 @@ int main (int argc, char **argv) {
     }
     yyparse();
 }
-
-
