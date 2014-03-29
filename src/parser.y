@@ -109,7 +109,7 @@ func    : header instbl
         ;
 
 
-header  : ID COLCOL signa
+header  : ID COLCOL signa /* accion de symtable */
         ;
 
 signa   : arglist ARROW type
