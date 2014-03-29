@@ -45,7 +45,7 @@ para						return PARA;
 \>							return GTHAN;
 \<=							return LETHAN;
 \>=							return GETHAN;
-programa					return PROGRAMA;
+enie                        return ENIE;
 leer						return LEER;
 \[							return OBRACK;
 \]							return CBRACK;

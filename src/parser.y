@@ -43,7 +43,7 @@
 %token FALSO        
 %token ARREGLO
 %token UNION
-%token PROGRAMA     
+%token ENIE 
 %token LEER        
 
 /* Tokens para caracteres especiales */
@@ -97,11 +97,15 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : funcl
+enie    : funcl END
+        ;
+
+END     : SEP
+        |
         ;
 
 
-funcl   : funcl func
+funcl   : funcl SEP func
         | func
         ;
 
@@ -110,6 +114,7 @@ func    : header instbl
 
 
 header  : ID COLCOL signa
+        | ENIE COLCOL signa
         ;
 
 signa   : arglist ARROW type
