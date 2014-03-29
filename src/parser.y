@@ -34,12 +34,15 @@
 %token FLOT         
 %token NADA         
 %token BOOL         
+%token VAR
 %token CAR          
 %token CADENA       
 %token REGISTRO     
 %token RETORNA      
 %token CIERTO       
 %token FALSO        
+%token ARREGLO
+%token UNION
 %token PROGRAMA     
 %token LEER        
 
@@ -53,7 +56,9 @@
 %token RPAR         
 %token EQUAL        
 %token EQUIV    
+
 %token COLCOL       
+%token TILDE
 %token ARROW        
 %token SEMICOL      
 %token COMMA         
@@ -106,10 +111,13 @@ header  : ID COLCOL signa
 
 signa   : arglist ARROW type
         | arglist
+        | TILDE
+        | TILDE ARROW type
         ;
 
 arglist : arglist COMMA type ID
         | type ID
+        | VAR type ID
         ;
 
 instlist : instlist SEP inst
@@ -117,7 +125,6 @@ instlist : instlist SEP inst
          ;
 
 instbl  : OBRACE SEP instlist SEP CBRACE
-        | OBRACE instlist CBRACE
         ;
 
 inst : asign  
@@ -129,13 +136,11 @@ inst : asign
      | return
      ;
 
-
-
 asign : ID EQUAL exp
       ;
 
 decl : type ID
-     | type asign 
+     | type ID EQUAL exp
      ;
 
 
@@ -145,8 +150,9 @@ type : ENT
      | BOOL
      | CAR
      | REGISTRO
+     | ARREGLO
+     | UNION
      ;
-
 
 selec : SI LPAR exp RPAR instbl oselect sinoselect
       ;
@@ -192,9 +198,12 @@ term : ID
      | NUMFLOT       
      | CIERTO      
      | FALSO      
-     | ID OBRACK exp CBRACK   
+     | ID arr 
      ;
 
+arr : arr OBRACK exp CBRACK 
+    | OBRACK exp CBRACK 
+    ;
 
 %% 
 
