@@ -25,6 +25,7 @@ cadena						return CADENA;
 registro					return REGISTRO;
 nada                        return NADA;
 \.\.                        return DOTDOT;
+\.                          return ONEDOT;
 \{							return OBRACE;
 \}							return CBRACE;
 \(							return LPAR;
