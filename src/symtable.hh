@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string>
 #include <list>
-#include <stack>
 #include <unordered_map>
 
 /*
@@ -43,7 +42,7 @@ class SymbolTable {
   private:
     int scopeCounter;
     MapTable table;
-    std::stack<int> scopeStack;
+    std::list<int> scopeStack;
   public:
     SymbolTable();
     void enterScope();

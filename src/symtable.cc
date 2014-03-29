@@ -73,26 +73,26 @@ void Symbol::setColumn(int x) {
 SymbolTable::SymbolTable() {
     this->scopeCounter = 0;
     this->table = {};
-    this->scopeStack.push(0);  //first scope is 0
+    this->scopeStack.push_back(0);  //first scope is 0
 }
 
 /* Add new scope*/
 
 void SymbolTable::enterScope() {
     int cs = ++this->scopeCounter;
-    this->scopeStack.push(cs);
+    this->scopeStack.push_back(cs);
 }
 
 /* Leave scope*/
 
 void SymbolTable::leaveScope() {
-    this->scopeStack.pop();
+    this->scopeStack.pop_back();
 }
 
 /* Return scope of the program */
 
 int SymbolTable::getCurrentScope() {
-    return this->scopeStack.top();
+    return this->scopeStack.back();
 }
 
 /* Add symbol to symbol table*/
@@ -123,9 +123,10 @@ Symbol *SymbolTable::lookup(string id, int scope) {
 
 void SymbolTable::printStack() {
     cout << "STACK" << endl;
-    auto its = this->scopeStack;
-    for (auto it = this->scopeStack.begin(); 
-            it != this->scopeStack.end(); ++it) {
-        cout << it << endl;
+    for (list<int>::reverse_iterator it = this->scopeStack.rbegin(); 
+            it != this->scopeStack.rend(); ++it) {
+        cout << *it << endl;
     }
+    cout << "STACK" << endl;
+
 }

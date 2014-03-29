@@ -170,18 +170,18 @@ type : ENT
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
       ;
 
-oselect : OSI LPAR exp RPAR instbl
+oselect : OSI LPAR exp RPAR enterscope instbl leavescope
         | 
         ;
 
-sinoselect : SINO instbl
+sinoselect : SINO enterscope instbl leavescope
            | 
            ;
 
-indite : MIENTRAS LPAR exp RPAR instbl
+indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
        ;
 
-detite : PARA LPAR decl SEMICOL exp SEMICOL exp RPAR instbl
+detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
        ;
 
 return : RETORNA
@@ -221,8 +221,8 @@ arr : arr OBRACK exp CBRACK
     | OBRACK exp CBRACK 
     ;
 
-declbox : UNION ID OBRACE declist CBRACE 
-        | REGISTRO ID OBRACE declist CBRACE 
+declbox : UNION ID OBRACE enterscope declist leavescope CBRACE 
+        | REGISTRO ID OBRACE enterscope declist leavescope CBRACE 
         ;
 
 declist : declist SEP decl
@@ -240,8 +240,8 @@ boxelem : term ONEDOT ID
         ;
 
 
-enterscope : {symtable.enterScope()}
-leavescope : {symtable.leaveScope()}
+enterscope : {symtable->enterScope(); symtable->printStack();}
+leavescope : {symtable->leaveScope(); symtable->printStack();}
 
 %% 
 
