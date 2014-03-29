@@ -195,6 +195,7 @@ exp : term
     | NEGATION exp     
     | MINUS exp  %prec NEG     
     | LPAR exp RPAR
+    | callfunc
     ; 
 
 
@@ -216,6 +217,13 @@ declbox : UNION ID OBRACE declist CBRACE
 
 declist : declist SEP decl
         | decl
+        ;
+
+callfunc : ID LPAR explist RPAR
+         ;
+
+explist : explist COMMA exp
+        | exp
         ;
 %% 
 
