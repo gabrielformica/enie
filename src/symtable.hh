@@ -51,5 +51,6 @@ class SymbolTable {
     void addSymbol(Symbol *);
     int  getActualScope();
     Symbol *lookup(std::string, int);
+    bool IdIsInScope(std::string, int);
 };
 #endif
