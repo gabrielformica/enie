@@ -1,0 +1,83 @@
+s            ->    all  funCL       #No puede haber una declaracion de funcion  al final (sin definicion)
+
+all          ->    funcl all
+              |    decfunc all 
+
+decfunc      ->    header
+
+funcl        ->    func SEP  funcl
+              |    func
+
+func         ->    header  instbl
+
+instbl       ->    OBRACE   instlist   CBRACE
+
+header       ->    ID  COLCOL   signa
+
+signa        ->    arglist   ARROW  type
+              |    arglist
+
+instlist     ->    inst    SEP    instlist
+              |    inst
+
+inst         ->    asign
+              |    decl
+              |    selec
+              |    indite
+              |    detite
+              |    multselec
+              |    instbl
+
+
+asign        ->    ID    EQUAL  expr
+
+decl         ->    type    ID     array
+              |    type    asign    
+
+array        ->    OBRACK CBRACK
+              |         #lambda
+
+
+selec        ->    SI    LPAR   expr   RPAR  inst  oselect   sinoselect
+
+oselect      ->    OSI   LPAR  expr  RPAR inst 
+              |          #lambda
+
+sinoselect   ->    SINO  inst 
+              |         #lambda
+
+
+indite       ->    MIENTRAS   LPAR   expr  RPAR     inst 
+detite       ->    PARA  LPAR  decl  SEMICOLON  expr  SEMICOLON  expr  RPAR  inst  
+
+multselec    ->    CASO ID multselecbl 
+
+multselecbl  ->    OBRACE options CBRACE
+
+Options      ->    ID COLON inst 
+
+type         ->    ENT
+              |    FLOT
+              |    NADA
+              |    BOOL
+              |    CAR
+              |    CADENA
+              |    REGISTRO
+
+expun        ->    MINUS exp     #menos aritmetico
+              |    NEGADO exp    #negado booleano
+
+exp          ->    term
+              |    CIERTO
+              |    FALSO
+              |    expun
+              |    LPAR exp RPAR
+              |    exp  MAS  exp
+              |    exp  MULT exp
+              |    exp  MOD  exp
+              |    exp  DIV  exp
+              |    exp 
+
+term         ->    ID
+              |    NUMBER
+

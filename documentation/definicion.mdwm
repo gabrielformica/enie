@@ -47,8 +47,8 @@ Además, se permite el uso de caracteres acentuados y la letra ñ.
 
 Este es el conjunto de palabras reservadas en el lenguaje:
 
-*    nada, bool, ent, flot, car, cadena, registro, {, }, (,), &&, ||, si, o si, 
-     o (sino), mientras, para, ::, =, ==, <, <=, >, >=, programa, leer,
+*    nada, bool, ent, flot, car, cadena, registro, arreglo, {, }, (,), &&, ||, si, osi, 
+     sino, mientras, para, ::, =, ==, <, <=, >, >=, programa, leer,
      escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _.
 
 ##Tipos de datos
@@ -84,8 +84,6 @@ derecho y almacenarla en la variable del lado izquierdo. La variable
 ha de haber sido previamente declarada, o en su defecto, declararla
 in situ. 
 
-Para los efectos prácticos, la asignación se considera una 
-
 ###Selección
 
 La instrucción de selección usará la palabra reservada **si** y tendrá la
@@ -100,7 +98,7 @@ reservadas **o si** y **sino** de la siguiente manera:
 
         si (Condición1) {
             Instrucción
-        } o si (Condición2) {
+        } osi (Condición2) {
             Instrucción
         } sino {
             Instrucción
@@ -108,10 +106,61 @@ reservadas **o si** y **sino** de la siguiente manera:
 
 ###Iteración indeterminada
 
-Las instrucciones de iteración indeterminada son de la forma
+Las instrucciones de iteración indeterminada son de la forma:
 
         mientras (Condición) {
             Instrucción
         }
 
-	
+
+###Iteración determinada
+
+Un ejemplo de iteración determinada es el siguiente:
+
+        para (ent i = 0 ; i < 10; i+1) {
+            Instrucción
+        }
+
+En este se observa que:
+
+*    La variable **i** siempre debe declarase en el para.
+
+*    No se puede asignar valores a la variable **i**.
+
+*    La variable **i** solo vivirá en ese bloque en ese bloque.
+
+###Selección múltiple
+
+Un par de ejemplos de selección múltiple son:
+
+*    Ejemplo 1:
+
+        caso i {
+            1 : {
+                    Instrucción
+                }
+            2 : {
+                    Instrucción
+                }
+            sino :  {
+                    Instrucción
+                }
+        }
+
+*    Ejemplo 2:
+
+        caso i {
+            1 : Instrucción
+            2 : Instrucción
+            sino : Instrucción
+        }
+
+De momento, el lado izquierdo solo puede tener un valor discreto. A fúturo se planea colocar rangos de valores.
+
+Se debe considerar que:
+
+*    Las opciones se evaluan de arriba hacia abajo, y al coíncidir con una, 
+     se ejecuta ese bloque de instrucciones y sale.
+
+*    la opcion **sino** no es obligatoria, pero en caso de estar, debe
+     ser la última de las opciones.
