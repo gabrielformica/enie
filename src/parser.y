@@ -6,7 +6,7 @@
     #include <string>
     #include <stdlib.h>
     #include <stdio.h>
-
+    extern FILE* yyin;
 }
 
 %code {
@@ -203,6 +203,9 @@ void yyerror (const char *s) {
 } 
 
 int main (int argc, char **argv) {
+    if (! (yyin = fopen(argv[1],"r"))) {
+        cout << "Fallo en la apertura de archivo" << endl;
+    }
     yyparse();
 }
 
