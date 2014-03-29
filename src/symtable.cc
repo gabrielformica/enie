@@ -13,7 +13,22 @@ using namespace std;
  */
 
 
-/*Return scope of the symbol*/
+/* Class constructor*/
+
+Symbol::Symbol(string id, int scope, int line, int column) {
+    this->id = id;
+    this->scope = scope;
+    this->line = line;
+    this->column = column;
+}
+
+/* Return id of the symbol */
+
+string Symbol::getId() {
+    return this->id;
+}
+
+/* Return scope of the symbol*/
 
 int Symbol::getScope() {
     return this->scope;
@@ -33,17 +48,17 @@ int Symbol::getColumn() {
 
 /* Set scope*/
 
-void Symbol:: setScope(int x) {
+void Symbol::setScope(int x) {
     this->scope = x;
 }
 
 /* Set line*/
-void Symbol:: setLine(int x) {
+void Symbol::setLine(int x) {
     this->line = x;
 }
 
 /* Set column*/
-void Symbol:: setColumn(int x) {
+void Symbol::setColumn(int x) {
     this->column = x;
 }
 
@@ -54,10 +69,17 @@ void Symbol:: setColumn(int x) {
  */
 
 
+/* Class constructor*/
+SymbolTable::SymbolTable() {
+    this->currentScope = 0;
+    this->table = {};
+    this->scopeStack.push(0);  //first scope is 0
+}
+
 /* Add new scope*/
 
 void SymbolTable::enterScope() {
-    int cs = this->currentScope++;
+    int cs = ++this->currentScope;
     this->scopeStack.push(cs);
 }
 
@@ -73,13 +95,20 @@ int SymbolTable::getActualScope() {
     return this->scopeStack.top();
 }
 
+/* Add symbol to symbol table*/
+
+void SymbolTable::addSymbol(Symbol *s) {
+    string id = s->getId();
+    this->table.insert(MapTable::value_type(id,s));
+}
+
 /* look up the symbol */
 
 Symbol *SymbolTable::lookup(string id, int scope) {
     auto its = this->table.equal_range(id);
     for (auto it = its.first; it != its.second; ++it) {
-        if scope == it->second.getScope() {
-            return &it->second;
+        if (scope == it->second->getScope()) {
+            return it->second;
         }
     } 
 }
