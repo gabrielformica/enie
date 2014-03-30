@@ -155,7 +155,6 @@ inst : asign
      | indite
      | detite
      | return
-     | error SEP
      ;
 
 asign : ID EQUAL exp
