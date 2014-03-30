@@ -149,12 +149,12 @@ instbl  : OBRACE SEP instlist SEP CBRACE
         ;
 
 inst : asign  
-/*     | exp */
      | decl
      | selec
      | indite
      | detite
      | return
+     | callfunc
      ;
 
 asign : ID EQUAL exp
