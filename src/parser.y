@@ -24,6 +24,25 @@
 
         
 }
+%code {
+    void tryAddSymbol(Symbol *s) {
+        std::string id = s->getId();
+        int scope = s->getScope();
+        int line = s->getLine();
+        int column = s->getColumn();
+        if (! symtable->IdIsInScope(id, scope)) {
+           symtable->addSymbol(s);
+           cout << "El simbolo " << id << " esta en la linea : " << line << endl;
+        }
+        else {
+           std::string str = "variable '"+ id + "' redeclarada ";
+           str+= "en linea :"+ to_string(line);
+           errors.push_back(str);
+        }
+
+
+    }
+}
 
 %union {
     std::string *str;
@@ -161,23 +180,21 @@ asign : ID EQUAL exp
       ;
 
 
-decl : type ID 
-      {
-         int currentScope = symtable->getCurrentScope();
-         if (! symtable->IdIsInScope(*$2, currentScope)) {
-            symtable->addSymbol(new Symbol(*$2,currentScope,0,0));
-            cout << "El simbolo " << *$2 << " esta en " << @2.first_line << endl;
-         }
-         else {
-            errors.push_back(STR_ERROR1);
-         }
-     } 
-     | type ID EQUAL exp
-     | type ID arr
-     | type ID arr EQUAL exp
+decl : typeiddec
+     | typeiddec EQUAL exp
+     | typeiddec arr
+     | typeiddec arr EQUAL exp
      | declbox
      ;
 
+typeiddec : type ID  
+     {
+        int currentScope = symtable->getCurrentScope();
+        int line = @2.first_line;
+        int column = @2.first_column;
+        tryAddSymbol(new Symbol(*$2,currentScope,line,column));  
+     } 
+     ;
 
 type : ENT              
      | FLOT
@@ -242,9 +259,21 @@ arr : arr OBRACK exp CBRACK
     | OBRACK exp CBRACK 
     ;
 
-declbox : UNION ID OBRACE enterscope declist leavescope CBRACE 
-        | REGISTRO ID OBRACE enterscope declist leavescope CBRACE 
+declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE 
         ;
+
+declboxtypeid : declboxtype ID
+                {
+                    int currentScope = symtable->getCurrentScope();
+                    int line = @2.first_line;
+                    int column = @2.first_column;
+                    tryAddSymbol(new Symbol(*$2,currentScope,line,column));  
+                }
+              ;
+
+declboxtype  : UNION
+             | REGISTRO
+             ;
 
 declist : declist SEP decl
         | decl
