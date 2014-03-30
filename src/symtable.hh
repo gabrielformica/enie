@@ -50,7 +50,8 @@ class SymbolTable {
     void addSymbol(Symbol *);
     int  getCurrentScope();
     Symbol *lookup(std::string, int);
-    bool IdIsInScope(std::string, int);
+    bool idIsInScope(std::string, int);
+    bool isActive(Symbol *);
     void printStack();
 };
 #endif

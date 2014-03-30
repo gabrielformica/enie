@@ -162,6 +162,11 @@ inst : asign
 
 asign : ID EQUAL exp
         {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
         }
       ;
 
@@ -178,7 +183,8 @@ typeiddec : type ID
         int currentScope = symtable->getCurrentScope();
         int line = @2.first_line;
         int column = @2.first_column;
-        tryAddSymbol(symtable,&errors,new Symbol(*$2,currentScope,line,column));  
+        Symbol *s = new Symbol(*$2,currentScope,line,column);
+        tryAddSymbol(symtable,&errors,s);  
      } 
      ;
 
@@ -303,4 +309,5 @@ int main (int argc, char **argv) {
             cout << *it << endl;
         }
     } 
+    cout << "---------TERMINO----------" << endl;
 }
