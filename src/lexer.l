@@ -79,7 +79,11 @@ retorna						return RETORNA;
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
 .                           {   
-                            std::string error = "Error: Caracster desconocidos en linea ";
+                            /* Regla para caracteres inesperados */
+
+                            std::string error = "Error: Caracter ";
+                            error = error + "'" + yytext + "'";
+                            error = error + " desconocido en linea ";
                             error = error + std::to_string(yylineno);
                             error = error + ", columna ";
                             error = error + std::to_string(yycolumn); 
