@@ -1,0 +1,25 @@
+enie :: ~ {
+    car jota = "j"
+    car zeta = "z"
+    car a = "a"
+    car g = "g"
+
+    caso zeta { 
+        \a    ->  { 
+                   escribir "Esta opcion no es correcta"    
+                   escribir ", porque esta opcion es la 'a'"
+                 }
+        \"a"   -> {
+                   escribir "Esta opcion tampoco es correcta"    
+                  }
+        \g    ->  {
+                   escribir "Aqui tampoco" 
+                  }
+        \jota ->  { 
+                   escribir "No es una jota" 
+                 }
+        \?    ->  {
+                   escribir "Hago match a cualquier cosa"  
+                 }
+    } 
+}

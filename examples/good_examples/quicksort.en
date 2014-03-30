@@ -1,17 +1,13 @@
-/*
- * Ejemplo de quicksort
- * Lenguaje enie
- */
-
-swap :: ent v[], ent i, ent j -> nada {
+swap :: ent v[~], ent i, ent j -> nada {
     ent temp = v[i]
     v[i] = v[j]
     v[j] = temp
 }
 
-quicksort :: ent v[], ent izq, ent der -> nada {
-    si (izq >= der)
+quicksort :: ent v[~], ent izq, ent der -> nada {
+    si (izq >= der) {
         retorna
+    }
     swap(v, izq, (izq + der)/2)
 
     ent pivotdest = izq
@@ -29,6 +25,6 @@ quicksort :: ent v[], ent izq, ent der -> nada {
 }
 
 enie :: ~ {
-    ent v[0..15] = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0}
+    ent v[~] = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1} 
     quicksort(v,0,15)
 }

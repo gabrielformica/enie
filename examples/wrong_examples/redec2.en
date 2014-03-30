@@ -1,5 +1,5 @@
 funcion :: ent a -> ent {
-    return (a * a)
+    retorna (a * a)
 }
 
 funcion :: ~ {

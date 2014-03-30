@@ -94,6 +94,7 @@
 %token OCOMENT     
 %token CCOMENT     
 %token SEP
+%token QUESTION
 
 /* Precedencias */
 %left OR
@@ -110,14 +111,16 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : enterscope funcl END leavescope 
+enie    : enterscope funcl end leavescope 
         ;
 
 
-END     : SEP
+end     : sepaux 
+        ;
+
+sepaux  : SEP
         |
         ;
-
 
 funcl   : funcl SEP func leavescope 
         | func leavescope
@@ -132,14 +135,8 @@ header  : idheader COLCOL enterscope signa
         | ENIE COLCOL enterscope signa
         ;
 
-idheader : ID
-          {
-            int currentScope = symtable->getCurrentScope();
-            int line = @1.first_line;
-            int column = @1.first_column;
-            Symbol *s = new Symbol(*$1,currentScope,line,column);
-            tryAddSymbol(symtable,&errors,s);  
-          }
+idheader : addid 
+         ;
 
 signa   : arglist ARROW type
         | arglist
@@ -147,9 +144,9 @@ signa   : arglist ARROW type
         | TILDE ARROW type
         ;
 
-arglist : arglist COMMA typeid 
-        | typeid 
-        | VAR typeid 
+arglist : arglist COMMA declonly 
+        | declonly 
+        | VAR declonly 
         ;
 
 instlist : instlist SEP inst
@@ -163,6 +160,7 @@ instbl  : OBRACE SEP instlist SEP CBRACE
 inst : asign  
      | decl
      | selec
+     | multselec
      | indite
      | detite
      | return
@@ -171,7 +169,7 @@ inst : asign
      | ESCRIBIR exp
      ;
 
-asign : ID EQUAL exp
+checkid : ID 
         {
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
@@ -179,25 +177,42 @@ asign : ID EQUAL exp
             Symbol *s = new Symbol(*$1,currentScope,line,column);
             checkUse(symtable,&errors,s);
         }
+        ; 
+
+addid   : ID
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            tryAddSymbol(symtable,&errors,s);  
+        }
+        ;
+asign : checkid EQUAL exp
+      | checkid arr EQUAL arrvalues 
       ;
 
+arrvalues : exp
+          | OBRACE arrvalueslist CBRACE
+          ;
 
-decl : typeid
-     | typeid EQUAL exp
-     | typeid arr
-     | typeid arr EQUAL exp
+arrvalueslist : arrvalueslist COMMA arrvalues
+              | arrvalues
+              ;
+
+
+decl : typeid EQUAL exp
+     | typeid arr EQUAL arrvalues 
+     | declonly
      | declbox
      ;
 
-typeid : type ID  
-     {
-        int currentScope = symtable->getCurrentScope();
-        int line = @2.first_line;
-        int column = @2.first_column;
-        Symbol *s = new Symbol(*$2,currentScope,line,column);
-        tryAddSymbol(symtable,&errors,s);  
-     } 
-     ;
+declonly : typeid
+         | typeid arr
+         ;
+
+typeid : type addid  
+       ;
 
 type : ENT              
      | FLOT
@@ -218,6 +233,27 @@ sinoselect : SINO enterscope instbl leavescope
            | 
            ;
 
+
+multselec: CASO checkid checkid OBRACE SEP optionslist lastoption SEP CBRACE
+         ;
+
+lastoption : SEP BSLASH QUESTION ARROW instbl 
+           ;
+
+optionslist: optionslist SEP option
+           | option
+           |
+           ;
+
+option: BSLASH leftsideopt ARROW instbl 
+      ;
+
+leftsideopt : CONSTCAD
+            | checkid 
+            ;
+
+
+
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
        ;
 
@@ -232,6 +268,7 @@ exp : term
     | exp PLUS exp      
     | exp MINUS exp     
     | exp MULT exp      
+    | exp DIV exp
     | exp MOD exp
     | exp POWER exp
     | exp OR exp
@@ -247,26 +284,12 @@ exp : term
     ; 
 
 
-term : ID            
-        {
-            int currentScope = symtable->getCurrentScope();
-            int line = @1.first_line;
-            int column = @1.first_column;
-            Symbol *s = new Symbol(*$1,currentScope,line,column);
-            checkUse(symtable,&errors,s);
-        }
+term : checkid     /*ID*/ 
      | NUMENT
      | NUMFLOT       
      | CIERTO      
      | FALSO      
-     | ID arr 
-        {
-            int currentScope = symtable->getCurrentScope();
-            int line = @1.first_line;
-            int column = @1.first_column;
-            Symbol *s = new Symbol(*$1,currentScope,line,column);
-            checkUse(symtable,&errors,s);
-        }
+     | checkid arr  /*ID arr*/
      | callfunc
      | CONSTCAD
      | CONSTCAR 
@@ -276,19 +299,14 @@ term : ID
 
 arr : arr OBRACK exp CBRACK 
     | OBRACK exp CBRACK 
+    | arr OBRACK TILDE CBRACK
+    | OBRACK TILDE CBRACK
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE 
         ;
 
-declboxtypeid : declboxtype ID
-                {
-                  int currentScope = symtable->getCurrentScope();
-                  int line = @2.first_line;
-                  int column = @2.first_column;
-                  Symbol *s = new Symbol(*$2,currentScope,line,column);
-                  tryAddSymbol(symtable,&errors,s);  
-                }
+declboxtypeid : declboxtype addid 
               ;
 
 declboxtype  : UNION
@@ -299,14 +317,14 @@ declist : declist SEP decl
         | decl
         ;
 
-callfunc : ID LPAR explist RPAR
+callfunc : checkid LPAR explist RPAR
          ;
 
 explist : explist COMMA exp
         | exp
         ;
 
-boxelem : term ONEDOT ID
+boxelem : term ONEDOT checkid  
         ;
 
 
