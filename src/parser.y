@@ -147,9 +147,9 @@ signa   : arglist ARROW type
         | TILDE ARROW type
         ;
 
-arglist : arglist COMMA typeid 
-        | typeid 
-        | VAR typeid 
+arglist : arglist COMMA declonly 
+        | declonly 
+        | VAR declonly 
         ;
 
 instlist : instlist SEP inst
@@ -179,15 +179,34 @@ asign : ID EQUAL exp
             Symbol *s = new Symbol(*$1,currentScope,line,column);
             checkUse(symtable,&errors,s);
         }
+        | ID arr EQUAL arrvalues 
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
+        }
       ;
 
+arrvalues : exp
+          | OBRACE arrvalueslist CBRACE
+          ;
 
-decl : typeid
-     | typeid EQUAL exp
-     | typeid arr
-     | typeid arr EQUAL exp
+arrvalueslist : arrvalueslist COMMA arrvalues
+              | arrvalues
+              ;
+
+
+decl : typeid EQUAL exp
+     | typeid arr EQUAL arrvalues 
+     | declonly
      | declbox
      ;
+
+declonly : typeid
+         | typeid arr
+         ;
 
 typeid : type ID  
      {
@@ -232,6 +251,7 @@ exp : term
     | exp PLUS exp      
     | exp MINUS exp     
     | exp MULT exp      
+    | exp DIV exp
     | exp MOD exp
     | exp POWER exp
     | exp OR exp
@@ -276,6 +296,8 @@ term : ID
 
 arr : arr OBRACK exp CBRACK 
     | OBRACK exp CBRACK 
+    | arr OBRACK TILDE CBRACK
+    | OBRACK TILDE CBRACK
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE 
@@ -300,6 +322,13 @@ declist : declist SEP decl
         ;
 
 callfunc : ID LPAR explist RPAR
+             {
+                int currentScope = symtable->getCurrentScope();
+                int line = @1.first_line;
+                int column = @1.first_column;
+                Symbol *s = new Symbol(*$1,currentScope,line,column);
+                checkUse(symtable,&errors,s);
+             }
          ;
 
 explist : explist COMMA exp

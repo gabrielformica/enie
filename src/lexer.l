@@ -79,6 +79,7 @@ retorna						return RETORNA;
 \"							return QUOTA;
 \^                          return POWER;
 %							return MOD;
+\/                           return DIV;
 \\							return BSLASH;
 [a-zA-Z][a-zA-Z0-9_]*	    { 
                             yylval.str = new std::string(yytext); 
