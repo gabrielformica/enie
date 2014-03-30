@@ -5,6 +5,7 @@
     #define YY_USER_ACTION loc_track();
     
     extern YYLTYPE yylloc;
+    extern std::vector<std::string> errors;
 
     int yycolumn = 1;
     void loc_track() {
@@ -76,6 +77,6 @@ retorna						return RETORNA;
                             }
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
-.                           { printf("Error, caracter no esperado.\n"); }
+.                           { errors.push_back("Error, caracter desconocido"); }
 
 %%

@@ -5,16 +5,18 @@
     #include <iostream>
     #include <string>
     #include <list>
+    #include <vector>
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
     #define STR_ERROR1 "Variable re-declarada"
     extern FILE* yyin;
+    extern std::vector<std::string> errors;
 }
 
 %code {
     SymbolTable *symtable = new SymbolTable();
-    std::list<std::string> *errors;
+    std::vector<std::string> errors;
     void yyerror(char const *);
     int yylex(void);
     using namespace std;
@@ -162,7 +164,7 @@ decl : type ID
             cout << "El simbolo " << *$2 << " esta en " << @2.first_line << endl;
          }
          else {
-            errors->push_back(STR_ERROR1);
+            errors.push_back(STR_ERROR1);
          }
      } 
      | type ID EQUAL exp
@@ -267,10 +269,10 @@ int main (int argc, char **argv) {
         cout << "Fallo en la apertura de archivo" << endl;
     }
     yyparse();
-  /*  if (! errors->empty()) {
-        for (list<std::string>::reverse_iterator it = errors->rbegin(); 
-            it != errors->rend(); ++it) {
+    if (! errors.empty()) {
+        for (vector<std::string>::reverse_iterator it = errors.rbegin(); 
+            it != errors.rend(); ++it) {
             cout << *it << endl;
         }
-    } */
+    } 
 }
