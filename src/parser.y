@@ -138,9 +138,9 @@ signa   : arglist ARROW type
         | TILDE ARROW type
         ;
 
-arglist : arglist COMMA type ID
-        | type ID
-        | VAR type ID
+arglist : arglist COMMA typeid 
+        | typeid 
+        | VAR typeid 
         ;
 
 instlist : instlist SEP inst
@@ -171,14 +171,14 @@ asign : ID EQUAL exp
       ;
 
 
-decl : typeiddec
-     | typeiddec EQUAL exp
-     | typeiddec arr
-     | typeiddec arr EQUAL exp
+decl : typeid
+     | typeid EQUAL exp
+     | typeid arr
+     | typeid arr EQUAL exp
      | declbox
      ;
 
-typeiddec : type ID  
+typeid : type ID  
      {
         int currentScope = symtable->getCurrentScope();
         int line = @2.first_line;
@@ -237,13 +237,27 @@ exp : term
 
 
 term : ID            
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
+        }
      | NUMENT
      | NUMFLOT       
      | CIERTO      
      | FALSO      
      | ID arr 
-     | boxelem
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
+        }
      | callfunc
+     | boxelem
      | error
      ;
 
@@ -304,8 +318,8 @@ int main (int argc, char **argv) {
     }
     yyparse();
     if (! errors.empty()) {
-        for (vector<std::string>::reverse_iterator it = errors.rbegin(); 
-            it != errors.rend(); ++it) {
+        for (vector<std::string>::iterator it = errors.begin(); 
+            it != errors.end(); ++it) {
             cout << *it << endl;
         }
     } 
