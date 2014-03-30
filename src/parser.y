@@ -33,6 +33,8 @@
 
 %token NUMENT
 %token NUMFLOT
+%token CONTCAD
+%token CONTCAR
 %token <str> ID
 %token SI           
 %token OSI          
@@ -55,6 +57,7 @@
 %token UNION
 %token ENIE 
 %token LEER        
+%token ESCRIBIR
 
 /* Tokens para caracteres especiales */
 

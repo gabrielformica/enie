@@ -16,7 +16,12 @@
     }    
 %}
 
+%x comment
+
 %%
+
+
+
 [ \t]+                      /*eat whitespaces*/
 [\n]+                       { yycolumn = 0; return SEP; }
 [0-9]+				        return NUMENT;
@@ -33,6 +38,10 @@ car							return CAR;
 cadena						return CADENA;
 registro					return REGISTRO;
 nada                        return NADA;
+leer                        return LEER;
+escribir                    return ESCRIBIR;
+\"(\\.|[^\\"])*\"           { return CONTCAD; }
+'(\\.|[^\\'])'              { printf("--%s--", yytext); return CONTCAR; }
 \.\.                        return DOTDOT;
 \.                          return ONEDOT;
 \{							return OBRACE;
@@ -58,7 +67,6 @@ para						return PARA;
 \<=							return LETHAN;
 \>=							return GETHAN;
 enie                        return ENIE;
-leer						return LEER;
 \[							return OBRACK;
 \]							return CBRACK;
 ->							return ARROW;
@@ -76,8 +84,11 @@ retorna						return RETORNA;
                             yylval.str = new std::string(yytext); 
                             return ID;  
                             }
-\/\*                        return OCOMENT;
-\*\/                        return CCOMENT;
+
+"/~"  BEGIN(comment);
+
+<comment>"~/"   BEGIN(INITIAL);
+
 .                           {   
                             /* Regla para caracteres inesperados */
 
