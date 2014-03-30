@@ -140,6 +140,7 @@ arglist : arglist COMMA type ID
         ;
 
 instlist : instlist SEP inst
+         | error SEP inst
          | inst
          ;
 
