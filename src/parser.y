@@ -20,6 +20,9 @@
     void yyerror(char const *);
     int yylex(void);
     using namespace std;
+
+
+        
 }
 
 %union {
@@ -260,8 +263,14 @@ leavescope : {symtable->leaveScope(); symtable->printStack();}
 
 %% 
 
+void error_handler(std::string err, int line, int col) {
+    std::string e;
+    e = err + ": linea " + to_string(line) + " columna " + to_string(col);
+    errors.push_back(e);
+}    
+
 void yyerror (const char *s) {
-    cerr << s;
+    error_handler(s, yylloc.first_line, yylloc.first_column);
 } 
 
 int main (int argc, char **argv) {

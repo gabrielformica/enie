@@ -78,11 +78,12 @@ retorna						return RETORNA;
                             }
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
-.                           {   std::string error = "Error: Caracster desconocidos en linea ";
-                                error = error + std::to_string(yylineno);
-                                error = error + ", columna ";
-                                error = error + std::to_string(yycolumn); 
-                                errors.push_back(error);
+.                           {   
+                            std::string error = "Error: Caracster desconocidos en linea ";
+                            error = error + std::to_string(yylineno);
+                            error = error + ", columna ";
+                            error = error + std::to_string(yycolumn); 
+                            errors.push_back(error);
                             }
 
 %%
