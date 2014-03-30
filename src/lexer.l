@@ -76,4 +76,6 @@ retorna						return RETORNA;
                             }
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
+.                           { printf("Error, caracter no esperado.\n"); }
+
 %%
