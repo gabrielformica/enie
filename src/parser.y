@@ -9,7 +9,7 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
-    #define STR_ERROR1 "Variable re-declarada"
+    #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
 }
@@ -23,25 +23,6 @@
 
 
         
-}
-%code {
-    void tryAddSymbol(Symbol *s) {
-        std::string id = s->getId();
-        int scope = s->getScope();
-        int line = s->getLine();
-        int column = s->getColumn();
-        if (! symtable->IdIsInScope(id, scope)) {
-           symtable->addSymbol(s);
-           cout << "El simbolo " << id << " esta en la linea : " << line << endl;
-        }
-        else {
-           std::string str = "variable '"+ id + "' redeclarada ";
-           str+= "en linea :"+ to_string(line);
-           errors.push_back(str);
-        }
-
-
-    }
 }
 
 %union {
@@ -180,6 +161,8 @@ inst : asign
      ;
 
 asign : ID EQUAL exp
+        {
+        }
       ;
 
 
@@ -195,7 +178,7 @@ typeiddec : type ID
         int currentScope = symtable->getCurrentScope();
         int line = @2.first_line;
         int column = @2.first_column;
-        tryAddSymbol(new Symbol(*$2,currentScope,line,column));  
+        tryAddSymbol(symtable,&errors,new Symbol(*$2,currentScope,line,column));  
      } 
      ;
 
@@ -267,10 +250,11 @@ declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
 
 declboxtypeid : declboxtype ID
                 {
-                    int currentScope = symtable->getCurrentScope();
-                    int line = @2.first_line;
-                    int column = @2.first_column;
-                    tryAddSymbol(new Symbol(*$2,currentScope,line,column));  
+                  int currentScope = symtable->getCurrentScope();
+                  int line = @2.first_line;
+                  int column = @2.first_column;
+                  Symbol *s = new Symbol(*$2,currentScope,line,column);
+                  tryAddSymbol(symtable,&errors,s);  
                 }
               ;
 
