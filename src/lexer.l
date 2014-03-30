@@ -40,8 +40,8 @@ registro					return REGISTRO;
 nada                        return NADA;
 leer                        return LEER;
 escribir                    return ESCRIBIR;
-\"(\\.|[^\\"])*\"           { return CONTCAD; }
-'(\\.|[^\\'])'              { printf("--%s--", yytext); return CONTCAR; }
+\"(\\.|[^\\"])*\"           { return CONSTCAD; }
+'(\\.|[^\\'])'              { printf("--%s--", yytext); return CONSTCAR; }
 \.\.                        return DOTDOT;
 \.                          return ONEDOT;
 \{							return OBRACE;
@@ -85,9 +85,12 @@ retorna						return RETORNA;
                             return ID;  
                             }
 
-"/~"  BEGIN(comment);
+"/*"                        { BEGIN(comment); }
+<comment>"*/"               { BEGIN(INITIAL); }
+<comment>.                  ;
+<comment>\n                 
 
-<comment>"~/"   BEGIN(INITIAL);
+[:blank:]+;
 
 .                           {   
                             /* Regla para caracteres inesperados */
