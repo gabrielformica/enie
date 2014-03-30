@@ -118,6 +118,7 @@ END     : SEP
 
 funcl   : funcl SEP func leavescope 
         | func leavescope
+        | error SEP
         ;
 
 func    : header instbl
@@ -141,13 +142,14 @@ arglist : arglist COMMA type ID
 
 instlist : instlist SEP inst
          | inst
+         | error
          ;
 
 instbl  : OBRACE SEP instlist SEP CBRACE
         ;
 
 inst : asign  
-     | exp
+/*     | exp */
      | decl
      | selec
      | indite
@@ -233,6 +235,7 @@ term : ID
      | ID arr 
      | boxelem
      | callfunc
+     | error
      ;
 
 arr : arr OBRACK exp CBRACK 
