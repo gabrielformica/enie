@@ -99,14 +99,27 @@ int SymbolTable::getCurrentScope() {
 
 void SymbolTable::addSymbol(Symbol *s) {
     string id = s->getId();
-    if (! this->IdIsInScope(s->getId(),s->getScope())) {
+    if (! this->idIsInScope(s->getId(),s->getScope())) {
         this->table.insert(MapTable::value_type(id,s));
     }
 }
 
 /* Tell if id is already in scope */
-bool SymbolTable::IdIsInScope(string id, int scope) {
+bool SymbolTable::idIsInScope(string id, int scope) {
     return lookup(id,scope) != NULL;
+}
+
+/* Tell if a symbol declaration is active */
+
+bool SymbolTable::isActive(Symbol *s) {
+    for (list<int>::reverse_iterator it = this->scopeStack.rbegin(); 
+        it != this->scopeStack.rend(); ++it) {
+        
+        if (idIsInScope(s->getId(), *it)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /* look up the symbol */
@@ -117,7 +130,7 @@ Symbol *SymbolTable::lookup(string id, int scope) {
         if (scope == it->second->getScope()) {
             return it->second;
         }
-    } 
+    }
     return NULL;
 }
 

@@ -9,7 +9,7 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
-    #define STR_ERROR1 "Variable re-declarada"
+    #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
 }
@@ -23,25 +23,6 @@
 
 
         
-}
-%code {
-    void tryAddSymbol(Symbol *s) {
-        std::string id = s->getId();
-        int scope = s->getScope();
-        int line = s->getLine();
-        int column = s->getColumn();
-        if (! symtable->IdIsInScope(id, scope)) {
-           symtable->addSymbol(s);
-           cout << "El simbolo " << id << " esta en la linea : " << line << endl;
-        }
-        else {
-           std::string str = "variable '"+ id + "' redeclarada ";
-           str+= "en linea :"+ to_string(line);
-           errors.push_back(str);
-        }
-
-
-    }
 }
 
 %union {
@@ -157,9 +138,9 @@ signa   : arglist ARROW type
         | TILDE ARROW type
         ;
 
-arglist : arglist COMMA type ID
-        | type ID
-        | VAR type ID
+arglist : arglist COMMA typeid 
+        | typeid 
+        | VAR typeid 
         ;
 
 instlist : instlist SEP inst
@@ -182,22 +163,30 @@ inst : asign
      ;
 
 asign : ID EQUAL exp
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
+        }
       ;
 
 
-decl : typeiddec
-     | typeiddec EQUAL exp
-     | typeiddec arr
-     | typeiddec arr EQUAL exp
+decl : typeid
+     | typeid EQUAL exp
+     | typeid arr
+     | typeid arr EQUAL exp
      | declbox
      ;
 
-typeiddec : type ID  
+typeid : type ID  
      {
         int currentScope = symtable->getCurrentScope();
         int line = @2.first_line;
         int column = @2.first_column;
-        tryAddSymbol(new Symbol(*$2,currentScope,line,column));  
+        Symbol *s = new Symbol(*$2,currentScope,line,column);
+        tryAddSymbol(symtable,&errors,s);  
      } 
      ;
 
@@ -250,15 +239,32 @@ exp : term
 
 
 term : ID            
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
+        }
      | NUMENT
      | NUMFLOT       
      | CIERTO      
      | FALSO      
      | ID arr 
-     | boxelem
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,s);
+        }
      | callfunc
+<<<<<<< HEAD
      | CONSTCAD
      | CONSTCAR 
+=======
+     | boxelem
+>>>>>>> ba75cce4a7873de59ab81e5e5644263e7c35a238
      | error
      ;
 
@@ -271,10 +277,11 @@ declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
 
 declboxtypeid : declboxtype ID
                 {
-                    int currentScope = symtable->getCurrentScope();
-                    int line = @2.first_line;
-                    int column = @2.first_column;
-                    tryAddSymbol(new Symbol(*$2,currentScope,line,column));  
+                  int currentScope = symtable->getCurrentScope();
+                  int line = @2.first_line;
+                  int column = @2.first_column;
+                  Symbol *s = new Symbol(*$2,currentScope,line,column);
+                  tryAddSymbol(symtable,&errors,s);  
                 }
               ;
 
@@ -318,9 +325,10 @@ int main (int argc, char **argv) {
     }
     yyparse();
     if (! errors.empty()) {
-        for (vector<std::string>::reverse_iterator it = errors.rbegin(); 
-            it != errors.rend(); ++it) {
+        for (vector<std::string>::iterator it = errors.begin(); 
+            it != errors.end(); ++it) {
             cout << *it << endl;
         }
     } 
+    cout << "---------TERMINO----------" << endl;
 }

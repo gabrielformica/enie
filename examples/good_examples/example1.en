@@ -1,0 +1,7 @@
+enie :: ~ {
+    ent a = 5
+    ent x = a*a
+    para (ent i = a; i < x; i+1) {
+        ent b = 5
+    }
+}
