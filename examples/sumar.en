@@ -1,9 +1,9 @@
 sumar :: ent a, ent b -> ent {
     retorna (a + b)
 }
-
+/~ Esto es un ~/
 enie :: ~ {
-    ent a = 5
+    ent a = 5 
     ent b = 6
-    ent c = sumar(a,b)
+    sumar(a,b)
 }
