@@ -7,17 +7,18 @@
     extern YYLTYPE yylloc;
     extern std::vector<std::string> errors;
 
-    int yycolumn = 1;
+    int yycolumn = 0;
     void loc_track() {
         yylloc.first_line = yylloc.last_line = yylineno;
         yylloc.first_column = yycolumn;
         yylloc.last_column = yycolumn+yyleng-1; 
+        yycolumn += yyleng;
     }    
 %}
 
 %%
 [ \t]+                      /*eat whitespaces*/
-[\n]+                       return SEP;
+[\n]+                       { yycolumn = 0; return SEP; }
 [0-9]+				        return NUMENT;
 [0-9]+.[0-9]+               return NUMFLOT;
 arreglo                     return ARREGLO;
@@ -77,6 +78,11 @@ retorna						return RETORNA;
                             }
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
-.                           { errors.push_back("Error, caracter desconocido"); }
+.                           {   std::string error = "Error: Caracster desconocidos en linea ";
+                                error = error + std::to_string(yylineno);
+                                error = error + ", columna ";
+                                error = error + std::to_string(yycolumn); 
+                                errors.push_back(error);
+                            }
 
 %%
