@@ -85,8 +85,8 @@ retorna						return RETORNA;
                             return ID;  
                             }
 
-"/~"                        { BEGIN(comment); }
-<comment>"~/"               { BEGIN(INITIAL); }
+"/\~"                        { BEGIN(comment); }
+<comment>"\~/"               { BEGIN(INITIAL); }
 <comment>.                  ;
 <comment>\n                 ; 
 
