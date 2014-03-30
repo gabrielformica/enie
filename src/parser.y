@@ -33,8 +33,8 @@
 
 %token NUMENT
 %token NUMFLOT
-%token CONTCAD
-%token CONTCAR
+%token CONSTCAD
+%token CONSTCAR
 %token <str> ID
 %token SI           
 %token OSI          
@@ -167,6 +167,8 @@ inst : asign
      | detite
      | return
      | callfunc
+     | LEER exp
+     | ESCRIBIR exp
      ;
 
 asign : ID EQUAL exp
@@ -266,6 +268,8 @@ term : ID
             checkUse(symtable,&errors,s);
         }
      | callfunc
+     | CONSTCAD
+     | CONSTCAR 
      | boxelem
      | error
      ;
