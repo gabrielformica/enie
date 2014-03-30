@@ -249,7 +249,7 @@ option: BSLASH leftsideopt ARROW instbl
       ;
 
 leftsideopt : CONSTCAD
-            | ID
+            | checkid 
             ;
 
 
@@ -284,12 +284,12 @@ exp : term
     ; 
 
 
-term : checkid            
+term : checkid     /*ID*/ 
      | NUMENT
      | NUMFLOT       
      | CIERTO      
      | FALSO      
-     | checkid arr 
+     | checkid arr  /*ID arr*/
      | callfunc
      | CONSTCAD
      | CONSTCAR 
@@ -324,7 +324,7 @@ explist : explist COMMA exp
         | exp
         ;
 
-boxelem : term ONEDOT ID
+boxelem : term ONEDOT checkid  
         ;
 
 
