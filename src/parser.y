@@ -259,12 +259,9 @@ term : ID
             checkUse(symtable,&errors,s);
         }
      | callfunc
-<<<<<<< HEAD
      | CONSTCAD
      | CONSTCAR 
-=======
      | boxelem
->>>>>>> ba75cce4a7873de59ab81e5e5644263e7c35a238
      | error
      ;
 
