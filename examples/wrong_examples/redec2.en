@@ -1,0 +1,11 @@
+funcion :: ent a -> ent {
+    return (a * a)
+}
+
+funcion :: ~ {
+    nada a
+}
+
+enie :: ~ {
+    nada b
+}
