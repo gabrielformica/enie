@@ -159,6 +159,7 @@ decl : type ID
          int currentScope = symtable->getCurrentScope();
          if (! symtable->IdIsInScope(*$2, currentScope)) {
             symtable->addSymbol(new Symbol(*$2,currentScope,0,0));
+            cout << "El simbolo " << *$2 << " esta en " << @2.first_line << endl;
          }
          else {
             errors->push_back(STR_ERROR1);

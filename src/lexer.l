@@ -2,6 +2,16 @@
     #include <iostream>
     #include <string>
     #include "parser.tab.h"
+    #define YY_USER_ACTION loc_track();
+    
+    extern YYLTYPE yylloc;
+
+    int yycolumn = 1;
+    void loc_track() {
+        yylloc.first_line = yylloc.last_line = yylineno;
+        yylloc.first_column = yycolumn;
+        yylloc.last_column = yycolumn+yyleng-1; 
+    }    
 %}
 
 %%
@@ -60,7 +70,10 @@ retorna						return RETORNA;
 \^                          return POWER;
 %							return MOD;
 \\							return BSLASH;
-[a-zA-Z][a-zA-Z0-9_]*	    yylval.str = new std::string(yytext); return ID;  
+[a-zA-Z][a-zA-Z0-9_]*	    { 
+                            yylval.str = new std::string(yytext); 
+                            return ID;  
+                            }
 \/\*                        return OCOMENT;
 \*\/                        return CCOMENT;
 %%
