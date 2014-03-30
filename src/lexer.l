@@ -40,6 +40,7 @@ registro					return REGISTRO;
 nada                        return NADA;
 leer                        return LEER;
 escribir                    return ESCRIBIR;
+caso                        return CASO;
 \"(\\.|[^\\"])*\"           { return CONSTCAD; }
 '(\\.|[^\\'])'              { printf("--%s--", yytext); return CONSTCAR; }
 \.\.                        return DOTDOT;
@@ -79,8 +80,9 @@ retorna						return RETORNA;
 \"							return QUOTA;
 \^                          return POWER;
 %							return MOD;
-\/                           return DIV;
+\/                          return DIV;
 \\							return BSLASH;
+\?                          return QUESTION;
 [a-zA-Z][a-zA-Z0-9_]*	    { 
                             yylval.str = new std::string(yytext); 
                             return ID;  

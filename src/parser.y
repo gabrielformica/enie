@@ -94,6 +94,7 @@
 %token OCOMENT     
 %token CCOMENT     
 %token SEP
+%token QUESTION
 
 /* Precedencias */
 %left OR
@@ -110,14 +111,16 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : enterscope funcl END leavescope 
+enie    : enterscope funcl end leavescope 
         ;
 
 
-END     : SEP
+end     : sepaux 
+        ;
+
+sepaux  : SEP
         |
         ;
-
 
 funcl   : funcl SEP func leavescope 
         | func leavescope
@@ -163,6 +166,7 @@ instbl  : OBRACE SEP instlist SEP CBRACE
 inst : asign  
      | decl
      | selec
+     | multselec
      | indite
      | detite
      | return
@@ -179,7 +183,7 @@ asign : ID EQUAL exp
             Symbol *s = new Symbol(*$1,currentScope,line,column);
             checkUse(symtable,&errors,s);
         }
-        | ID arr EQUAL arrvalues 
+      | ID arr EQUAL arrvalues 
         {
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
@@ -236,6 +240,27 @@ oselect : OSI LPAR exp RPAR enterscope instbl leavescope
 sinoselect : SINO enterscope instbl leavescope
            | 
            ;
+
+
+multselec: CASO ID OBRACE SEP optionslist lastoption SEP CBRACE
+         ;
+
+lastoption : SEP BSLASH QUESTION ARROW instbl 
+           ;
+
+optionslist: optionslist SEP option
+           | option
+           |
+           ;
+
+option: BSLASH leftsideopt ARROW instbl 
+      ;
+
+leftsideopt : CONSTCAD
+            | ID
+            ;
+
+
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
        ;
