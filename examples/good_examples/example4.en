@@ -1,22 +1,19 @@
-sumar :: ~ {
-    ent a
-}
 enie :: ~ {
     ent a = 5
     ent b = 7
     ent i = 0
     mientras (i < a) {
-        si ((i / 2) < a) {
-            escribir "i / 2 es menor que a"
+        ent a = 3
+        ent b
+        si ((i /2) < a) {
+            escribir "i/2 es menor que a"
+        } 
+        osi (i/2 < 3) {
+            escribir "ok"
         }
         sino {
-            escribir "i / 2 es mayor que a"
+            escribir "bien"
         }
     }
 
-    para (ent i = a; i < a*a; i+1) {
-        ent a = 5
-        ent b = 2
-        ent c = b
-    }
 }

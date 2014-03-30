@@ -222,15 +222,15 @@ type : ENT
      | ARREGLO
      ;
 
-selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+selec : SI LPAR exp RPAR enterscope instbl sepaux leavescope oselect sinoselect
       ;
 
-oselect : OSI LPAR exp RPAR enterscope instbl leavescope
+oselect :  OSI LPAR exp RPAR enterscope instbl sepaux leavescope
         | 
         ;
 
-sinoselect : SINO enterscope instbl leavescope
-           | 
+sinoselect :  SINO enterscope instbl leavescope
+           |  
            ;
 
 
