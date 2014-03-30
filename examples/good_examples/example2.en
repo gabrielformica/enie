@@ -9,6 +9,9 @@ enie :: ~ {
                    escribir "Esta opcion no es correcta"    
                    escribir ", porque esta opcion es la 'a'"
                  }
+        \"a"   -> {
+                   escribir "Esta opcion tampoco es correcta"    
+                  }
         \g    ->  {
                    escribir "Aqui tampoco" 
                   }

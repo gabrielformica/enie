@@ -1,0 +1,3543 @@
+Terminals unused in grammar
+
+   CADENA
+   EQUIV
+   QUOTA
+   APOST
+   OCOMENT
+   CCOMENT
+   INEQUIV
+
+
+Grammar
+
+    0 $accept: enie $end
+
+    1 enie: enterscope funcl end leavescope
+
+    2 end: sepaux
+
+    3 sepaux: SEP
+    4       | %empty
+
+    5 funcl: funcl SEP func leavescope
+    6      | func leavescope
+    7      | error SEP
+
+    8 func: header instbl
+
+    9 header: idheader COLCOL enterscope signa
+   10       | ENIE COLCOL enterscope signa
+
+   11 idheader: addid
+
+   12 signa: arglist ARROW type
+   13      | arglist
+   14      | TILDE
+   15      | TILDE ARROW type
+
+   16 arglist: arglist COMMA declonly
+   17        | declonly
+   18        | VAR declonly
+
+   19 instlist: instlist SEP inst
+   20         | inst
+   21         | error
+
+   22 instbl: OBRACE SEP instlist SEP CBRACE
+
+   23 inst: asign
+   24     | decl
+   25     | selec
+   26     | multselec
+   27     | indite
+   28     | detite
+   29     | return
+   30     | callfunc
+   31     | LEER exp
+   32     | ESCRIBIR exp
+
+   33 checkid: ID
+
+   34 addid: ID
+
+   35 asign: checkid EQUAL exp
+   36      | checkid arr EQUAL arrvalues
+
+   37 arrvalues: exp
+   38          | OBRACE arrvalueslist CBRACE
+
+   39 arrvalueslist: arrvalueslist COMMA arrvalues
+   40              | arrvalues
+
+   41 decl: typeid EQUAL exp
+   42     | typeid arr EQUAL arrvalues
+   43     | declonly
+   44     | declbox
+
+   45 declonly: typeid
+   46         | typeid arr
+
+   47 typeid: type addid
+
+   48 type: ENT
+   49     | FLOT
+   50     | NADA
+   51     | BOOL
+   52     | CAR
+   53     | ARREGLO
+
+   54 selec: SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+
+   55 oselect: OSI LPAR exp RPAR enterscope instbl leavescope
+   56        | %empty
+
+   57 sinoselect: SINO enterscope instbl leavescope
+   58           | %empty
+
+   59 multselec: CASO checkid checkid OBRACE SEP optionslist lastoption SEP CBRACE
+
+   60 lastoption: SEP BSLASH QUESTION ARROW instbl
+
+   61 optionslist: optionslist SEP option
+   62            | option
+   63            | %empty
+
+   64 option: BSLASH leftsideopt ARROW instbl
+
+   65 leftsideopt: CONSTCAD
+   66            | checkid
+
+   67 indite: MIENTRAS LPAR exp RPAR enterscope instbl leavescope
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
+
+   69 return: RETORNA
+   70       | RETORNA exp
+
+   71 exp: term
+   72    | exp PLUS exp
+   73    | exp MINUS exp
+   74    | exp MULT exp
+   75    | exp DIV exp
+   76    | exp MOD exp
+   77    | exp POWER exp
+   78    | exp OR exp
+   79    | exp AND exp
+   80    | exp LTHAN exp
+   81    | exp GTHAN exp
+   82    | exp LETHAN exp
+   83    | exp GETHAN exp
+   84    | exp DOTDOT exp
+   85    | NEGATION exp
+   86    | MINUS exp
+   87    | LPAR exp RPAR
+
+   88 term: checkid
+   89     | NUMENT
+   90     | NUMFLOT
+   91     | CIERTO
+   92     | FALSO
+   93     | checkid arr
+   94     | callfunc
+   95     | CONSTCAD
+   96     | CONSTCAR
+   97     | boxelem
+   98     | error
+
+   99 arr: arr OBRACK exp CBRACK
+  100    | OBRACK exp CBRACK
+  101    | arr OBRACK TILDE CBRACK
+  102    | OBRACK TILDE CBRACK
+
+  103 declbox: declboxtypeid OBRACE enterscope declist leavescope CBRACE
+
+  104 declboxtypeid: declboxtype addid
+
+  105 declboxtype: UNION
+  106            | REGISTRO
+
+  107 declist: declist SEP decl
+  108        | decl
+
+  109 callfunc: checkid LPAR explist RPAR
+
+  110 explist: explist COMMA exp
+  111        | exp
+
+  112 boxelem: term ONEDOT checkid
+
+  113 enterscope: %empty
+
+  114 leavescope: %empty
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 7 21 98
+NUMENT (258) 89
+NUMFLOT (259) 90
+CONSTCAD (260) 65 95
+CONSTCAR (261) 96
+ID (262) 33 34
+SI (263) 54
+OSI (264) 55
+SINO (265) 57
+MIENTRAS (266) 67
+PARA (267) 68
+CASO (268) 59
+ENT (269) 48
+FLOT (270) 49
+NADA (271) 50
+BOOL (272) 51
+VAR (273) 18
+CAR (274) 52
+CADENA (275)
+REGISTRO (276) 106
+RETORNA (277) 69 70
+CIERTO (278) 91
+FALSO (279) 92
+ARREGLO (280) 53
+UNION (281) 105
+ENIE (282) 10
+LEER (283) 31
+ESCRIBIR (284) 32
+OBRACK (285) 99 100 101 102
+CBRACK (286) 99 100 101 102
+OBRACE (287) 22 38 59 103
+CBRACE (288) 22 38 59 103
+LPAR (289) 54 55 67 68 87 109
+RPAR (290) 54 55 67 68 87 109
+EQUAL (291) 35 36 41 42
+EQUIV (292)
+DOTDOT (293) 84
+ONEDOT (294) 112
+COLCOL (295) 9 10
+TILDE (296) 14 15 101 102
+ARROW (297) 12 15 60 64
+SEMICOL (298) 68
+COMMA (299) 16 39 110
+MINUS (300) 73 86
+PLUS (301) 72
+MULT (302) 74
+DIV (303) 75
+MOD (304) 76
+LTHAN (305) 80
+GTHAN (306) 81
+LETHAN (307) 82
+GETHAN (308) 83
+NEGATION (309) 85
+AND (310) 79
+OR (311) 78
+QUOTA (312)
+APOST (313)
+BSLASH (314) 60 64
+OCOMENT (315)
+CCOMENT (316)
+SEP (317) 3 5 7 19 22 59 60 61 107
+QUESTION (318) 60
+INEQUIV (319)
+POWER (320) 77
+NEG (321)
+
+
+Nonterminals, with rules where they appear
+
+$accept (67)
+    on left: 0
+enie (68)
+    on left: 1, on right: 0
+end (69)
+    on left: 2, on right: 1
+sepaux (70)
+    on left: 3 4, on right: 2
+funcl (71)
+    on left: 5 6 7, on right: 1 5
+func (72)
+    on left: 8, on right: 5 6
+header (73)
+    on left: 9 10, on right: 8
+idheader (74)
+    on left: 11, on right: 9
+signa (75)
+    on left: 12 13 14 15, on right: 9 10
+arglist (76)
+    on left: 16 17 18, on right: 12 13 16
+instlist (77)
+    on left: 19 20 21, on right: 19 22
+instbl (78)
+    on left: 22, on right: 8 54 55 57 60 64 67 68
+inst (79)
+    on left: 23 24 25 26 27 28 29 30 31 32, on right: 19 20
+checkid (80)
+    on left: 33, on right: 35 36 59 66 88 93 109 112
+addid (81)
+    on left: 34, on right: 11 47 104
+asign (82)
+    on left: 35 36, on right: 23
+arrvalues (83)
+    on left: 37 38, on right: 36 39 40 42
+arrvalueslist (84)
+    on left: 39 40, on right: 38 39
+decl (85)
+    on left: 41 42 43 44, on right: 24 68 107 108
+declonly (86)
+    on left: 45 46, on right: 16 17 18 43
+typeid (87)
+    on left: 47, on right: 41 42 45 46
+type (88)
+    on left: 48 49 50 51 52 53, on right: 12 15 47
+selec (89)
+    on left: 54, on right: 25
+oselect (90)
+    on left: 55 56, on right: 54
+sinoselect (91)
+    on left: 57 58, on right: 54
+multselec (92)
+    on left: 59, on right: 26
+lastoption (93)
+    on left: 60, on right: 59
+optionslist (94)
+    on left: 61 62 63, on right: 59 61
+option (95)
+    on left: 64, on right: 61 62
+leftsideopt (96)
+    on left: 65 66, on right: 64
+indite (97)
+    on left: 67, on right: 27
+detite (98)
+    on left: 68, on right: 28
+return (99)
+    on left: 69 70, on right: 29
+exp (100)
+    on left: 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87, on right:
+    31 32 35 37 41 54 55 67 68 70 72 73 74 75 76 77 78 79 80 81 82
+    83 84 85 86 87 99 100 110 111
+term (101)
+    on left: 88 89 90 91 92 93 94 95 96 97 98, on right: 71 112
+arr (102)
+    on left: 99 100 101 102, on right: 36 42 46 93 99 101
+declbox (103)
+    on left: 103, on right: 44
+declboxtypeid (104)
+    on left: 104, on right: 103
+declboxtype (105)
+    on left: 105 106, on right: 104
+declist (106)
+    on left: 107 108, on right: 103 107
+callfunc (107)
+    on left: 109, on right: 30 94
+explist (108)
+    on left: 110 111, on right: 109 110
+boxelem (109)
+    on left: 112, on right: 97
+enterscope (110)
+    on left: 113, on right: 1 9 10 54 55 57 67 68 103
+leavescope (111)
+    on left: 114, on right: 1 5 6 54 55 57 67 68 103
+
+
+State 0
+
+    0 $accept: . enie $end
+
+    $default  reduce using rule 113 (enterscope)
+
+    enie        go to state 1
+    enterscope  go to state 2
+
+
+State 1
+
+    0 $accept: enie . $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    1 enie: enterscope . funcl end leavescope
+
+    error  shift, and go to state 4
+    ID     shift, and go to state 5
+    ENIE   shift, and go to state 6
+
+    funcl     go to state 7
+    func      go to state 8
+    header    go to state 9
+    idheader  go to state 10
+    addid     go to state 11
+
+
+State 3
+
+    0 $accept: enie $end .
+
+    $default  accept
+
+
+State 4
+
+    7 funcl: error . SEP
+
+    SEP  shift, and go to state 12
+
+
+State 5
+
+   34 addid: ID .
+
+    $default  reduce using rule 34 (addid)
+
+
+State 6
+
+   10 header: ENIE . COLCOL enterscope signa
+
+    COLCOL  shift, and go to state 13
+
+
+State 7
+
+    1 enie: enterscope funcl . end leavescope
+    5 funcl: funcl . SEP func leavescope
+
+    SEP  shift, and go to state 14
+
+    $default  reduce using rule 4 (sepaux)
+
+    end     go to state 15
+    sepaux  go to state 16
+
+
+State 8
+
+    6 funcl: func . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 17
+
+
+State 9
+
+    8 func: header . instbl
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 19
+
+
+State 10
+
+    9 header: idheader . COLCOL enterscope signa
+
+    COLCOL  shift, and go to state 20
+
+
+State 11
+
+   11 idheader: addid .
+
+    $default  reduce using rule 11 (idheader)
+
+
+State 12
+
+    7 funcl: error SEP .
+
+    $default  reduce using rule 7 (funcl)
+
+
+State 13
+
+   10 header: ENIE COLCOL . enterscope signa
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 21
+
+
+State 14
+
+    3 sepaux: SEP .
+    5 funcl: funcl SEP . func leavescope
+
+    ID    shift, and go to state 5
+    ENIE  shift, and go to state 6
+
+    $default  reduce using rule 3 (sepaux)
+
+    func      go to state 22
+    header    go to state 9
+    idheader  go to state 10
+    addid     go to state 11
+
+
+State 15
+
+    1 enie: enterscope funcl end . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 23
+
+
+State 16
+
+    2 end: sepaux .
+
+    $default  reduce using rule 2 (end)
+
+
+State 17
+
+    6 funcl: func leavescope .
+
+    $default  reduce using rule 6 (funcl)
+
+
+State 18
+
+   22 instbl: OBRACE . SEP instlist SEP CBRACE
+
+    SEP  shift, and go to state 24
+
+
+State 19
+
+    8 func: header instbl .
+
+    $default  reduce using rule 8 (func)
+
+
+State 20
+
+    9 header: idheader COLCOL . enterscope signa
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 25
+
+
+State 21
+
+   10 header: ENIE COLCOL enterscope . signa
+
+    ENT      shift, and go to state 26
+    FLOT     shift, and go to state 27
+    NADA     shift, and go to state 28
+    BOOL     shift, and go to state 29
+    VAR      shift, and go to state 30
+    CAR      shift, and go to state 31
+    ARREGLO  shift, and go to state 32
+    TILDE    shift, and go to state 33
+
+    signa     go to state 34
+    arglist   go to state 35
+    declonly  go to state 36
+    typeid    go to state 37
+    type      go to state 38
+
+
+State 22
+
+    5 funcl: funcl SEP func . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 39
+
+
+State 23
+
+    1 enie: enterscope funcl end leavescope .
+
+    $default  reduce using rule 1 (enie)
+
+
+State 24
+
+   22 instbl: OBRACE SEP . instlist SEP CBRACE
+
+    error     shift, and go to state 40
+    ID        shift, and go to state 41
+    SI        shift, and go to state 42
+    MIENTRAS  shift, and go to state 43
+    PARA      shift, and go to state 44
+    CASO      shift, and go to state 45
+    ENT       shift, and go to state 26
+    FLOT      shift, and go to state 27
+    NADA      shift, and go to state 28
+    BOOL      shift, and go to state 29
+    CAR       shift, and go to state 31
+    REGISTRO  shift, and go to state 46
+    RETORNA   shift, and go to state 47
+    ARREGLO   shift, and go to state 32
+    UNION     shift, and go to state 48
+    LEER      shift, and go to state 49
+    ESCRIBIR  shift, and go to state 50
+
+    instlist       go to state 51
+    inst           go to state 52
+    checkid        go to state 53
+    asign          go to state 54
+    decl           go to state 55
+    declonly       go to state 56
+    typeid         go to state 57
+    type           go to state 38
+    selec          go to state 58
+    multselec      go to state 59
+    indite         go to state 60
+    detite         go to state 61
+    return         go to state 62
+    declbox        go to state 63
+    declboxtypeid  go to state 64
+    declboxtype    go to state 65
+    callfunc       go to state 66
+
+
+State 25
+
+    9 header: idheader COLCOL enterscope . signa
+
+    ENT      shift, and go to state 26
+    FLOT     shift, and go to state 27
+    NADA     shift, and go to state 28
+    BOOL     shift, and go to state 29
+    VAR      shift, and go to state 30
+    CAR      shift, and go to state 31
+    ARREGLO  shift, and go to state 32
+    TILDE    shift, and go to state 33
+
+    signa     go to state 67
+    arglist   go to state 35
+    declonly  go to state 36
+    typeid    go to state 37
+    type      go to state 38
+
+
+State 26
+
+   48 type: ENT .
+
+    $default  reduce using rule 48 (type)
+
+
+State 27
+
+   49 type: FLOT .
+
+    $default  reduce using rule 49 (type)
+
+
+State 28
+
+   50 type: NADA .
+
+    $default  reduce using rule 50 (type)
+
+
+State 29
+
+   51 type: BOOL .
+
+    $default  reduce using rule 51 (type)
+
+
+State 30
+
+   18 arglist: VAR . declonly
+
+    ENT      shift, and go to state 26
+    FLOT     shift, and go to state 27
+    NADA     shift, and go to state 28
+    BOOL     shift, and go to state 29
+    CAR      shift, and go to state 31
+    ARREGLO  shift, and go to state 32
+
+    declonly  go to state 68
+    typeid    go to state 37
+    type      go to state 38
+
+
+State 31
+
+   52 type: CAR .
+
+    $default  reduce using rule 52 (type)
+
+
+State 32
+
+   53 type: ARREGLO .
+
+    $default  reduce using rule 53 (type)
+
+
+State 33
+
+   14 signa: TILDE .
+   15      | TILDE . ARROW type
+
+    ARROW  shift, and go to state 69
+
+    $default  reduce using rule 14 (signa)
+
+
+State 34
+
+   10 header: ENIE COLCOL enterscope signa .
+
+    $default  reduce using rule 10 (header)
+
+
+State 35
+
+   12 signa: arglist . ARROW type
+   13      | arglist .
+   16 arglist: arglist . COMMA declonly
+
+    ARROW  shift, and go to state 70
+    COMMA  shift, and go to state 71
+
+    $default  reduce using rule 13 (signa)
+
+
+State 36
+
+   17 arglist: declonly .
+
+    $default  reduce using rule 17 (arglist)
+
+
+State 37
+
+   45 declonly: typeid .
+   46         | typeid . arr
+
+    OBRACK  shift, and go to state 72
+
+    $default  reduce using rule 45 (declonly)
+
+    arr  go to state 73
+
+
+State 38
+
+   47 typeid: type . addid
+
+    ID  shift, and go to state 5
+
+    addid  go to state 74
+
+
+State 39
+
+    5 funcl: funcl SEP func leavescope .
+
+    $default  reduce using rule 5 (funcl)
+
+
+State 40
+
+   21 instlist: error .
+
+    $default  reduce using rule 21 (instlist)
+
+
+State 41
+
+   33 checkid: ID .
+
+    $default  reduce using rule 33 (checkid)
+
+
+State 42
+
+   54 selec: SI . LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+
+    LPAR  shift, and go to state 75
+
+
+State 43
+
+   67 indite: MIENTRAS . LPAR exp RPAR enterscope instbl leavescope
+
+    LPAR  shift, and go to state 76
+
+
+State 44
+
+   68 detite: PARA . LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
+
+    LPAR  shift, and go to state 77
+
+
+State 45
+
+   59 multselec: CASO . checkid checkid OBRACE SEP optionslist lastoption SEP CBRACE
+
+    ID  shift, and go to state 41
+
+    checkid  go to state 78
+
+
+State 46
+
+  106 declboxtype: REGISTRO .
+
+    $default  reduce using rule 106 (declboxtype)
+
+
+State 47
+
+   69 return: RETORNA .
+   70       | RETORNA . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    SEP  reduce using rule 69 (return)
+
+    checkid   go to state 89
+    exp       go to state 90
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 48
+
+  105 declboxtype: UNION .
+
+    $default  reduce using rule 105 (declboxtype)
+
+
+State 49
+
+   31 inst: LEER . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 94
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 50
+
+   32 inst: ESCRIBIR . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 95
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 51
+
+   19 instlist: instlist . SEP inst
+   22 instbl: OBRACE SEP instlist . SEP CBRACE
+
+    SEP  shift, and go to state 96
+
+
+State 52
+
+   20 instlist: inst .
+
+    $default  reduce using rule 20 (instlist)
+
+
+State 53
+
+   35 asign: checkid . EQUAL exp
+   36      | checkid . arr EQUAL arrvalues
+  109 callfunc: checkid . LPAR explist RPAR
+
+    OBRACK  shift, and go to state 72
+    LPAR    shift, and go to state 97
+    EQUAL   shift, and go to state 98
+
+    arr  go to state 99
+
+
+State 54
+
+   23 inst: asign .
+
+    $default  reduce using rule 23 (inst)
+
+
+State 55
+
+   24 inst: decl .
+
+    $default  reduce using rule 24 (inst)
+
+
+State 56
+
+   43 decl: declonly .
+
+    $default  reduce using rule 43 (decl)
+
+
+State 57
+
+   41 decl: typeid . EQUAL exp
+   42     | typeid . arr EQUAL arrvalues
+   45 declonly: typeid .
+   46         | typeid . arr
+
+    OBRACK  shift, and go to state 72
+    EQUAL   shift, and go to state 100
+
+    $default  reduce using rule 45 (declonly)
+
+    arr  go to state 101
+
+
+State 58
+
+   25 inst: selec .
+
+    $default  reduce using rule 25 (inst)
+
+
+State 59
+
+   26 inst: multselec .
+
+    $default  reduce using rule 26 (inst)
+
+
+State 60
+
+   27 inst: indite .
+
+    $default  reduce using rule 27 (inst)
+
+
+State 61
+
+   28 inst: detite .
+
+    $default  reduce using rule 28 (inst)
+
+
+State 62
+
+   29 inst: return .
+
+    $default  reduce using rule 29 (inst)
+
+
+State 63
+
+   44 decl: declbox .
+
+    $default  reduce using rule 44 (decl)
+
+
+State 64
+
+  103 declbox: declboxtypeid . OBRACE enterscope declist leavescope CBRACE
+
+    OBRACE  shift, and go to state 102
+
+
+State 65
+
+  104 declboxtypeid: declboxtype . addid
+
+    ID  shift, and go to state 5
+
+    addid  go to state 103
+
+
+State 66
+
+   30 inst: callfunc .
+
+    $default  reduce using rule 30 (inst)
+
+
+State 67
+
+    9 header: idheader COLCOL enterscope signa .
+
+    $default  reduce using rule 9 (header)
+
+
+State 68
+
+   18 arglist: VAR declonly .
+
+    $default  reduce using rule 18 (arglist)
+
+
+State 69
+
+   15 signa: TILDE ARROW . type
+
+    ENT      shift, and go to state 26
+    FLOT     shift, and go to state 27
+    NADA     shift, and go to state 28
+    BOOL     shift, and go to state 29
+    CAR      shift, and go to state 31
+    ARREGLO  shift, and go to state 32
+
+    type  go to state 104
+
+
+State 70
+
+   12 signa: arglist ARROW . type
+
+    ENT      shift, and go to state 26
+    FLOT     shift, and go to state 27
+    NADA     shift, and go to state 28
+    BOOL     shift, and go to state 29
+    CAR      shift, and go to state 31
+    ARREGLO  shift, and go to state 32
+
+    type  go to state 105
+
+
+State 71
+
+   16 arglist: arglist COMMA . declonly
+
+    ENT      shift, and go to state 26
+    FLOT     shift, and go to state 27
+    NADA     shift, and go to state 28
+    BOOL     shift, and go to state 29
+    CAR      shift, and go to state 31
+    ARREGLO  shift, and go to state 32
+
+    declonly  go to state 106
+    typeid    go to state 37
+    type      go to state 38
+
+
+State 72
+
+  100 arr: OBRACK . exp CBRACK
+  102    | OBRACK . TILDE CBRACK
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    TILDE     shift, and go to state 107
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 108
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 73
+
+   46 declonly: typeid arr .
+   99 arr: arr . OBRACK exp CBRACK
+  101    | arr . OBRACK TILDE CBRACK
+
+    OBRACK  shift, and go to state 109
+
+    $default  reduce using rule 46 (declonly)
+
+
+State 74
+
+   47 typeid: type addid .
+
+    $default  reduce using rule 47 (typeid)
+
+
+State 75
+
+   54 selec: SI LPAR . exp RPAR enterscope instbl leavescope oselect sinoselect
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 110
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 76
+
+   67 indite: MIENTRAS LPAR . exp RPAR enterscope instbl leavescope
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 111
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 77
+
+   68 detite: PARA LPAR . enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 112
+
+
+State 78
+
+   59 multselec: CASO checkid . checkid OBRACE SEP optionslist lastoption SEP CBRACE
+
+    ID  shift, and go to state 41
+
+    checkid  go to state 113
+
+
+State 79
+
+   98 term: error .
+
+    $default  reduce using rule 98 (term)
+
+
+State 80
+
+   89 term: NUMENT .
+
+    $default  reduce using rule 89 (term)
+
+
+State 81
+
+   90 term: NUMFLOT .
+
+    $default  reduce using rule 90 (term)
+
+
+State 82
+
+   95 term: CONSTCAD .
+
+    $default  reduce using rule 95 (term)
+
+
+State 83
+
+   96 term: CONSTCAR .
+
+    $default  reduce using rule 96 (term)
+
+
+State 84
+
+   91 term: CIERTO .
+
+    $default  reduce using rule 91 (term)
+
+
+State 85
+
+   92 term: FALSO .
+
+    $default  reduce using rule 92 (term)
+
+
+State 86
+
+   87 exp: LPAR . exp RPAR
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 114
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 87
+
+   86 exp: MINUS . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 115
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 88
+
+   85 exp: NEGATION . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 116
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 89
+
+   88 term: checkid .
+   93     | checkid . arr
+  109 callfunc: checkid . LPAR explist RPAR
+
+    OBRACK  shift, and go to state 72
+    LPAR    shift, and go to state 97
+
+    $default  reduce using rule 88 (term)
+
+    arr  go to state 117
+
+
+State 90
+
+   70 return: RETORNA exp .
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 70 (return)
+
+
+State 91
+
+   71 exp: term .
+  112 boxelem: term . ONEDOT checkid
+
+    ONEDOT  shift, and go to state 131
+
+    $default  reduce using rule 71 (exp)
+
+
+State 92
+
+   94 term: callfunc .
+
+    $default  reduce using rule 94 (term)
+
+
+State 93
+
+   97 term: boxelem .
+
+    $default  reduce using rule 97 (term)
+
+
+State 94
+
+   31 inst: LEER exp .
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 31 (inst)
+
+
+State 95
+
+   32 inst: ESCRIBIR exp .
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 32 (inst)
+
+
+State 96
+
+   19 instlist: instlist SEP . inst
+   22 instbl: OBRACE SEP instlist SEP . CBRACE
+
+    ID        shift, and go to state 41
+    SI        shift, and go to state 42
+    MIENTRAS  shift, and go to state 43
+    PARA      shift, and go to state 44
+    CASO      shift, and go to state 45
+    ENT       shift, and go to state 26
+    FLOT      shift, and go to state 27
+    NADA      shift, and go to state 28
+    BOOL      shift, and go to state 29
+    CAR       shift, and go to state 31
+    REGISTRO  shift, and go to state 46
+    RETORNA   shift, and go to state 47
+    ARREGLO   shift, and go to state 32
+    UNION     shift, and go to state 48
+    LEER      shift, and go to state 49
+    ESCRIBIR  shift, and go to state 50
+    CBRACE    shift, and go to state 132
+
+    inst           go to state 133
+    checkid        go to state 53
+    asign          go to state 54
+    decl           go to state 55
+    declonly       go to state 56
+    typeid         go to state 57
+    type           go to state 38
+    selec          go to state 58
+    multselec      go to state 59
+    indite         go to state 60
+    detite         go to state 61
+    return         go to state 62
+    declbox        go to state 63
+    declboxtypeid  go to state 64
+    declboxtype    go to state 65
+    callfunc       go to state 66
+
+
+State 97
+
+  109 callfunc: checkid LPAR . explist RPAR
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 134
+    term      go to state 91
+    callfunc  go to state 92
+    explist   go to state 135
+    boxelem   go to state 93
+
+
+State 98
+
+   35 asign: checkid EQUAL . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 136
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 99
+
+   36 asign: checkid arr . EQUAL arrvalues
+   99 arr: arr . OBRACK exp CBRACK
+  101    | arr . OBRACK TILDE CBRACK
+
+    OBRACK  shift, and go to state 109
+    EQUAL   shift, and go to state 137
+
+
+State 100
+
+   41 decl: typeid EQUAL . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 138
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 101
+
+   42 decl: typeid arr . EQUAL arrvalues
+   46 declonly: typeid arr .
+   99 arr: arr . OBRACK exp CBRACK
+  101    | arr . OBRACK TILDE CBRACK
+
+    OBRACK  shift, and go to state 109
+    EQUAL   shift, and go to state 139
+
+    $default  reduce using rule 46 (declonly)
+
+
+State 102
+
+  103 declbox: declboxtypeid OBRACE . enterscope declist leavescope CBRACE
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 140
+
+
+State 103
+
+  104 declboxtypeid: declboxtype addid .
+
+    $default  reduce using rule 104 (declboxtypeid)
+
+
+State 104
+
+   15 signa: TILDE ARROW type .
+
+    $default  reduce using rule 15 (signa)
+
+
+State 105
+
+   12 signa: arglist ARROW type .
+
+    $default  reduce using rule 12 (signa)
+
+
+State 106
+
+   16 arglist: arglist COMMA declonly .
+
+    $default  reduce using rule 16 (arglist)
+
+
+State 107
+
+  102 arr: OBRACK TILDE . CBRACK
+
+    CBRACK  shift, and go to state 141
+
+
+State 108
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+  100 arr: OBRACK exp . CBRACK
+
+    CBRACK  shift, and go to state 142
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 109
+
+   99 arr: arr OBRACK . exp CBRACK
+  101    | arr OBRACK . TILDE CBRACK
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    TILDE     shift, and go to state 143
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 144
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 110
+
+   54 selec: SI LPAR exp . RPAR enterscope instbl leavescope oselect sinoselect
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    RPAR    shift, and go to state 145
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 111
+
+   67 indite: MIENTRAS LPAR exp . RPAR enterscope instbl leavescope
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    RPAR    shift, and go to state 146
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 112
+
+   68 detite: PARA LPAR enterscope . decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
+
+    ENT       shift, and go to state 26
+    FLOT      shift, and go to state 27
+    NADA      shift, and go to state 28
+    BOOL      shift, and go to state 29
+    CAR       shift, and go to state 31
+    REGISTRO  shift, and go to state 46
+    ARREGLO   shift, and go to state 32
+    UNION     shift, and go to state 48
+
+    decl           go to state 147
+    declonly       go to state 56
+    typeid         go to state 57
+    type           go to state 38
+    declbox        go to state 63
+    declboxtypeid  go to state 64
+    declboxtype    go to state 65
+
+
+State 113
+
+   59 multselec: CASO checkid checkid . OBRACE SEP optionslist lastoption SEP CBRACE
+
+    OBRACE  shift, and go to state 148
+
+
+State 114
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+   87    | LPAR exp . RPAR
+
+    RPAR    shift, and go to state 149
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 115
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+   86    | MINUS exp .
+
+    $default  reduce using rule 86 (exp)
+
+
+State 116
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+   85    | NEGATION exp .
+
+    $default  reduce using rule 85 (exp)
+
+
+State 117
+
+   93 term: checkid arr .
+   99 arr: arr . OBRACK exp CBRACK
+  101    | arr . OBRACK TILDE CBRACK
+
+    OBRACK  shift, and go to state 109
+
+    $default  reduce using rule 93 (term)
+
+
+State 118
+
+   84 exp: exp DOTDOT . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 150
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 119
+
+   73 exp: exp MINUS . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 151
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 120
+
+   72 exp: exp PLUS . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 152
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 121
+
+   74 exp: exp MULT . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 153
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 122
+
+   75 exp: exp DIV . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 154
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 123
+
+   76 exp: exp MOD . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 155
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 124
+
+   80 exp: exp LTHAN . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 156
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 125
+
+   81 exp: exp GTHAN . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 157
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 126
+
+   82 exp: exp LETHAN . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 158
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 127
+
+   83 exp: exp GETHAN . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 159
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 128
+
+   79 exp: exp AND . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 160
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 129
+
+   78 exp: exp OR . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 161
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 130
+
+   77 exp: exp POWER . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 162
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 131
+
+  112 boxelem: term ONEDOT . checkid
+
+    ID  shift, and go to state 41
+
+    checkid  go to state 163
+
+
+State 132
+
+   22 instbl: OBRACE SEP instlist SEP CBRACE .
+
+    $default  reduce using rule 22 (instbl)
+
+
+State 133
+
+   19 instlist: instlist SEP inst .
+
+    $default  reduce using rule 19 (instlist)
+
+
+State 134
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+  111 explist: exp .
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 111 (explist)
+
+
+State 135
+
+  109 callfunc: checkid LPAR explist . RPAR
+  110 explist: explist . COMMA exp
+
+    RPAR   shift, and go to state 164
+    COMMA  shift, and go to state 165
+
+
+State 136
+
+   35 asign: checkid EQUAL exp .
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 35 (asign)
+
+
+State 137
+
+   36 asign: checkid arr EQUAL . arrvalues
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    OBRACE    shift, and go to state 166
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid    go to state 89
+    arrvalues  go to state 167
+    exp        go to state 168
+    term       go to state 91
+    callfunc   go to state 92
+    boxelem    go to state 93
+
+
+State 138
+
+   41 decl: typeid EQUAL exp .
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 41 (decl)
+
+
+State 139
+
+   42 decl: typeid arr EQUAL . arrvalues
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    OBRACE    shift, and go to state 166
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid    go to state 89
+    arrvalues  go to state 169
+    exp        go to state 168
+    term       go to state 91
+    callfunc   go to state 92
+    boxelem    go to state 93
+
+
+State 140
+
+  103 declbox: declboxtypeid OBRACE enterscope . declist leavescope CBRACE
+
+    ENT       shift, and go to state 26
+    FLOT      shift, and go to state 27
+    NADA      shift, and go to state 28
+    BOOL      shift, and go to state 29
+    CAR       shift, and go to state 31
+    REGISTRO  shift, and go to state 46
+    ARREGLO   shift, and go to state 32
+    UNION     shift, and go to state 48
+
+    decl           go to state 170
+    declonly       go to state 56
+    typeid         go to state 57
+    type           go to state 38
+    declbox        go to state 63
+    declboxtypeid  go to state 64
+    declboxtype    go to state 65
+    declist        go to state 171
+
+
+State 141
+
+  102 arr: OBRACK TILDE CBRACK .
+
+    $default  reduce using rule 102 (arr)
+
+
+State 142
+
+  100 arr: OBRACK exp CBRACK .
+
+    $default  reduce using rule 100 (arr)
+
+
+State 143
+
+  101 arr: arr OBRACK TILDE . CBRACK
+
+    CBRACK  shift, and go to state 172
+
+
+State 144
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+   99 arr: arr OBRACK exp . CBRACK
+
+    CBRACK  shift, and go to state 173
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 145
+
+   54 selec: SI LPAR exp RPAR . enterscope instbl leavescope oselect sinoselect
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 174
+
+
+State 146
+
+   67 indite: MIENTRAS LPAR exp RPAR . enterscope instbl leavescope
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 175
+
+
+State 147
+
+   68 detite: PARA LPAR enterscope decl . SEMICOL exp SEMICOL exp RPAR instbl leavescope
+
+    SEMICOL  shift, and go to state 176
+
+
+State 148
+
+   59 multselec: CASO checkid checkid OBRACE . SEP optionslist lastoption SEP CBRACE
+
+    SEP  shift, and go to state 177
+
+
+State 149
+
+   87 exp: LPAR exp RPAR .
+
+    $default  reduce using rule 87 (exp)
+
+
+State 150
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+   84    | exp DOTDOT exp .
+
+    MULT   shift, and go to state 121
+    DIV    shift, and go to state 122
+    MOD    shift, and go to state 123
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 84 (exp)
+
+
+State 151
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   73    | exp MINUS exp .
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    MULT   shift, and go to state 121
+    DIV    shift, and go to state 122
+    MOD    shift, and go to state 123
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 73 (exp)
+
+
+State 152
+
+   72 exp: exp . PLUS exp
+   72    | exp PLUS exp .
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    MULT   shift, and go to state 121
+    DIV    shift, and go to state 122
+    MOD    shift, and go to state 123
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 72 (exp)
+
+
+State 153
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   74    | exp MULT exp .
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 74 (exp)
+
+
+State 154
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   75    | exp DIV exp .
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 75 (exp)
+
+
+State 155
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   76    | exp MOD exp .
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 76 (exp)
+
+
+State 156
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   80    | exp LTHAN exp .
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 80 (exp)
+
+
+State 157
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   81    | exp GTHAN exp .
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 81 (exp)
+
+
+State 158
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   82    | exp LETHAN exp .
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 82 (exp)
+
+
+State 159
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   83    | exp GETHAN exp .
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 83 (exp)
+
+
+State 160
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   79    | exp AND exp .
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 79 (exp)
+
+
+State 161
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   78    | exp OR exp .
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 78 (exp)
+
+
+State 162
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   77    | exp POWER exp .
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    POWER  shift, and go to state 130
+
+    $default  reduce using rule 77 (exp)
+
+
+State 163
+
+  112 boxelem: term ONEDOT checkid .
+
+    $default  reduce using rule 112 (boxelem)
+
+
+State 164
+
+  109 callfunc: checkid LPAR explist RPAR .
+
+    $default  reduce using rule 109 (callfunc)
+
+
+State 165
+
+  110 explist: explist COMMA . exp
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 178
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 166
+
+   38 arrvalues: OBRACE . arrvalueslist CBRACE
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    OBRACE    shift, and go to state 166
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid        go to state 89
+    arrvalues      go to state 179
+    arrvalueslist  go to state 180
+    exp            go to state 168
+    term           go to state 91
+    callfunc       go to state 92
+    boxelem        go to state 93
+
+
+State 167
+
+   36 asign: checkid arr EQUAL arrvalues .
+
+    $default  reduce using rule 36 (asign)
+
+
+State 168
+
+   37 arrvalues: exp .
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 37 (arrvalues)
+
+
+State 169
+
+   42 decl: typeid arr EQUAL arrvalues .
+
+    $default  reduce using rule 42 (decl)
+
+
+State 170
+
+  108 declist: decl .
+
+    $default  reduce using rule 108 (declist)
+
+
+State 171
+
+  103 declbox: declboxtypeid OBRACE enterscope declist . leavescope CBRACE
+  107 declist: declist . SEP decl
+
+    SEP  shift, and go to state 181
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 182
+
+
+State 172
+
+  101 arr: arr OBRACK TILDE CBRACK .
+
+    $default  reduce using rule 101 (arr)
+
+
+State 173
+
+   99 arr: arr OBRACK exp CBRACK .
+
+    $default  reduce using rule 99 (arr)
+
+
+State 174
+
+   54 selec: SI LPAR exp RPAR enterscope . instbl leavescope oselect sinoselect
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 183
+
+
+State 175
+
+   67 indite: MIENTRAS LPAR exp RPAR enterscope . instbl leavescope
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 184
+
+
+State 176
+
+   68 detite: PARA LPAR enterscope decl SEMICOL . exp SEMICOL exp RPAR instbl leavescope
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 185
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 177
+
+   59 multselec: CASO checkid checkid OBRACE SEP . optionslist lastoption SEP CBRACE
+
+    BSLASH  shift, and go to state 186
+
+    $default  reduce using rule 63 (optionslist)
+
+    optionslist  go to state 187
+    option       go to state 188
+
+
+State 178
+
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+  110 explist: explist COMMA exp .
+
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+    $default  reduce using rule 110 (explist)
+
+
+State 179
+
+   40 arrvalueslist: arrvalues .
+
+    $default  reduce using rule 40 (arrvalueslist)
+
+
+State 180
+
+   38 arrvalues: OBRACE arrvalueslist . CBRACE
+   39 arrvalueslist: arrvalueslist . COMMA arrvalues
+
+    CBRACE  shift, and go to state 189
+    COMMA   shift, and go to state 190
+
+
+State 181
+
+  107 declist: declist SEP . decl
+
+    ENT       shift, and go to state 26
+    FLOT      shift, and go to state 27
+    NADA      shift, and go to state 28
+    BOOL      shift, and go to state 29
+    CAR       shift, and go to state 31
+    REGISTRO  shift, and go to state 46
+    ARREGLO   shift, and go to state 32
+    UNION     shift, and go to state 48
+
+    decl           go to state 191
+    declonly       go to state 56
+    typeid         go to state 57
+    type           go to state 38
+    declbox        go to state 63
+    declboxtypeid  go to state 64
+    declboxtype    go to state 65
+
+
+State 182
+
+  103 declbox: declboxtypeid OBRACE enterscope declist leavescope . CBRACE
+
+    CBRACE  shift, and go to state 192
+
+
+State 183
+
+   54 selec: SI LPAR exp RPAR enterscope instbl . leavescope oselect sinoselect
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 193
+
+
+State 184
+
+   67 indite: MIENTRAS LPAR exp RPAR enterscope instbl . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 194
+
+
+State 185
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp . SEMICOL exp RPAR instbl leavescope
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    DOTDOT   shift, and go to state 118
+    SEMICOL  shift, and go to state 195
+    MINUS    shift, and go to state 119
+    PLUS     shift, and go to state 120
+    MULT     shift, and go to state 121
+    DIV      shift, and go to state 122
+    MOD      shift, and go to state 123
+    LTHAN    shift, and go to state 124
+    GTHAN    shift, and go to state 125
+    LETHAN   shift, and go to state 126
+    GETHAN   shift, and go to state 127
+    AND      shift, and go to state 128
+    OR       shift, and go to state 129
+    POWER    shift, and go to state 130
+
+
+State 186
+
+   64 option: BSLASH . leftsideopt ARROW instbl
+
+    CONSTCAD  shift, and go to state 196
+    ID        shift, and go to state 41
+
+    checkid      go to state 197
+    leftsideopt  go to state 198
+
+
+State 187
+
+   59 multselec: CASO checkid checkid OBRACE SEP optionslist . lastoption SEP CBRACE
+   61 optionslist: optionslist . SEP option
+
+    SEP  shift, and go to state 199
+
+    lastoption  go to state 200
+
+
+State 188
+
+   62 optionslist: option .
+
+    $default  reduce using rule 62 (optionslist)
+
+
+State 189
+
+   38 arrvalues: OBRACE arrvalueslist CBRACE .
+
+    $default  reduce using rule 38 (arrvalues)
+
+
+State 190
+
+   39 arrvalueslist: arrvalueslist COMMA . arrvalues
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    OBRACE    shift, and go to state 166
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid    go to state 89
+    arrvalues  go to state 201
+    exp        go to state 168
+    term       go to state 91
+    callfunc   go to state 92
+    boxelem    go to state 93
+
+
+State 191
+
+  107 declist: declist SEP decl .
+
+    $default  reduce using rule 107 (declist)
+
+
+State 192
+
+  103 declbox: declboxtypeid OBRACE enterscope declist leavescope CBRACE .
+
+    $default  reduce using rule 103 (declbox)
+
+
+State 193
+
+   54 selec: SI LPAR exp RPAR enterscope instbl leavescope . oselect sinoselect
+
+    OSI  shift, and go to state 202
+
+    $default  reduce using rule 56 (oselect)
+
+    oselect  go to state 203
+
+
+State 194
+
+   67 indite: MIENTRAS LPAR exp RPAR enterscope instbl leavescope .
+
+    $default  reduce using rule 67 (indite)
+
+
+State 195
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp SEMICOL . exp RPAR instbl leavescope
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 204
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 196
+
+   65 leftsideopt: CONSTCAD .
+
+    $default  reduce using rule 65 (leftsideopt)
+
+
+State 197
+
+   66 leftsideopt: checkid .
+
+    $default  reduce using rule 66 (leftsideopt)
+
+
+State 198
+
+   64 option: BSLASH leftsideopt . ARROW instbl
+
+    ARROW  shift, and go to state 205
+
+
+State 199
+
+   60 lastoption: SEP . BSLASH QUESTION ARROW instbl
+   61 optionslist: optionslist SEP . option
+
+    BSLASH  shift, and go to state 206
+
+    option  go to state 207
+
+
+State 200
+
+   59 multselec: CASO checkid checkid OBRACE SEP optionslist lastoption . SEP CBRACE
+
+    SEP  shift, and go to state 208
+
+
+State 201
+
+   39 arrvalueslist: arrvalueslist COMMA arrvalues .
+
+    $default  reduce using rule 39 (arrvalueslist)
+
+
+State 202
+
+   55 oselect: OSI . LPAR exp RPAR enterscope instbl leavescope
+
+    LPAR  shift, and go to state 209
+
+
+State 203
+
+   54 selec: SI LPAR exp RPAR enterscope instbl leavescope oselect . sinoselect
+
+    SINO  shift, and go to state 210
+
+    $default  reduce using rule 58 (sinoselect)
+
+    sinoselect  go to state 211
+
+
+State 204
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp SEMICOL exp . RPAR instbl leavescope
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    RPAR    shift, and go to state 212
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 205
+
+   64 option: BSLASH leftsideopt ARROW . instbl
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 213
+
+
+State 206
+
+   60 lastoption: SEP BSLASH . QUESTION ARROW instbl
+   64 option: BSLASH . leftsideopt ARROW instbl
+
+    CONSTCAD  shift, and go to state 196
+    ID        shift, and go to state 41
+    QUESTION  shift, and go to state 214
+
+    checkid      go to state 197
+    leftsideopt  go to state 198
+
+
+State 207
+
+   61 optionslist: optionslist SEP option .
+
+    $default  reduce using rule 61 (optionslist)
+
+
+State 208
+
+   59 multselec: CASO checkid checkid OBRACE SEP optionslist lastoption SEP . CBRACE
+
+    CBRACE  shift, and go to state 215
+
+
+State 209
+
+   55 oselect: OSI LPAR . exp RPAR enterscope instbl leavescope
+
+    error     shift, and go to state 79
+    NUMENT    shift, and go to state 80
+    NUMFLOT   shift, and go to state 81
+    CONSTCAD  shift, and go to state 82
+    CONSTCAR  shift, and go to state 83
+    ID        shift, and go to state 41
+    CIERTO    shift, and go to state 84
+    FALSO     shift, and go to state 85
+    LPAR      shift, and go to state 86
+    MINUS     shift, and go to state 87
+    NEGATION  shift, and go to state 88
+
+    checkid   go to state 89
+    exp       go to state 216
+    term      go to state 91
+    callfunc  go to state 92
+    boxelem   go to state 93
+
+
+State 210
+
+   57 sinoselect: SINO . enterscope instbl leavescope
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 217
+
+
+State 211
+
+   54 selec: SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect .
+
+    $default  reduce using rule 54 (selec)
+
+
+State 212
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR . instbl leavescope
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 218
+
+
+State 213
+
+   64 option: BSLASH leftsideopt ARROW instbl .
+
+    $default  reduce using rule 64 (option)
+
+
+State 214
+
+   60 lastoption: SEP BSLASH QUESTION . ARROW instbl
+
+    ARROW  shift, and go to state 219
+
+
+State 215
+
+   59 multselec: CASO checkid checkid OBRACE SEP optionslist lastoption SEP CBRACE .
+
+    $default  reduce using rule 59 (multselec)
+
+
+State 216
+
+   55 oselect: OSI LPAR exp . RPAR enterscope instbl leavescope
+   72 exp: exp . PLUS exp
+   73    | exp . MINUS exp
+   74    | exp . MULT exp
+   75    | exp . DIV exp
+   76    | exp . MOD exp
+   77    | exp . POWER exp
+   78    | exp . OR exp
+   79    | exp . AND exp
+   80    | exp . LTHAN exp
+   81    | exp . GTHAN exp
+   82    | exp . LETHAN exp
+   83    | exp . GETHAN exp
+   84    | exp . DOTDOT exp
+
+    RPAR    shift, and go to state 220
+    DOTDOT  shift, and go to state 118
+    MINUS   shift, and go to state 119
+    PLUS    shift, and go to state 120
+    MULT    shift, and go to state 121
+    DIV     shift, and go to state 122
+    MOD     shift, and go to state 123
+    LTHAN   shift, and go to state 124
+    GTHAN   shift, and go to state 125
+    LETHAN  shift, and go to state 126
+    GETHAN  shift, and go to state 127
+    AND     shift, and go to state 128
+    OR      shift, and go to state 129
+    POWER   shift, and go to state 130
+
+
+State 217
+
+   57 sinoselect: SINO enterscope . instbl leavescope
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 221
+
+
+State 218
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 222
+
+
+State 219
+
+   60 lastoption: SEP BSLASH QUESTION ARROW . instbl
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 223
+
+
+State 220
+
+   55 oselect: OSI LPAR exp RPAR . enterscope instbl leavescope
+
+    $default  reduce using rule 113 (enterscope)
+
+    enterscope  go to state 224
+
+
+State 221
+
+   57 sinoselect: SINO enterscope instbl . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 225
+
+
+State 222
+
+   68 detite: PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope .
+
+    $default  reduce using rule 68 (detite)
+
+
+State 223
+
+   60 lastoption: SEP BSLASH QUESTION ARROW instbl .
+
+    $default  reduce using rule 60 (lastoption)
+
+
+State 224
+
+   55 oselect: OSI LPAR exp RPAR enterscope . instbl leavescope
+
+    OBRACE  shift, and go to state 18
+
+    instbl  go to state 226
+
+
+State 225
+
+   57 sinoselect: SINO enterscope instbl leavescope .
+
+    $default  reduce using rule 57 (sinoselect)
+
+
+State 226
+
+   55 oselect: OSI LPAR exp RPAR enterscope instbl . leavescope
+
+    $default  reduce using rule 114 (leavescope)
+
+    leavescope  go to state 227
+
+
+State 227
+
+   55 oselect: OSI LPAR exp RPAR enterscope instbl leavescope .
+
+    $default  reduce using rule 55 (oselect)

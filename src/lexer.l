@@ -42,7 +42,7 @@ leer                        return LEER;
 escribir                    return ESCRIBIR;
 caso                        return CASO;
 \"(\\.|[^\\"])*\"           { return CONSTCAD; }
-'(\\.|[^\\'])'              { printf("--%s--", yytext); return CONSTCAR; }
+\'(\\.|[^\\'])*\'              { printf("--%s--", yytext); return CONSTCAR; }
 \.\.                        return DOTDOT;
 \.                          return ONEDOT;
 \{							return OBRACE;
@@ -88,10 +88,11 @@ retorna						return RETORNA;
                             return ID;  
                             }
 
-"/*"                        { BEGIN(comment); }
-<comment>"*/"               { BEGIN(INITIAL); }
+"/\~"                        { BEGIN(comment); }
+<comment>"\~/"               { BEGIN(INITIAL); }
 <comment>.                  ;
-<comment>\n                 
+<comment>\n                 ;
+
 
 [:blank:]+;
 
