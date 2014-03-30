@@ -128,9 +128,18 @@ func    : header instbl
         ;
 
 
-header  : ID COLCOL enterscope signa
+header  : idheader COLCOL enterscope signa
         | ENIE COLCOL enterscope signa
         ;
+
+idheader : ID
+          {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            tryAddSymbol(symtable,&errors,s);  
+          }
 
 signa   : arglist ARROW type
         | arglist
