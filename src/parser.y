@@ -140,7 +140,6 @@ arglist : arglist COMMA type ID
         ;
 
 instlist : instlist SEP inst
-         | error SEP inst
          | inst
          ;
 
@@ -148,12 +147,13 @@ instbl  : OBRACE SEP instlist SEP CBRACE
         ;
 
 inst : asign  
-     | exp
+/*     | exp */
      | decl
      | selec
      | indite
      | detite
      | return
+     | error SEP
      ;
 
 asign : ID EQUAL exp
@@ -234,6 +234,7 @@ term : ID
      | ID arr 
      | boxelem
      | callfunc
+     | error
      ;
 
 arr : arr OBRACK exp CBRACK 
