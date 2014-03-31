@@ -1,7 +1,8 @@
 enie :: ~ {
-    ent a = 5
-    ent x = a*a
-    para (ent i = a; i < x; i+1) {
+    ent z = 6
+    ent ala = 5
+    para (ent i = 7; i < ala; i+1) {
         ent b = 5
+        ent c = 6
     }
 }
