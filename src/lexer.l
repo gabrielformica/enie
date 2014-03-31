@@ -16,11 +16,17 @@
     }    
 %}
 
-%x comment
 
+%x comment 
 %%
 
+"/\*"                       { BEGIN(comment); }
+<comment>"\*/"[ \n]+         { BEGIN(INITIAL); }
+<comment>.                  ;
+<comment>\n                 ;
 
+
+"/~".*[ \n]+                
 
 [ \t]+                      /*eat whitespaces*/
 [\n]+                       { yycolumn = 0; return SEP; }
@@ -41,8 +47,8 @@ nada                        return NADA;
 leer                        return LEER;
 escribir                    return ESCRIBIR;
 caso                        return CASO;
-\"(\\.|[^\\"])*\"           return CONSTCAR;
-\'(\\.|[^\\'])*\'           return CONSTCAR;
+\"(\\.|[^\\"])*\"           return CONSTCAD;
+\'(\\.|[^\\'])*\'           return CONSTCAD;
 \.\.                        return DOTDOT;
 \.                          return ONEDOT;
 \{							return OBRACE;
@@ -88,10 +94,8 @@ retorna						return RETORNA;
                             return ID;  
                             }
 
-"/\~"                        { BEGIN(comment); }
-<comment>"\~/"               { BEGIN(INITIAL); }
-<comment>.                  ;
-<comment>\n                 ; 
+
+
 
 
 .                           {   

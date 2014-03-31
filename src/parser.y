@@ -34,7 +34,6 @@
 %token NUMENT
 %token NUMFLOT
 %token CONSTCAD
-%token CONSTCAR
 %token <str> ID
 %token SI           
 %token OSI          
@@ -112,7 +111,7 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : enterscope funcl end leavescope 
+enie    : sepaux enterscope funcl end leavescope 
         ;
 
 
@@ -295,7 +294,6 @@ term : checkid     /*ID*/
      | checkid arr  /*ID arr*/
      | callfunc
      | CONSTCAD
-     | CONSTCAR 
      | boxelem
      | error
      ;
@@ -331,8 +329,8 @@ boxelem : term ONEDOT checkid
         ;
 
 
-enterscope : {symtable->enterScope(); symtable->printStack();}
-leavescope : {symtable->leaveScope(); symtable->printStack();}
+enterscope : {symtable->enterScope(); }
+leavescope : {symtable->leaveScope(); }
 
 %% 
 
@@ -356,7 +354,7 @@ int main (int argc, char **argv) {
             it != errors.end(); ++it) {
             cout << *it << endl;
         }
-    } 
-    cout << "---------TERMINO----------" << endl;
-    symtable->printTable();
+    } else { 
+        symtable->printTable();
+    }
 }

@@ -2,8 +2,15 @@ funcion :: ent a -> ent {
     retorna (a * a)
 }
 
+
+/* 
+ * Esta funcion no hace nada
+ * pero habra error por redeclaracion
+ */  
+
+ /~ Este es otro comentario   
 funcion :: ~ {
-    nada a
+    nada a  
 }
 
 enie :: ~ {

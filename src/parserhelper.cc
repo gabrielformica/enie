@@ -12,7 +12,6 @@ void tryAddSymbol(SymbolTable *symtable, vector<string> *errors, Symbol *s) {
     int column = s->getColumn();
     if (! symtable->idIsInScope(id, scope)) {
         symtable->addSymbol(s);
-        cout << "El simbolo " << id << " esta en la linea : " << line << endl;
     }
     else {
         std::string str0 = "(linea "+ to_string(line)+ ", columna ";
