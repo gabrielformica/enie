@@ -7,7 +7,7 @@
     extern YYLTYPE yylloc;
     extern std::vector<std::string> errors;
 
-    int yycolumn = 0;
+    int yycolumn = 1;
     void loc_track() {
         yylloc.first_line = yylloc.last_line = yylineno;
         yylloc.first_column = yycolumn;
@@ -21,15 +21,14 @@
 %%
 
 "/\*"                       { BEGIN(comment); }
-<comment>"\*/"[ \n]+         { BEGIN(INITIAL); yycolumn = 0; }
+<comment>"\*/"[ \n]+         {  yycolumn = 1; BEGIN(INITIAL); }
 <comment>.                  ;
-<comment>\n                 ;
+<comment>\n                { yycolumn = 1; } 
 
-
-"/~".*[ \n]+                { yycolumn = 0; }
+"/~".*[ \n]+               { yycolumn = 1; } 
 
 [ \t]+                      /*eat whitespaces*/
-[\n]+                       { yycolumn = 0; return SEP; }
+[\n]+                       { yycolumn = 1; return SEP; }
 [0-9]+				        return NUMENT;
 [0-9]+.[0-9]+               return NUMFLOT;
 arreglo                     return ARREGLO;
