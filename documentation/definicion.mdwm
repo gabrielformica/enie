@@ -20,9 +20,14 @@ mayúsculas; por ejemplo, la variable **foo** es distinta a la variable **FoO**.
 
 Este es el conjunto de palabras reservadas en el lenguaje:
 
-*    enie, nada, bool, ent, flot, car, cadena, registro, union, arreglo, {, }, (,), &&, ||, si, osi, 
-     sino, mientras, para, ::, =, ==, <, <=, >, >=, leer,
-     escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _, .., .
+         enie  nada  bool  ent  flot  car  cadena  registro  union  
+         arreglo leer si  osi  sino  mientras  para escribir 
+         retorna 
+
+Este es el conjunto de símbolos usados por *enie*: 
+
+         ::  =  ==  <  <=  >  >=  {  }  ( )  &&  || 
+         [  ]  ->  \"  \'  +  -  *  /  %  \\  ^  _  ..  .
 
 ##Tipos de datos
 
@@ -395,6 +400,7 @@ De momento, sólo se permiten comentarios en líneas que no tendan otro
 código además del comentario.
 
 ###Nota
-El diseño de este lenguaje es un trabajo en construcción y por ende puede que cambie
-a lo largo de la implementación. Se trabaja de manera iterativa y progresiva a medida
-que se van encontrando soluciones y problemas a lo planteado inicialmente.
+El diseño de este lenguaje es un trabajo en construcción y por ende es posible 
+que cambie a lo largo de la implementación. Se trabaja de manera iterativa y 
+progresiva a medida que se van encontrando soluciones y problemas a lo planteado 
+inicialmente.
