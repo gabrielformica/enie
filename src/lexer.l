@@ -41,8 +41,8 @@ nada                        return NADA;
 leer                        return LEER;
 escribir                    return ESCRIBIR;
 caso                        return CASO;
-\"(\\.|[^\\"])*\"           { return CONSTCAD; }
-\'(\\.|[^\\'])*\'              { printf("--%s--", yytext); return CONSTCAR; }
+\"(\\.|[^\\"])*\"           return CONSTCAR;
+\'(\\.|[^\\'])*\'           return CONSTCAR;
 \.\.                        return DOTDOT;
 \.                          return ONEDOT;
 \{							return OBRACE;
