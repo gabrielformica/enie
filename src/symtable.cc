@@ -62,6 +62,12 @@ void Symbol::setColumn(int x) {
     this->column = x;
 }
 
+/* Prints a symbol */
+void Symbol::print() {
+    std::cout << "Nombre " << id << " ";
+    std::cout << line << "-" << column;
+    std::cout << " alcance: " << scope << std::endl;
+}
 /*
  ****************************************
  * SymbolTable class methods definitions*
@@ -142,4 +148,15 @@ void SymbolTable::printStack() {
     }
     cout << "STACK" << endl;
 
+}
+
+void SymbolTable::printTable() {
+    std::cout << "-----Tabla de simbolos-----" << std::endl;
+    std::cout << endl;
+    
+    for (MapTable::iterator it = table.begin();
+	 it != table.end();
+	 it++ ) {
+	(*it).second->print();
+    }
 }

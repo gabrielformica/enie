@@ -355,4 +355,5 @@ int main (int argc, char **argv) {
         }
     } 
     cout << "---------TERMINO----------" << endl;
+    symtable->printTable();
 }

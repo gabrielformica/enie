@@ -28,6 +28,7 @@ class Symbol {
     void setScope(int);
     void setLine(int);
     void setColumn(int);
+    void print();
 };
 
 /* Hash table for symbols */
@@ -53,5 +54,6 @@ class SymbolTable {
     bool idIsInScope(std::string, int);
     bool isActive(Symbol *);
     void printStack();
+    void printTable();
 };
 #endif
