@@ -234,7 +234,7 @@ sinoselect :  SINO enterscope instbl leavescope
            ;
 
 
-multselec: CASO checkid checkid OBRACE SEP optionslist lastoption SEP CBRACE
+multselec: CASO checkid OBRACE SEP optionslist lastoption SEP CBRACE
          ;
 
 lastoption : SEP BSLASH QUESTION ARROW instbl 
