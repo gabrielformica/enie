@@ -69,6 +69,7 @@
 %token RPAR         
 %token EQUAL        
 %token EQUIV    
+%token INEQUIV
 %token DOTDOT
 %token ONEDOT
 %token COLCOL       
@@ -222,15 +223,15 @@ type : ENT
      | ARREGLO
      ;
 
-selec : SI LPAR exp RPAR enterscope instbl sepaux leavescope oselect sinoselect
+selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
       ;
 
-oselect :  OSI LPAR exp RPAR enterscope instbl sepaux leavescope
-        | 
+oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope 
+        |
         ;
 
-sinoselect :  SINO enterscope instbl leavescope
-           |  
+sinoselect :  SINO enterscope instbl leavescope 
+           |
            ;
 
 
@@ -277,6 +278,8 @@ exp : term
     | exp GTHAN exp
     | exp LETHAN exp
     | exp GETHAN exp
+    | exp EQUIV exp
+    | exp INEQUIV exp
     | exp DOTDOT exp
     | NEGATION exp     
     | MINUS exp  %prec NEG     

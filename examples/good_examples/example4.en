@@ -7,13 +7,10 @@ enie :: ~ {
         ent b
         si ((i /2) < a) {
             escribir "i/2 es menor que a"
-        } 
-        osi (i/2 < 3) {
+        } osi (i/2 < 3) {
             escribir "ok"
-        }
-        sino {
+        } sino {
             escribir "bien"
         }
     }
-
 }
