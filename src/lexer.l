@@ -93,7 +93,6 @@ retorna						return RETORNA;
 <comment>.                  ;
 <comment>\n                 ; 
 
-[:blank:]+;
 
 .                           {   
                             /* Regla para caracteres inesperados */
