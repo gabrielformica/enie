@@ -25,7 +25,6 @@
 <comment>.                  ;
 <comment>\n                { yycolumn = 1; } 
 
-
 "/~".*[ \n]+               { yycolumn = 1; } 
 
 [ \t]+                      /*eat whitespaces*/
