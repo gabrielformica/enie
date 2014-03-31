@@ -64,9 +64,9 @@ void Symbol::setColumn(int x) {
 
 /* Prints a symbol */
 void Symbol::print() {
-    std::cout << "Nombre " << id << " ";
-    std::cout << line << "-" << column;
-    std::cout << " alcance: " << scope << std::endl;
+    std::cout << "Nombre:   " << id << "   ";
+    std::cout << "Línea:   " <<  line << "   Columna:   " << column;
+    std::cout << " Alcance:   " << scope << std::endl;
 }
 /*
  ****************************************

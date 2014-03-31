@@ -1,5 +1,5 @@
 funcion :: ent a, nada b, ent a -> ent {
-    return (a * a)
+    retorna (a * a)
 }
 
 enie :: ~ {
