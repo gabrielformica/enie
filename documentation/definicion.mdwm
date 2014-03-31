@@ -7,39 +7,12 @@ muchas otras características de otros lenguajes, tales como funciones,
 estructuras arbitrariamente anidadas por el usuario, arreglos multidimensionales, 
 y selección múltiple.
 
-##Estructura de un programa
-
-La estructura de un programa en enie es la siguiente:
-
-\<Funciones\>
-
-Es decir, un conjunto de definiciones de funciones, cuya última debe ser
-la función *programa*:
-
-        programa :: ent narg, cadena argv[] {}
-
-Un programa válido en enie es el siguiente:
-
-        fib :: ent n -> ent { 
-            si (n < 0) {
-                escribe "Error: n tiene que ser >= 0"
-            } o si ((n == 0) || ( n == 1)) {
-                retorna 1
-            }
-            retorna fib(n-1) + fib(n-2)
-        }
-
-        programa :: ent narg, cadena argv[] {
-            fib(10)
-        }
-
 ## Identificadores
 
 Un identificador de variable es una cadena de caracteres de cualquier longitud,
 con caracteres desde de la A hasta la Z (minúsculas o mayúsculas), dígitos,
 y el caracter _. El primer caracter no puede ser un dígito, y son sensibles a
 mayúsculas; por ejemplo, la variable **foo** es distinta a la variable **FoO**.
-Además, se permite el uso de caracteres acentuados y la letra ñ.
 
 
 ## Palabras reservadas
@@ -47,32 +20,125 @@ Además, se permite el uso de caracteres acentuados y la letra ñ.
 
 Este es el conjunto de palabras reservadas en el lenguaje:
 
-*    nada, bool, ent, flot, car, cadena, registro, arreglo, {, }, (,), &&, ||, si, osi, 
-     sino, mientras, para, ::, =, ==, <, <=, >, >=, programa, leer,
-     escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _.
+*    enie, nada, bool, ent, flot, car, cadena, registro, union, arreglo, {, }, (,), &&, ||, si, osi, 
+     sino, mientras, para, ::, =, ==, <, <=, >, >=, leer,
+     escribir, [, ], ->, retorna, , , \", \', +, -, *, /, %, \\, ^, _, .., .
 
 ##Tipos de datos
 
-Se disponen de 7 tipos de datos primitivos en el lenguaje:
+Se disponen de 6 tipos de datos primitivos en el lenguaje:
 
-*    nada: es el tipo de dato que representa que no hay dato, y solo 
-     se usa para indicar que una función no tiene valor de retorno. 
+###nada
+Es el tipo de dato que representa que no hay dato, y solo se usa para indicar 
+que una función no tiene valor de retorno. 
 
-*    bool: representa un valor booleano, es decir, *cierto* o *false*.
+###bool 
+Representa un valor booleano, es decir, *cierto* o *false*.
 
-*    ent: representa números enteros con signo, y de 32 bits.
+###ent 
+Representa números enteros con signo, y de 32 bits.
 
-*    flot: representa números en punto flotante de 32 bits.
+###flot 
+Representa números en punto flotante de 32 bits. Estos deben escribirse usando el "."
+como separador de la parte decimal con la parte entera.
 
-*    car: representa un caracter.
+###car 
+Representa un caracter.
 
-*    cadena: representa una cadena de caracteres.
+###cadena 
+Representa una cadena de caracteres. 
 
-*    registro: contiene datos heterogénos, llamados campos. Se explicará 
-     en profundidad más adelante.
-     
+También se disponen de las estructuras arbitrariamente anidadas:
 
-#Instrucciones
+###registro 
+Contiene datos heterogéneos, llamados campos.
+
+El formato para la declaracion de los mismos es el siguiente
+        
+        registro <nombre> {
+            tipo variable
+            tipo variable
+            ...
+        }
+
+La invocación de los campos de un registro de hacen de la siguiente manera
+        
+        <nombre de registro>.<campo>
+
+###union 
+Similar a los **unions** de C, permiten campos con la particularidad de compartir 
+el mismo espacio en memoria.
+
+El formato para la declaracion de los mismos es el siguiente
+
+        union <nombre> {
+            tipo variable
+            tipo variable
+            ...
+        }
+
+La invocación de los campos de un union de hacen de la siguiente manera
+        
+        <nombre de registro>.<campo>
+
+###arreglos
+ 
+Los arreglos en enie son multidimensionales y pueden ser de cualquiera de los
+tipos primitivos. Los indices de los arreglos pueden son arbitrarios, es decir
+un arreglo puede inicializarse desde cualquier entero y ese entero correspondería
+a la primera posición del mismo.
+
+Para obtener un elemento de un arreglo se usa el siguiente formato
+        
+        nombre[indice]
+
+
+##Expresiones
+Las expresiones disponibles son las siguientes:
+
+### Para ent y flot:
+
+Operaciones binarias: 
+
+*    **+**  Operador para la suma
+*    **-**  Operador para la resta
+*    *****  Operador para la multiplicacion
+*    **/**  Operador para la división
+*    **%**  Operador para el modulo (sólo con tipos int)
+*    **==** Operador para la igualdad
+*    **!=** Operador para la desigualdad
+*    **>**  Mayor que
+*    **>=** Mayor igual
+*    **<**  Menor
+*    **<=** Menor igual
+
+Operación unaria:
+*    **-** Negativo
+
+### Para el tipo bool
+
+Los operadores binarios son:
+
+*    **&&** Conjunción lógica
+*    **||**  Disyunción lógica
+*    **==**  Equivalencia
+*    **!=**  Inequivalencia
+
+Operador unario:
+
+*    **!** Negación lógica
+
+## Entrada y salida
+
+Para la entrada y salida se tienen las instrucciones leer y escribir
+
+        leer variable
+
+        escribir expresion
+
+
+
+##Instrucciones
 ###Asignación
 
 \<tipo\> \<variable\> = \<expresión\>
@@ -83,6 +149,22 @@ Ejecutar una *asignación* tiene el efecto de evaluar la expresión del lado
 derecho y almacenarla en la variable del lado izquierdo. La variable
 ha de haber sido previamente declarada, o en su defecto, declararla
 in situ. 
+
+Con un arreglo se puede realizar asignación simultánea a todos los elementos
+del mismo. De esta manera la siguiente instrucción:
+
+        nombre[~] = {0}
+
+asignaría el entero "0" a todos las posiciones de arreglo.
+
+En el caso de especificar más elementos del lado derecho, se asignarán
+consecutiva y circularmente a las posiciones del arreglo hasta llenar su
+capacidad:
+
+        nombre[~] = {1,2,3}
+
+asignará 1 a la primera posición, 2 a la segunda, 3 a la tercera, 1 a la cuarta
+y así sucesivamente hasta llenar el arreglo.
 
 ###Selección
 
@@ -103,6 +185,10 @@ reservadas **o si** y **sino** de la siguiente manera:
         } sino {
             Instrucción
         }
+
+El lenguaje presenta la característica de estricticidad respecto a las llaves
+en la selección: La llave que inicia el bloque después de un **sino** o un
+**osi** no puede estar en la linea de abajo.
 
 ###Iteración indeterminada
 
@@ -164,3 +250,121 @@ Se debe considerar que:
 
 *    la opcion **sino** no es obligatoria, pero en caso de estar, debe
      ser la última de las opciones.
+
+
+###Invocación de funciones
+
+La invocación de funciones funciona de la siguiente manera:
+
+        nombre(<parametros>)
+
+Y si la función tiene un retorno, debe usarse en el contexto de una expresión,
+es decir:
+
+        a = nombre(<parametros>)
+
+##Estructura de un programa
+
+La estructura de un programa en enie es la siguiente:
+
+\<Funciones\>
+
+Es decir, un conjunto de definiciones de funciones, cuya última debe ser
+la función *enie*:
+
+        enie :: ent narg, cadena argv[] {}
+
+Un programa válido en enie es el siguiente:
+
+        fib :: ent n -> ent { 
+            si (n < 0) {
+                escribe "Error: n tiene que ser >= 0"
+            } o si ((n == 0) || ( n == 1)) {
+                retorna 1
+            }
+            retorna fib(n-1) + fib(n-2)
+        }
+
+        enie :: ent narg, cadena argv[] {
+            fib(10)
+        }
+
+En el caso de que una funcion no reciba argumentos se debe usar el siguiente 
+formato: 
+        
+        enie :: ~ {
+            ...
+        }
+
+En el caso de que una función no retorne nada, se puede usarn cualquiera de los
+siguientes formatos:
+
+        funcion :: <parametros> -> nada {
+            ...
+        }
+
+        funcion :: <parametros> {
+            ...
+        }
+
+## Alcance 
+
+El lenguaje **enie** funciona bajo alcance estático con la posibilidad de
+anidamiento de alcances. 
+
+El alcance más externo corresponde a las declaraciones globales de funciones,
+y los alcances internos sucesivos ocultan los alcances externos. 
+
+Debido a que no existen anidamiento de funciones, éstas deben declararse en el
+alcance global y todas antes de la función principal **enie**.
+
+## Declaracion de variables
+
+Las variables pueden declararse de cualquier tipo excepto del tipo *nada*.
+
+Asímismo, una declaración de una variable puede ocurrir en cualquier lugar del
+código. El alcance de dicha variable empieza desde la línea en la que fue 
+declarada hasta la salida del alcance del bloque en el que se encuentra.
+
+El formato para una declaración de variable es el siguiente:
+        
+        tipo variable
+        tipo variable = expresión
+
+Para los tipos arreglos, la declaración funciona de la siguiente manera:
+
+        tipo nombre[]
+
+Si se quiere especificar un tamaño se coloca:
+
+        tipo nombre[tamaño]
+
+donde tamaño es un entero.
+
+Un arreglo también puede declararse con índices arbitrarios haciendo uso del
+operador ".." de la siguiente manera:
+
+        tipo nombre[cota_inferior..cota_superior]
+
+## Pasaje de parametros a funciones
+
+En *enie* el pasaje de parámetros puede ser por valor o por referencia para
+los tipos primitivos o sólo por referencia para los tipos compuestos. 
+
+Para el pasaje por referencia se usa la palabra reservada *var* antes del
+tipo y nombre de la variable que servirá de parámetro.
+
+        funcion :: var flot a -> flot {
+            ...
+        }
+
+Cuando se usa un arreglo como parámetro formal de una función, se usa la tilde 
+"~" en el lugar del entero correspondiente al indice:
+
+        funcion :: ent arreglo[~] {
+            ...
+        }
+
+
+Para el pasaje de parámetros del tipo unión o registro no hay sintáxis espcial.
+
