@@ -91,8 +91,7 @@ retorna						return RETORNA;
 "/\~"                        { BEGIN(comment); }
 <comment>"\~/"               { BEGIN(INITIAL); }
 <comment>.                  ;
-<comment>\n                 ;
-
+<comment>\n                 ; 
 
 [:blank:]+;
 
