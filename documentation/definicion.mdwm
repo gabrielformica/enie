@@ -368,3 +368,33 @@ Cuando se usa un arreglo como parámetro formal de una función, se usa la tilde
 
 Para el pasaje de parámetros del tipo unión o registro no hay sintáxis espcial.
 
+
+## Funciones predefinidas
+
+Para esta versión de enie, se cuenta con dos funciones predefinidas en alcance global
+
+        etof :: ent a -> flot  -- Convierte un entero a un flotante
+        ftoe :: flot a -> ent  -- Convierte un flotante a un entero
+
+
+## Comentarios
+
+Los comentarios en *enie* tienen dos formas posibles:
+
+En bloque
+
+        /*
+         * Esto es un comentario
+         */
+
+En línea
+
+        /~ Esto es un comentario
+
+De momento, sólo se permiten comentarios en líneas que no tendan otro 
+código además del comentario.
+
+###Nota
+El diseño de este lenguaje es un trabajo en construcción y por ende puede que cambie
+a lo largo de la implementación. Se trabaja de manera iterativa y progresiva a medida
+que se van encontrando soluciones y problemas a lo planteado inicialmente.
