@@ -21,12 +21,12 @@
 %%
 
 "/\*"                       { BEGIN(comment); }
-<comment>"\*/"[ \n]+         { BEGIN(INITIAL); }
+<comment>"\*/"[ \n]+         { BEGIN(INITIAL); yycolumn = 0; }
 <comment>.                  ;
 <comment>\n                 ;
 
 
-"/~".*[ \n]+                
+"/~".*[ \n]+                { yycolumn = 0; }
 
 [ \t]+                      /*eat whitespaces*/
 [\n]+                       { yycolumn = 0; return SEP; }
