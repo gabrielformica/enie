@@ -12,13 +12,54 @@ import symboltable
 
 num_of_variables = 100
 
-MIN_INSTBL = 5    #min amount of instructions in a block
-MAX_INSTBL = 15   #max amount of instructions in a block
+MIN_FUNCTIONS = 4  #min amount of functions definitions 
+MAX_FUNCTIONS = 10 #max amount of functions definitions 
+MIN_INSTBL = 5     #min amount of instructions in a block
+MAX_INSTBL = 15    #max amount of instructions in a block
 
 data_types = ['ent','bool','nada','flot','cad','car']
 words = []                    
 expressions = []
 used_id = []
+
+class program:
+    def __init__(self,functionslist=None):
+        self.functionslist = functionslist
+
+    def __str__():
+        str0 = ""
+        for f in functionslist:
+            str0 = str0 + str(f) + "\n"
+        return str0
+
+    def random_generation(self):
+        x = randint(MIN_FUNCTIONS,MAX_FUNCTIONS)
+        for i in range(1,x):
+            self.functionslist.append(function().random_generation())
+
+
+
+
+class varname:
+    def __init__(self,var=None):
+        self.var = var
+    def __str__():
+        return str(self.var)
+    def random_generation():
+        self.var = varname().random_generation()
+
+
+
+class number:
+    def __init__(self,value=None):
+        self.value = value
+
+    def __str__():
+        return str(self.value)
+
+    def random_generation():
+        self.value = randint(-500,500)
+
 
 
 class function:
@@ -42,8 +83,8 @@ class function:
 
 
 class arglist:
-    def __init__(self):
-        self.argl = []
+    def __init__(self,argl=None):
+        self.argl = argl 
 
     def __str__():
         if not self.argl:
@@ -58,7 +99,6 @@ class arglist:
             self.argl.append(decl().random_generation())
 
 
-       
 
 class instbl:
     def __init__(self,instlist=None):
@@ -71,9 +111,10 @@ class instbl:
         self.instlist =  instlist().random_generation()
 
 
+
 class instlist:
-    def __init__(self):
-        self.instl = []
+    def __init__(self,instl=None):
+        self.instl = instl 
 
     def __str__():
         str0 = ""
@@ -115,6 +156,9 @@ class assign:
     def __str__(self):
         return str(self.var) + " = " + str(self.exp)
 
+    def get_var(self):
+        return str(self.var)
+
 
 
 class decl:
@@ -125,18 +169,22 @@ class decl:
     def __str__():
         return str(self.type) + " " + str(self.var)
 
+    def get_var():
+        return str(self.var)
+
     def random_generation(self):
         self.datatype = random.choice(data_types)
 
         #var names are differents of data types
-        self.var = random.choice(words)
+        self.var = varname().random_generation() 
         while self.var in data_types:
-            self.var = random.choice(words) 
+            self.var = varname().random_generation()
+
+
 
 class declassign(decl):
     def __init__(self,datatype=None,var=None,exp=None):
-        self.datatype = datatype
-        self.var = var
+        decl.__init__(self,datatype,var)
         self.exp = exp
 
     def __str__():
@@ -144,23 +192,55 @@ class declassign(decl):
 
     def random_generation(self):
         decl_object = decl().random_generation()
-        self.datatype = decl_object
+        self.datatype = decl_object.get_datatype()
+        self.var = decl_object.get_var()
+        self.exp = exp().random_generation()
 
- 
 
 
 class exp:
     def __init__(self,left,ope,right):
         self.left = left
         self.ope = ope
-        self.right
+        self.right = right
+        self.opelist = []
     
     def __str__():
         return str(self.left) + str(selfope) + str(self.right)
+
+   
+
+
+class booleanexp(exp):
+    def __init__(self,left=None,ope=None,right=None):
+        exp.__init__(self,left,ope,right)
+        self.opelist = ['<','<=','>','>=','==','!=', '&&', '||']
+
+    def random_generation(self):
+        #list of posibles expressions in a boolean expression
+        explist = [number(),varname(),booleanexp(),varname(),number(),arithexp()]
+        self.left = random.choice(self.explist).random_generation()
+        self.ope = random.choice(self.opelist)
+        self.right = random.choice(self.explist).random_generation()
+         
+
+
         
+class arithexp(exp):
+    def __init__(self,left=None,ope=None,right=None):
+        exp.__init__(self,left,ope,right)
+        self.opelist = ['+','-','/','*','%','^']
+
+    def random_generation(self):
+        explist = [number(),varname(),varname(),number(),arithexp()]
+        self.left = random.choice(self.explist).random_generation()
+        self.ope = random.choice(self.opelist)
+        self.right = random.choice(self.explist).random_generation()
+
+
 
 class detite:
-    def __init__(self,init,cond,incr,instbl):
+    def __init__(self,init=None,cond=None,incr=None,instbl=None):
         self.init = init 
         self.cond = cond
         self.incr = incr 
@@ -171,6 +251,14 @@ class detite:
         str0 = str0 + str(self.instbl)
         return str0 
 
+    def random_generation(self):
+
+        self.init = declassign().random_generation()
+        self.cond = booleanexp().random_generation()
+        self.incr = arithexp().random_generation()
+        self.instbl = instbl().random_generation()
+
+
 
 class indite:
     def __init__(self,cond,instbl):
@@ -179,6 +267,11 @@ class indite:
 
     def __str__():
         return  "mientras (" + str(self.cond) + ") " + str(self.instbl)
+
+    def random_generation(self):
+        self.cond = booleanexp().random_generation()
+        self.instbl = instbl().random_generation()
+
 
 
 class case:
@@ -189,10 +282,13 @@ class case:
     def __str__():
         return "caso "+ str(self.var) + "{\n" + str(self.optionslist) + "\n}"
 
+    def random_generation(self):
+        self.var = varname().random_generation()
+        self.optionslist = optionslist().random_generation()
 
 class optionslist:
-    def __init__(self):
-        self.opts = []
+    def __init__(self,opts=None):
+        self.opts = opts 
 
     def __str__():
         str0 = ""
@@ -200,14 +296,22 @@ class optionslist:
             str0 = str0 + str(opt) + "\n" 
         return str0
 
+    def random_generation(self):
+        x = randint(1,10)  #number of cases
+        for i in range(1,x): 
+            self.optionslist.append(option.random_generation())
+
 
 class option:
-    def __init__(self,case, instbl):
+    def __init__(self,case=None,instbl=None):
         self.case = case
         self.instbl = instbl
 
     def __str__():
         return str(self.case) + " -> " + str(self.instbl)
+
+    def random_generation(self):
+        self.case = varname().random_generation()
 
     
 #Initalize basic data structures
@@ -225,10 +329,7 @@ def instructions():
 
 
 def main():
-    exp1 = exp("3+4","-","2*2")
-    inst1 = assgin("a",exp1)
-    mient1 = indite("("+exp1+")",instbl1)
-    initialize()
+    print str(program().random_generation())
     
 if __name__ == "__main__":
     main()
