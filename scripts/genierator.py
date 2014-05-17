@@ -10,12 +10,16 @@ import random
 from random import randint
 import symboltable
 
+indentation = 2 
+current_instbl = 0
+
+
 num_of_variables = 100
 
-MIN_FUNCTIONS = 4  #min amount of functions definitions 
-MAX_FUNCTIONS = 10 #max amount of functions definitions 
+MIN_FUNCTIONS = 1  #min amount of functions definitions 
+MAX_FUNCTIONS = 4 #max amount of functions definitions 
 MIN_INSTBL = 5     #min amount of instructions in a block
-MAX_INSTBL = 15    #max amount of instructions in a block
+MAX_INSTBL = 20    #max amount of instructions in a block
 
 data_types = ['ent','bool','nada','flot','cad','car']
 words = []                    
@@ -23,100 +27,121 @@ expressions = []
 used_id = []
 
 class program:
-    def __init__(self,functionslist=None):
-        self.functionslist = functionslist
+    def __init__(self):
+        self.functionslist = []
+        self.random_generation();
 
-    def __str__():
+    def __str__(self):
         str0 = ""
-        for f in functionslist:
+        for f in self.functionslist:
             str0 = str0 + str(f) + "\n"
         return str0
 
     def random_generation(self):
         x = randint(MIN_FUNCTIONS,MAX_FUNCTIONS)
-        for i in range(1,x):
-            self.functionslist.append(function().random_generation())
-
+        for i in range(1,x+1):
+            self.functionslist.append(function())
 
 
 
 class varname:
-    def __init__(self,var=None):
-        self.var = var
-    def __str__():
-        return str(self.var)
-    def random_generation():
-        self.var = varname().random_generation()
+    def __init__(self):
+        self.var = None 
 
+        self.random_generation()
+
+    def __str__(self):
+        return str(self.var)
+
+    def random_generation(self):
+        word = random.choice(words)
+        word = word.replace("\n","")
+        word = word.replace("'","")
+        self.var = word
+        #var names are differents of data types
+        while self.var in data_types:
+            self.var = varname()
 
 
 class number:
-    def __init__(self,value=None):
-        self.value = value
+    def __init__(self):
+        self.value = None 
 
-    def __str__():
+        self.random_generation()
+
+    def __str__(self):
         return str(self.value)
 
-    def random_generation():
+    def random_generation(self):
         self.value = randint(-500,500)
 
 
-
 class function:
-    def __init__(self,name=None,arglist=None,instbl=None,rtype=None):
-        self.name = name
-        self.arglist = arglist
-        self.instbl = instbl
-        self.rtype = rtype
+    def __init__(self):
+        self.name = None
+        self.instbl = None 
+        self.rtype = None 
+        self.arglist = [] 
 
-    def __str__():
-        str0 = str(self.name) + " :: " + str(arglist) + " -> "
-        str0 = str0 + str(rtype) + str(self.instbl)
+        self.random_generation()
+
+
+    def __str__(self):
+        str0 = str(self.name) + " :: " + str(self.arglist) + " -> "
+        str0 = str0 + str(self.rtype) + " " + str(self.instbl)
         return str0
 
     def random_generation(self):
-        self.name = name().random_generation()
-        self.arglist = arglist().random_generation()
-        self.instbl = instbl().random_generation()
-        self.rtype = datatype().random_generation()
+        self.name = varname()
+        self.arglist = arglist()
+        self.instbl = instbl()
+        self.rtype = random.choice(data_types)
 
 
 
 class arglist:
-    def __init__(self,argl=None):
-        self.argl = argl 
+    def __init__(self):
+        self.argl = []
 
-    def __str__():
+        self.random_generation()
+
+    def __str__(self):
         if not self.argl:
             return " ~ "
+
+        str0 = ""
         for arg in self.argl:
-            str0 = str0 + str(arg) + ","
-        return str0[:-1]      #all str0 except last ","
+            str0 = str0 + str(arg) + ", "
+        return str0[:-2]      #all str0 except last ","
 
     def random_generation(self):
         x = randint(0,7)        #number of arguments
         for i in (0,x):
-            self.argl.append(decl().random_generation())
+            self.argl.append(decl())
 
 
 
 class instbl:
-    def __init__(self,instlist=None):
-        self.instlist = instlist
+    def __init__(self):
+        self.instlist = []
 
-    def __str__():
-        return "{\n" + str(self.instlist) + "\n}"
+        self.random_generation()
+
+    def __str__(self):
+        return "{\n" + str(self.instlist) + "}"
 
     def random_generation(self):
-        self.instlist =  instlist().random_generation()
+        self.instlist =  instlist()
 
 
 
 class instlist:
-    def __init__(self,instl=None):
-        self.instl = instl 
+    def __init__(self):
+        self.instl = []
 
-    def __str__():
+        self.random_generation()
+
+    def __str__(self):
         str0 = ""
         for inst in self.instl:
             str0 = str0 + str(inst) + "\n"
@@ -125,33 +150,37 @@ class instlist:
     def random_generation(self):
         x = randint(MIN_INSTBL,MAX_INSTBL) #number of instructions
         for i in range(0,x):
-            self.instl.append(instruction().random_generation())
+            self.instl.append(instruction())
 
 
 class instruction:
     def __init__(self):
         self.inst = None
 
-    def __str__():
-        return str(self.inst)
+        self.random_generation()
+
+    def __str__(self):
+        spaces = " "*indentation
+        return spaces + str(self.inst)
 
     def random_generation(self):
         inst_set = [
                     assign(), functioncall(),
                     decl(), declassign(),
-                    detite(), indite(),
-                    case() 
+                    #detite(), indite(),
+                    #case(), 
                     ]
 
-        inst_object = random.choice(inst_set)
-        self.inst = inst_object.random_generation()
+        self.inst = random.choice(inst_set)
 
 
 
 class assign:
-    def __init__(self,var,exp):
-        self.var = var
-        self.exp = exp 
+    def __init__(self):
+        self.var = None 
+        self.exp = None 
+
+        self.random_generation()
 
     def __str__(self):
         return str(self.var) + " = " + str(self.exp)
@@ -159,168 +188,223 @@ class assign:
     def get_var(self):
         return str(self.var)
 
+    def random_generation(self):
+        exps = [arithexp(), booleanexp()]
+        self.var = varname()
+        self.exp = random.choice(exps)
 
+
+class functioncall:
+    def __init__(self):
+        self.explist = []
+
+        self.random_generation()
+
+    def __str__(self):
+        return str(self.name) + "(" + str(self.explist) + ")"
+
+    def random_generation(self):
+        self.name = varname()
+        self.explist = explist()
 
 class decl:
-    def __init__(self,datatype=None,var=None):
-        self.datatype = datatype
-        self.var = var
+    def __init__(self):
+        self.datatype = None 
+        self.var = None 
 
-    def __str__():
-        return str(self.type) + " " + str(self.var)
+        self.random_generation()
 
-    def get_var():
-        return str(self.var)
+    def __str__(self):
+        return str(self.datatype) + " " + str(self.var)
 
     def random_generation(self):
         self.datatype = random.choice(data_types)
-
-        #var names are differents of data types
-        self.var = varname().random_generation() 
-        while self.var in data_types:
-            self.var = varname().random_generation()
+        self.var = varname()
 
 
 
 class declassign(decl):
-    def __init__(self,datatype=None,var=None,exp=None):
-        decl.__init__(self,datatype,var)
-        self.exp = exp
+    def __init__(self):
+        self.datatype = None 
+        self.var = None 
+        self.exp = None 
 
-    def __str__():
+        self.random_generation()
+ 
+    def __str__(self):
         return str(self.datatype) + " " + str(self.var) + " = " + str(self.exp)
 
     def random_generation(self):
-        decl_object = decl().random_generation()
-        self.datatype = decl_object.get_datatype()
-        self.var = decl_object.get_var()
-        self.exp = exp().random_generation()
+        self.datatype = random.choice(data_types)
+        self.var = varname()
+        l = [booleanexp(), arithexp()]
+        self.exp = random.choice(l) 
 
 
 
 class exp:
-    def __init__(self,left,ope,right):
-        self.left = left
-        self.ope = ope
-        self.right = right
+    def __init__(self):
+        self.left = None 
+        self.ope = None
+        self.right = None 
         self.opelist = []
-    
-    def __str__():
-        return str(self.left) + str(selfope) + str(self.right)
+
+    def __str__(self):
+        return "(" + str(self.left) + " " + str(self.ope) + " " + str(self.right) + ")"
 
    
+class explist:
+    def __init__(self):
+        self.l = []
+        
+        self.random_generation()
+        
+    def __str__(self):
+        str0 = ""
+        for exp in self.l:
+            str0 = str0 + str(exp) + ","
+        
+        return str0[:-1]
+
+    def random_generation(self):
+        x = randint(1,5)
+        for i in range(0,x):
+            self.l.append(varname())
 
 
 class booleanexp(exp):
-    def __init__(self,left=None,ope=None,right=None):
-        exp.__init__(self,left,ope,right)
+    def __init__(self):
+        exp.__init__(self)
+
         self.opelist = ['<','<=','>','>=','==','!=', '&&', '||']
+
+        self.random_generation()
 
     def random_generation(self):
         #list of posibles expressions in a boolean expression
-        explist = [number(),varname(),booleanexp(),varname(),number(),arithexp()]
-        self.left = random.choice(self.explist).random_generation()
+        explist1 = [number(), varname()]
+        explist2 = [number(), varname()]
+
+        self.left = random.choice(explist1)
         self.ope = random.choice(self.opelist)
-        self.right = random.choice(self.explist).random_generation()
+
+        self.right = random.choice(explist2)
          
 
 
         
 class arithexp(exp):
-    def __init__(self,left=None,ope=None,right=None):
-        exp.__init__(self,left,ope,right)
+    def __init__(self):
+        exp.__init__(self)
+
         self.opelist = ['+','-','/','*','%','^']
 
+        self.random_generation()
+
     def random_generation(self):
-        explist = [number(),varname(),varname(),number(),arithexp()]
-        self.left = random.choice(self.explist).random_generation()
+        explist1 = [number(), varname()]
+        explist2 = [number(), varname()]
+
+        self.left = random.choice(explist1)
         self.ope = random.choice(self.opelist)
-        self.right = random.choice(self.explist).random_generation()
+        self.right = random.choice(explist2)
 
 
 
 class detite:
-    def __init__(self,init=None,cond=None,incr=None,instbl=None):
-        self.init = init 
-        self.cond = cond
-        self.incr = incr 
-        self.instbl = instbl
+    def __init__(self):
+        self.init = None 
+        self.cond = None
+        self.incr = None 
+        self.instbl = None 
 
-    def __str__():
+        self.random_generation()
+
+    def __str__(self):
         str0 = "para (" + self.decl + "; "+ self.cond + "; " + self.incr+ ")"
         str0 = str0 + str(self.instbl)
         return str0 
 
     def random_generation(self):
-
-        self.init = declassign().random_generation()
-        self.cond = booleanexp().random_generation()
-        self.incr = arithexp().random_generation()
-        self.instbl = instbl().random_generation()
+        self.init = declassign()
+        self.cond = booleanexp()
+        self.incr = arithexp()
+        self.instbl = instbl()
 
 
 
 class indite:
-    def __init__(self,cond,instbl):
+    def __init__(self):
         self.cond = cond
         self.instbl = instbl
 
-    def __str__():
+        self.random_generation()
+
+    def __str__(self):
         return  "mientras (" + str(self.cond) + ") " + str(self.instbl)
 
     def random_generation(self):
-        self.cond = booleanexp().random_generation()
-        self.instbl = instbl().random_generation()
+        self.cond = booleanexp()
+        self.instbl = instbl()
 
 
 
 class case:
-    def __init__(self,var,optionslist):
-        self.var = var
-        self.optionslist = optionslist
+    def __init__(self):
+        self.var = None 
+        self.optionslist = []
 
-    def __str__():
-        return "caso "+ str(self.var) + "{\n" + str(self.optionslist) + "\n}"
+        self.random_generation()
+
+    def __str__(self):
+        return "caso "+ str(self.var) + " {\n" + str(self.optionslist) + "}"
 
     def random_generation(self):
-        self.var = varname().random_generation()
-        self.optionslist = optionslist().random_generation()
+        self.var = varname()
+        self.optionslist = optionslist()
 
 class optionslist:
-    def __init__(self,opts=None):
-        self.opts = opts 
+    def __init__(self):
+        self.opts = []
 
-    def __str__():
+        self.random_generation()
+
+    def __str__(self):
         str0 = ""
-        for opt in self.optlist:
-            str0 = str0 + str(opt) + "\n" 
+        spaces = " "*(indentation*2)
+        for opt in self.opts:
+            str0 = spaces + str0 + str(opt) + "\n" 
         return str0
 
     def random_generation(self):
         x = randint(1,10)  #number of cases
         for i in range(1,x): 
-            self.optionslist.append(option.random_generation())
+            self.opts.append(option())
 
 
 class option:
-    def __init__(self,case=None,instbl=None):
-        self.case = case
-        self.instbl = instbl
+    def __init__(self):
+        self.case = None 
+        self.instbl = None
 
-    def __str__():
+        self.random_generation()
+    def __str__(self):
         return str(self.case) + " -> " + str(self.instbl)
 
     def random_generation(self):
-        self.case = varname().random_generation()
+        self.case = varname()
+        self.instbl = instbl()
 
     
 #Initalize basic data structures
 def initialize():
+    global words
     words_file = open('/etc/dictionaries-common/words','r')
-    random_words = words_file.readlines()
+    words = words_file.readlines()
     words_file.close()
-    random.suffle(random_words)
-    loadvariables(random_words)
+    random.shuffle(words)
+    words = words[:100]
+
     
 
 def instructions():
@@ -329,7 +413,9 @@ def instructions():
 
 
 def main():
-    print str(program().random_generation())
+    initialize()
+
+    print str(program())
     
 if __name__ == "__main__":
     main()

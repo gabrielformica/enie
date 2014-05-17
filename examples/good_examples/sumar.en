@@ -1,11 +1,15 @@
+/*
+ * Bloque de cometario 1
+ */
+
 sumar :: ent a, ent b -> ent {
     retorna (a + b)
 }
 
-/~h~/
+/~Cometario 1
 
 enie :: ~ {
-    ent a = 5 
+    ent a = 5   /~Cometario 2
     ent b = 6
     sumar(a,b)
 }
