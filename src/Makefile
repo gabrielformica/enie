@@ -1,6 +1,6 @@
 GPPFLAGS= -std=gnu++11 -lfl
-GPP= g++
-YACC= bison
+GPP= g++ 
+YACC= bison -v
 LEX= flex --yylineno
 OBJ= lex.yy.c  parser.tab.c  symtable.cc parserhelper.cc
 

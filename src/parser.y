@@ -111,20 +111,23 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : sepaux enterscope funcl end leavescope 
+enie    : begin enterscope funcl end leavescope 
         ;
 
+begin   : sepaux
+        | /* lambda */
+        ;
 
 end     : sepaux 
         ;
 
-sepaux  : SEP
-        |
+sepaux  : sepaux SEP 
+        | SEP
         ;
 
-funcl   : funcl SEP func leavescope 
+funcl   : funcl sepaux func leavescope 
         | func leavescope
-        | error SEP
+        | error SEP 
         ;
 
 func    : header instbl
@@ -149,12 +152,12 @@ arglist : arglist COMMA declonly
         | VAR declonly 
         ;
 
-instlist : instlist SEP inst
+instlist : instlist sepaux inst
          | inst
          | error
          ;
 
-instbl  : OBRACE SEP instlist SEP CBRACE
+instbl  : OBRACE sepaux instlist sepaux CBRACE
         ;
 
 inst : asign  
@@ -234,15 +237,14 @@ sinoselect :  SINO enterscope instbl leavescope
            ;
 
 
-multselec: CASO checkid OBRACE SEP optionslist lastoption SEP CBRACE
+multselec: CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
          ;
 
-lastoption : SEP BSLASH QUESTION ARROW instbl 
+lastoption : sepaux BSLASH QUESTION ARROW instbl 
            ;
 
-optionslist: optionslist SEP option
+optionslist: optionslist sepaux option
            | option
-           |
            ;
 
 option: BSLASH leftsideopt ARROW instbl 
@@ -314,7 +316,7 @@ declboxtype  : UNION
              | REGISTRO
              ;
 
-declist : declist SEP decl
+declist : declist sepaux decl
         | decl
         ;
 

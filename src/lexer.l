@@ -21,14 +21,14 @@
 %%
 
 "/\*"                       { BEGIN(comment); }
-<comment>"\*/"[ \n]+         {  yycolumn = 1; BEGIN(INITIAL); }
+<comment>"\*/"[ \n]+        {  yycolumn = 1; BEGIN(INITIAL); }
 <comment>.                  ;
-<comment>\n                { yycolumn = 1; } 
+<comment>\n                 { yycolumn = 1; } 
 
-"/~".*[ \n]+               { yycolumn = 1; } 
+"/~".*                      { yycolumn = 1; } 
 
 [ \t]+                      /*eat whitespaces*/
-[\n]+                       { yycolumn = 1; return SEP; }
+\n                          { yycolumn = 1; return SEP; }
 [0-9]+				        return NUMENT;
 [0-9]+.[0-9]+               return NUMFLOT;
 arreglo                     return ARREGLO;
