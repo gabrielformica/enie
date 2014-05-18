@@ -1,6 +1,6 @@
-# enie:  enies's not in english
+# Enie:  Enies's not in english
 
-enie (enie's not in english) es un lenguaje de programación inspirado en C
+Enie (Enie's not in english) es un lenguaje de programación inspirado en C
 y Haskell, en español. Por simplicidad, se omiten manejos dinámicos de memoria, 
 compilación separada y tipos apuntadores. Sin embargo, conserva
 muchas otras características de otros lenguajes, tales como funciones, 
@@ -24,7 +24,7 @@ Este es el conjunto de palabras reservadas en el lenguaje:
          arreglo leer si  osi  sino  mientras  para escribir 
          retorna 
 
-Este es el conjunto de símbolos usados por *enie*: 
+Este es el conjunto de símbolos usados por *Enie*: 
 
          ::  =  ==  <  <=  >  >=  {  }  ( )  &&  || 
          [  ]  ->  \"  \'  +  -  *  /  %  \\  ^  _  ..  .
@@ -88,7 +88,7 @@ La invocación de los campos de un union de hacen de la siguiente manera
 
 ###arreglos
  
-Los arreglos en enie son multidimensionales y pueden ser de cualquiera de los
+Los arreglos en Enie son multidimensionales y pueden ser de cualquiera de los
 tipos primitivos. Los indices de los arreglos pueden son arbitrarios, es decir
 un arreglo puede inicializarse desde cualquier entero y ese entero correspondería
 a la primera posición del mismo.
@@ -270,7 +270,7 @@ es decir:
 
 ##Estructura de un programa
 
-La estructura de un programa en enie es la siguiente:
+La estructura de un programa en Enie es la siguiente:
 
 \<Funciones\>
 
@@ -279,7 +279,7 @@ la función *enie*:
 
         enie :: ent narg, cadena argv[] {}
 
-Un programa válido en enie es el siguiente:
+Un programa válido en Enie es el siguiente:
 
         fib :: ent n -> ent { 
             si (n < 0) {
@@ -314,7 +314,7 @@ siguientes formatos:
 
 ## Alcance 
 
-El lenguaje **enie** funciona bajo alcance estático con la posibilidad de
+El lenguaje **Enie** funciona bajo alcance estático con la posibilidad de
 anidamiento de alcances. 
 
 El alcance más externo corresponde a las declaraciones globales de funciones,
@@ -353,7 +353,7 @@ operador ".." de la siguiente manera:
 
 ## Pasaje de parametros a funciones
 
-En *enie* el pasaje de parámetros puede ser por valor o por referencia para
+En *Enie* el pasaje de parámetros puede ser por valor o por referencia para
 los tipos primitivos o sólo por referencia para los tipos compuestos. 
 
 Para el pasaje por referencia se usa la palabra reservada *var* antes del
@@ -376,7 +376,7 @@ Para el pasaje de parámetros del tipo unión o registro no hay sintáxis espcia
 
 ## Funciones predefinidas
 
-Para esta versión de enie, se cuenta con dos funciones predefinidas en alcance global
+Para esta versión de Enie, se cuenta con dos funciones predefinidas en alcance global
 
         etof :: ent a -> flot  -- Convierte un entero a un flotante
         ftoe :: flot a -> ent  -- Convierte un flotante a un entero
@@ -384,7 +384,7 @@ Para esta versión de enie, se cuenta con dos funciones predefinidas en alcance 
 
 ## Comentarios
 
-Los comentarios en *enie* tienen dos formas posibles:
+Los comentarios en *Enie* tienen dos formas posibles:
 
 En bloque
 

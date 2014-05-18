@@ -20,9 +20,6 @@
     void yyerror(char const *);
     int yylex(void);
     using namespace std;
-
-
-        
 }
 
 %union {
@@ -97,6 +94,7 @@
 %token QUESTION
 
 /* Precedencias */
+
 %left OR
 %left AND
 %left EQUIV INEQUIV
@@ -254,8 +252,6 @@ leftsideopt : CONSTCAD
             | checkid 
             ;
 
-
-
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
        ;
 
@@ -321,6 +317,7 @@ declist : declist sepaux decl
         ;
 
 callfunc : checkid LPAR explist RPAR
+         | checkid LPAR RPAR
          ;
 
 explist : explist COMMA exp
@@ -347,16 +344,23 @@ void yyerror (const char *s) {
 } 
 
 int main (int argc, char **argv) {
-    if (! (yyin = fopen(argv[1],"r"))) {
-        cout << "Fallo en la apertura de archivo" << endl;
+
+    if (! (yyin = fopen(argv[1], "r"))) {
+        cerr << "Fallo en la apertura de archivo" << endl;
+        return 1;
     }
+
     yyparse();
+
     if (! errors.empty()) {
         for (vector<std::string>::iterator it = errors.begin(); 
             it != errors.end(); ++it) {
-            cout << *it << endl;
+            cerr << *it << endl;
         }
-    } else { 
-        symtable->printTable();
-    }
+        return 1;
+    } 
+
+    symtable->printTable();
+
+    return 0;
 }

@@ -68,6 +68,8 @@ void Symbol::print() {
     std::cout << "Línea:   " <<  line << "   Columna:   " << column;
     std::cout << " Alcance:   " << scope << std::endl;
 }
+
+
 /*
  ****************************************
  * SymbolTable class methods definitions*
@@ -76,6 +78,7 @@ void Symbol::print() {
 
 
 /* Class constructor*/
+
 SymbolTable::SymbolTable() {
     this->scopeCounter = 0;
     this->table = {};
@@ -119,11 +122,11 @@ bool SymbolTable::idIsInScope(string id, int scope) {
 
 bool SymbolTable::isActive(Symbol *s) {
     for (list<int>::reverse_iterator it = this->scopeStack.rbegin(); 
-        it != this->scopeStack.rend(); ++it) {
+                                     it != this->scopeStack.rend(); ++it) {
         
-        if (idIsInScope(s->getId(), *it)) {
+        if (this->idIsInScope(s->getId(), *it))
             return true;
-        }
+        
     }
     return false;
 }
