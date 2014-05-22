@@ -26,7 +26,8 @@ All you gotta do to compile and install Enie is:
 ## The Authors
 
 Enie was designed and developed by Gabriel Formica and José Antonio Ponte in
-2014 as an academic project in Universidad Simón Bolivar.
+2014 as an academic project in Universidad Simón Bolívar.
 
 <mailto:gabrielformica93@gmail.com>
+
 <mailto:pontezambrano@gmail.com>

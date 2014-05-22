@@ -1,0 +1,9 @@
+fun1 :: ent a -> nada
+
+enie :: ~ {
+   fun1(4)
+}
+
+fun1 :: ent a -> nada {
+   ent b = a*2
+}
