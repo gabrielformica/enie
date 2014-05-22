@@ -21,7 +21,7 @@ class Symbol {
     int column;
     std::string type;
   public:
-    Symbol(std::string,int,int,int);
+    Symbol(std::string, int, int, int);
     std::string getId();
     int getScope();
     int getLine();
@@ -33,7 +33,7 @@ class Symbol {
 };
 
 /* Hash table for symbols */
-typedef std::unordered_multimap<std::string,Symbol *> MapTable;
+typedef std::unordered_multimap<std::string, Symbol *> MapTable;
 
 
 /*

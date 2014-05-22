@@ -25,13 +25,14 @@
 %union {
     std::string *str;
     int intval;
+    float floatval;
 }
 
 /* Tokens de las palabras reservadas */
 
 %token <intval> NUMENT
-%token NUMFLOT
-%token CONSTCAD
+%token <floatval> NUMFLOT
+%token <str> CONSTCAD
 %token <str> ID
 %token SI
 %token OSI
@@ -287,7 +288,7 @@ exp : term
 
 term : checkid     /*ID*/
      | NUMENT
-     | NUMFLOT
+     | NUMFLOT { std::cout << "hola vale: " << $1+0.1 << std::endl; }
      | CIERTO
      | FALSO
      | checkid arr  /*ID arr*/
