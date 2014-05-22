@@ -24,72 +24,73 @@
 
 %union {
     std::string *str;
+    int intval;
 }
 
 /* Tokens de las palabras reservadas */
 
-%token NUMENT
+%token <intval> NUMENT
 %token NUMFLOT
 %token CONSTCAD
 %token <str> ID
-%token SI           
-%token OSI          
-%token SINO         
-%token MIENTRAS     
-%token PARA         
-%token CASO         
-%token ENT          
-%token FLOT         
-%token NADA         
-%token BOOL         
+%token SI
+%token OSI
+%token SINO
+%token MIENTRAS
+%token PARA
+%token CASO
+%token ENT
+%token FLOT
+%token NADA
+%token BOOL
 %token VAR
-%token CAR          
-%token CADENA       
-%token REGISTRO     
-%token RETORNA      
-%token CIERTO       
-%token FALSO        
+%token CAR
+%token CADENA
+%token REGISTRO
+%token RETORNA
+%token CIERTO
+%token FALSO
 %token ARREGLO
 %token UNION
-%token ENIE 
-%token LEER        
+%token ENIE
+%token LEER
 %token ESCRIBIR
 
 /* Tokens para caracteres especiales */
 
-%token OBRACK       
-%token CBRACK       
-%token OBRACE       
-%token CBRACE       
-%token LPAR         
-%token RPAR         
-%token EQUAL        
-%token EQUIV    
+%token OBRACK
+%token CBRACK
+%token OBRACE
+%token CBRACE
+%token LPAR
+%token RPAR
+%token EQUAL
+%token EQUIV
 %token INEQUIV
 %token DOTDOT
 %token ONEDOT
-%token COLCOL       
+%token COLCOL
 %token TILDE
-%token ARROW        
-%token SEMICOL      
-%token COMMA         
-%token MINUS        
-%token PLUS          
-%token MULT         
-%token DIV          
-%token MOD          
-%token LTHAN        
-%token GTHAN        
-%token LETHAN              
-%token GETHAN       
-%token NEGATION 
-%token AND          
-%token OR           
-%token QUOTA        
-%token APOST        
-%token BSLASH      
-%token OCOMENT     
-%token CCOMENT     
+%token ARROW
+%token SEMICOL
+%token COMMA
+%token MINUS
+%token PLUS
+%token MULT
+%token DIV
+%token MOD
+%token LTHAN
+%token GTHAN
+%token LETHAN
+%token GETHAN
+%token NEGATION
+%token AND
+%token OR
+%token QUOTA
+%token APOST
+%token BSLASH
+%token OCOMENT
+%token CCOMENT
 %token SEP
 %token QUESTION
 
@@ -109,23 +110,23 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : begin enterscope funcl end leavescope 
+enie    : begin enterscope funcl end leavescope
         ;
 
 begin   : sepaux
         | /* lambda */
         ;
 
-end     : sepaux 
+end     : sepaux
         ;
 
-sepaux  : sepaux SEP 
+sepaux  : sepaux SEP
         | SEP
         ;
 
-funcl   : funcl sepaux func leavescope 
+funcl   : funcl sepaux func leavescope
         | func leavescope
-        | error SEP 
+        | error SEP
         ;
 
 func    : header instbl
@@ -136,7 +137,7 @@ header  : idheader COLCOL enterscope signa
         | ENIE COLCOL enterscope signa
         ;
 
-idheader : addid 
+idheader : addid
          ;
 
 signa   : arglist ARROW type
@@ -145,9 +146,9 @@ signa   : arglist ARROW type
         | TILDE ARROW type
         ;
 
-arglist : arglist COMMA declonly 
-        | declonly 
-        | VAR declonly 
+arglist : arglist COMMA declonly
+        | declonly
+        | VAR declonly
         ;
 
 instlist : instlist sepaux inst
@@ -158,7 +159,7 @@ instlist : instlist sepaux inst
 instbl  : OBRACE sepaux instlist sepaux CBRACE
         ;
 
-inst : asign  
+inst : asign
      | decl
      | selec
      | multselec
@@ -170,7 +171,7 @@ inst : asign
      | ESCRIBIR exp
      ;
 
-checkid : ID 
+checkid : ID
         {
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
@@ -178,7 +179,7 @@ checkid : ID
             Symbol *s = new Symbol(*$1,currentScope,line,column);
             checkUse(symtable,&errors,s);
         }
-        ; 
+        ;
 
 addid   : ID
         {
@@ -186,11 +187,11 @@ addid   : ID
             int line = @1.first_line;
             int column = @1.first_column;
             Symbol *s = new Symbol(*$1,currentScope,line,column);
-            tryAddSymbol(symtable,&errors,s);  
+            tryAddSymbol(symtable,&errors,s);
         }
         ;
 asign : checkid EQUAL exp
-      | checkid arr EQUAL arrvalues 
+      | checkid arr EQUAL arrvalues
       ;
 
 arrvalues : exp
@@ -203,7 +204,7 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 
 
 decl : typeid EQUAL exp
-     | typeid arr EQUAL arrvalues 
+     | typeid arr EQUAL arrvalues
      | declonly
      | declbox
      ;
@@ -212,10 +213,10 @@ declonly : typeid
          | typeid arr
          ;
 
-typeid : type addid  
+typeid : type addid
        ;
 
-type : ENT              
+type : ENT
      | FLOT
      | NADA
      | BOOL
@@ -226,11 +227,11 @@ type : ENT
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
       ;
 
-oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope 
+oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
         |
         ;
 
-sinoselect :  SINO enterscope instbl leavescope 
+sinoselect :  SINO enterscope instbl leavescope
            |
            ;
 
@@ -238,18 +239,18 @@ sinoselect :  SINO enterscope instbl leavescope
 multselec: CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
          ;
 
-lastoption : sepaux BSLASH QUESTION ARROW instbl 
+lastoption : sepaux BSLASH QUESTION ARROW instbl
            ;
 
 optionslist: optionslist sepaux option
            | option
            ;
 
-option: BSLASH leftsideopt ARROW instbl 
+option: BSLASH leftsideopt ARROW instbl
       ;
 
 leftsideopt : CONSTCAD
-            | checkid 
+            | checkid
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
@@ -262,10 +263,10 @@ return : RETORNA
        | RETORNA exp
        ;
 
-exp : term            
-    | exp PLUS exp      
-    | exp MINUS exp     
-    | exp MULT exp      
+exp : term
+    | exp PLUS exp
+    | exp MINUS exp
+    | exp MULT exp
     | exp DIV exp
     | exp MOD exp
     | exp POWER exp
@@ -278,17 +279,17 @@ exp : term
     | exp EQUIV exp
     | exp INEQUIV exp
     | exp DOTDOT exp
-    | NEGATION exp     
-    | MINUS exp  %prec NEG     
+    | NEGATION exp
+    | MINUS exp  %prec NEG
     | LPAR exp RPAR
-    ; 
+    ;
 
 
-term : checkid     /*ID*/ 
+term : checkid     /*ID*/
      | NUMENT
-     | NUMFLOT       
-     | CIERTO      
-     | FALSO      
+     | NUMFLOT
+     | CIERTO
+     | FALSO
      | checkid arr  /*ID arr*/
      | callfunc
      | CONSTCAD
@@ -296,16 +297,16 @@ term : checkid     /*ID*/
      | error
      ;
 
-arr : arr OBRACK exp CBRACK 
-    | OBRACK exp CBRACK 
+arr : arr OBRACK exp CBRACK
+    | OBRACK exp CBRACK
     | arr OBRACK TILDE CBRACK
     | OBRACK TILDE CBRACK
     ;
 
-declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE 
+declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
         ;
 
-declboxtypeid : declboxtype addid 
+declboxtypeid : declboxtype addid
               ;
 
 declboxtype  : UNION
@@ -324,24 +325,24 @@ explist : explist COMMA exp
         | exp
         ;
 
-boxelem : term ONEDOT checkid  
+boxelem : term ONEDOT checkid
         ;
 
 
 enterscope : {symtable->enterScope(); }
 leavescope : {symtable->leaveScope(); }
 
-%% 
+%%
 
 void error_handler(std::string err, int line, int col) {
     std::string e;
     e = err + ": linea " + to_string(line) + " columna " + to_string(col);
     errors.push_back(e);
-}    
+}
 
 void yyerror (const char *s) {
     error_handler(s, yylloc.first_line, yylloc.first_column);
-} 
+}
 
 int main (int argc, char **argv) {
 
@@ -353,12 +354,12 @@ int main (int argc, char **argv) {
     yyparse();
 
     if (! errors.empty()) {
-        for (vector<std::string>::iterator it = errors.begin(); 
+        for (vector<std::string>::iterator it = errors.begin();
             it != errors.end(); ++it) {
             cerr << *it << endl;
         }
         return 1;
-    } 
+    }
 
     symtable->printTable();
 

@@ -3,7 +3,7 @@
     #include <string>
     #include "parser.tab.h"
     #define YY_USER_ACTION loc_track();
-    
+
     extern YYLTYPE yylloc;
     extern std::vector<std::string> errors;
 
@@ -11,25 +11,25 @@
     void loc_track() {
         yylloc.first_line = yylloc.last_line = yylineno;
         yylloc.first_column = yycolumn;
-        yylloc.last_column = yycolumn+yyleng-1; 
+        yylloc.last_column = yycolumn+yyleng-1;
         yycolumn += yyleng;
-    }    
+    }
 %}
 
 
-%x comment 
+%x comment
 %%
 
 "/\*"                       { BEGIN(comment); }
 <comment>"\*/"[ \n]+        {  yycolumn = 1; BEGIN(INITIAL); }
 <comment>.                  ;
-<comment>\n                 { yycolumn = 1; } 
+<comment>\n                 { yycolumn = 1; }
 
-"/~".*                      { yycolumn = 1; } 
+"/~".*                      { yycolumn = 1; }
 
 [ \t]+                      /*eat whitespaces*/
 \n                          { yycolumn = 1; return SEP; }
-[0-9]+				        return NUMENT;
+[0-9]+				        { yylval.intval = atoi(yytext); return NUMENT; }
 [0-9]+.[0-9]+               return NUMFLOT;
 arreglo                     return ARREGLO;
 union                       return UNION;
@@ -88,16 +88,16 @@ retorna						return RETORNA;
 \/                          return DIV;
 \\							return BSLASH;
 \?                          return QUESTION;
-[a-zA-Z][a-zA-Z0-9_]*	    { 
-                            yylval.str = new std::string(yytext); 
-                            return ID;  
+[a-zA-Z][a-zA-Z0-9_]*	    {
+                            yylval.str = new std::string(yytext);
+                            return ID;
                             }
 
 
 
 
 
-.                           {   
+.                           {
                             /* Regla para caracteres inesperados */
 
                             std::string error = "Error: Caracter ";
@@ -105,7 +105,7 @@ retorna						return RETORNA;
                             error = error + " desconocido en linea ";
                             error = error + std::to_string(yylineno);
                             error = error + ", columna ";
-                            error = error + std::to_string(yycolumn); 
+                            error = error + std::to_string(yycolumn);
                             errors.push_back(error);
                             }
 

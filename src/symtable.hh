@@ -19,6 +19,7 @@ class Symbol {
     int scope;
     int line;
     int column;
+    std::string type;
   public:
     Symbol(std::string,int,int,int);
     std::string getId();
