@@ -129,6 +129,7 @@ funcl   : funcl sepaux func leavescope
         ;
 
 func    : header instbl
+        | header
         ;
 
 
