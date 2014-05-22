@@ -288,7 +288,7 @@ exp : term
 
 term : checkid     /*ID*/
      | NUMENT
-     | NUMFLOT { std::cout << "hola vale: " << $1+0.1 << std::endl; }
+     | NUMFLOT
      | CIERTO
      | FALSO
      | checkid arr  /*ID arr*/
