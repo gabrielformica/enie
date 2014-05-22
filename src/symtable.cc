@@ -82,7 +82,7 @@ void Symbol::print() {
 SymbolTable::SymbolTable() {
     this->scopeCounter = 0;
     this->table = {};
-    this->scopeStack.push_back(0);  //first scope is 0
+    this->scopeStack.push_back(0);  // first scope is 0
 }
 
 /* Add new scope*/
@@ -108,25 +108,25 @@ int SymbolTable::getCurrentScope() {
 
 void SymbolTable::addSymbol(Symbol *s) {
     string id = s->getId();
-    if (! this->idIsInScope(s->getId(),s->getScope())) {
-        this->table.insert(MapTable::value_type(id,s));
+    if (!this->idIsInScope(s->getId(),s->getScope())) {
+        this->table.insert(MapTable::value_type(id, s));
     }
 }
 
 /* Tell if id is already in scope */
 bool SymbolTable::idIsInScope(string id, int scope) {
-    return lookup(id,scope) != NULL;
+    return lookup(id, scope) != NULL;
 }
 
 /* Tell if a symbol declaration is active */
 
 bool SymbolTable::isActive(Symbol *s) {
-    for (list<int>::reverse_iterator it = this->scopeStack.rbegin(); 
+    for (list<int>::reverse_iterator it = this->scopeStack.rbegin();
                                      it != this->scopeStack.rend(); ++it) {
-        
+
         if (this->idIsInScope(s->getId(), *it))
             return true;
-        
+
     }
     return false;
 }
@@ -145,21 +145,18 @@ Symbol *SymbolTable::lookup(string id, int scope) {
 
 void SymbolTable::printStack() {
     cout << "STACK" << endl;
-    for (list<int>::reverse_iterator it = this->scopeStack.rbegin(); 
+    for (list<int>::reverse_iterator it = this->scopeStack.rbegin();
             it != this->scopeStack.rend(); ++it) {
         cout << *it << endl;
     }
     cout << "STACK" << endl;
-
 }
 
 void SymbolTable::printTable() {
     std::cout << "-----Tabla de simbolos-----" << std::endl;
     std::cout << endl;
-    
-    for (MapTable::iterator it = table.begin();
-	 it != table.end();
-	 it++ ) {
-	(*it).second->print();
+
+    for (MapTable::iterator it = table.begin(); it != table.end(); it++ ) {
+        (*it).second->print();
     }
 }
