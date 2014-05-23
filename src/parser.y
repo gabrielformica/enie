@@ -27,6 +27,9 @@
     std::string *str;
     int intval;
     float floatval;
+    Instruc *instType;
+    Symbol *symType;
+    Exp *expType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -166,7 +169,7 @@ inst : asign
      | decl
      | selec
      | multselec
-     | indit e
+     | indite
      | detite
      | return
      | callfunc
@@ -196,8 +199,8 @@ addid   : ID
         ;
 asign : checkid EQUAL exp
         {
-            Asign a = Asignment($1, $3);
-            $$ = a;
+            Asign a = Asignment($<symType>1, $<expType>3);
+            $<instType>$ = &a;
         }
       | checkid arr EQUAL arrvalues
         {
