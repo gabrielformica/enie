@@ -8,39 +8,39 @@
   *
   * @section Description
   *
-  * Class definitions for integer type
+  * Class definitions for boolean type
   */
 
-#include "ent.hh"
+#include "bool.hh"
 #include <string>
 
 using namespace std;
 
 
 /**
-  * Returns the value of Ent 
+  * Returns the value of Bool object
   * @return val
   */
 
-int Ent::get() {
+int Bool::get() {
     return this->val;
 }
 
 
 /**
-  * Sets new value to Ent
+  * Sets new value to Bool object 
   * @param v : new value  
   */
 
-void Ent::set(int v) {
+void Bool::set(bool v) {
     this->val = v;
 }
 
 
 /**
-  * Returns string "ent", used for checking types
+  * Returns string "bool", used for checking types
   */
 
-string Ent::check() {
-    return "ent";
+string Bool::check() {
+    return "bool";
 }
