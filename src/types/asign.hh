@@ -13,16 +13,19 @@
   *
   */
 
+
 #ifndef ASIGN_HH
 #define ASIGN_HH
 
-class Asign : public Instruc {
+#include "exp.hh"
+#include "instruc.hh"
+#include "../symtable.hh"
+
+class Asign: public Instruc {
     private:
         Symbol *sym;
-        Exp *expr;
+        Exp *exp;
     public:
-        typedef Instruc super;
-
         explicit Asign(Symbol *s, Exp *e) : sym(s), exp(e) { }
 
         Symbol* get_symbol();

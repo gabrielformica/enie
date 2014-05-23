@@ -13,13 +13,19 @@
   *
   */
 
+
 #ifndef SELEC_HH
 #define SELEC_HH
+
+#include "exp.hh"
+#include "instruc.hh"
+#include "../symtable.hh"
 
 class Selec : public Instruc {
     private:
         Symbol *sym;
-        Exp *expr;
+        Exp *exp;
+
     public:
         typedef Instruc super;
 

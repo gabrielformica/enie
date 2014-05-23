@@ -9,8 +9,11 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
-    #include "parserhelper.hh"
+    #include "types/exp.hh"
     #include "types/ent.hh"
+    #include "types/instruc.hh"
+    #include "types/asign.hh"
+    #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
 }
@@ -182,9 +185,9 @@ checkid : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol *s = new Symbol(*$1,currentScope,line,column);
-            checkUse(symtable,&errors,s);
-            $$ = s;
+            Symbol s(*$1,currentScope,line,column);
+            checkUse(symtable,&errors,&s);
+            $<symType>$ = &s;
         }
         ;
 
@@ -193,14 +196,14 @@ addid   : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol *s = new Symbol(*$1,currentScope,line,column);
-            tryAddSymbol(symtable,&errors,s);
+            Symbol s(*$1,currentScope,line,column);
+            tryAddSymbol(symtable,&errors,&s);
         }
         ;
 asign : checkid EQUAL exp
         {
-            Asign a = Asignment($<symType>1, $<expType>3);
-            $<instType>$ = &a;
+            Asign a = Asign($<symType>1, $<expType>3);
+           // $<instType>$ = &a;
         }
       | checkid arr EQUAL arrvalues
         {
@@ -227,7 +230,7 @@ declonly : typeid
          | typeid arr
          ;
 
-typeid : type addid
+typeid : type addid 
        ;
 
 type : ENT
@@ -320,12 +323,9 @@ arr : arr OBRACK exp CBRACK
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
         ;
 
-declboxtypeid : declboxtype addid
+declboxtypeid : UNION addid
+              | REGISTRO addid
               ;
-
-declboxtype  : UNION
-             | REGISTRO
-             ;
 
 declist : declist sepaux decl
         | decl

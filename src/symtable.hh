@@ -21,11 +21,14 @@ class Symbol {
     int column;
     std::string type;
   public:
-    Symbol(std::string, int, int, int);
+    explicit Symbol(std::string i, int s, int l, int c, std::string t = "") : 
+             id(i), scope(s), line(l), column(c), type(t) {} 
+
     std::string getId();
     int getScope();
     int getLine();
     int getColumn();
+    std::string getType();
     void setScope(int);
     void setLine(int);
     void setColumn(int);
@@ -45,6 +48,7 @@ class SymbolTable {
     int scopeCounter;
     MapTable table;
     std::list<int> scopeStack;
+
   public:
     SymbolTable();
     void enterScope();

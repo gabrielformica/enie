@@ -13,17 +13,21 @@
   * instrucciones existentes.
   */
 
+
+
+#ifndef INSTRUC_HH
+#define INSTRUC_HH 
+
 class Instruc {
     private:
         int line, col;
     public:
-        explicit Instruc() : { }
-        virtual ~Instruc();
-
         int get_line();
         int get_col();
-        void set_line();
-        void set_col();
+        void set_line(int);
+        void set_col(int);
 
         virtual bool check() = 0;
 };
+
+#endif

@@ -27,7 +27,7 @@ class Flot: public Exp {
         void set(float v);
 
         /** Exp methods */
-        string check() { return "flot"; }
+        std::string check() { return "flot"; }
         int offset() { return 64; }  //64 byte
 
         /* Overloading operators */
@@ -41,10 +41,6 @@ class Flot: public Exp {
         Flot operator-(Flot n) { return Flot(this->val - n.val); }
         Flot operator*(Flot n) { return Flot(this->val * n.val); }
         Flot operator/(Flot n) { return Flot(this->val / n.val); }
-        Flot operator%(Flot n) { return Flot(this->val % n.val); }
-
-
-
 };
 
 #endif

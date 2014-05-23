@@ -13,15 +13,6 @@ using namespace std;
  */
 
 
-/* Class constructor*/
-
-Symbol::Symbol(string id, int scope, int line, int column) {
-    this->id = id;
-    this->scope = scope;
-    this->line = line;
-    this->column = column;
-}
-
 /* Return id of the symbol */
 
 string Symbol::getId() {
@@ -44,6 +35,12 @@ int Symbol::getLine() {
 
 int Symbol::getColumn() {
     return this->column;
+}
+
+/* Return column of the symbol*/
+
+string Symbol::getType() {
+    return this->type;
 }
 
 /* Set scope*/

@@ -13,9 +13,13 @@
   *
   */
 
+#include <string>
 #include "asign.hh"
+#include "exp.hh"
+#include "../symtable.hh"
 
-Symbol* get_symbol() {
+
+Symbol* Asign::get_symbol() {
     return this->sym;
 }
 
@@ -23,7 +27,7 @@ Symbol* get_symbol() {
 //     return this->expr;
 // }
 
-void set_symbol(Symbol *s) {
+void Asign::set_symbol(Symbol *s) {
     this->sym = s;
 }
 
@@ -31,13 +35,13 @@ void set_symbol(Symbol *s) {
 //     this->expr = e;
 // }
 
-bool check() {
-    std::string exp_type = this->expr->check();
-    std::string sym_type = this->expr->get_type();
+bool Asign::check() {
+    std::string exp_type = this->exp->check();
+  //  //std::string sym_type = this->sym->getType();
 
-    if (sym_type == exp_type) {
-        return true;
-    }
+  //  if (sym_type == exp_type) {
+  //      return true;
+  //  }
 
     return false;
 }

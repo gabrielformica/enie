@@ -13,6 +13,9 @@
   * instrucciones existentes.
   */
 
+
+#include "instruc.hh"
+
 int Instruc::get_line() {
     return this->line;
 }

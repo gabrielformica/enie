@@ -13,28 +13,31 @@
   *
   */
 
-#include "multselec.hh"
 
-Symbol* get_symbol() {
+#include "exp.hh"
+#include "multselec.hh"
+#include "../symtable.hh"
+
+Symbol* Multselec::getSymbol() {
     return this->sym;
 }
 
-Exp* get_expression() {
-    return this->expr;
+Exp* Multselec::getExpression() {
+    return this->exp;
 }
 
 
-void set_symbol(Symbol *s) {
+void Multselec::setSymbol(Symbol *s) {
     this->sym = s;
 }
 
-void set_expression(Exp *e) {
-    this->expr = e;
+void Multselec::setExpression(Exp *e) {
+    this->exp = e;
 }
 
-bool check() {
+bool Multselec::check() {
 
-    if (this->sym->type == this->expr->type) {
+    if (this->sym->getType() == this->exp->check()) {
         return true;
     }
 
