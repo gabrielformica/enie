@@ -1,8 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file flot.cc
-  *
+  * @file 
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
   * @author: Melecio Ponte <pontezambrano@gmail.com>
@@ -10,19 +9,39 @@
   * @section Description
   *
   * Class definitions for floating point type
-  *
   */
 
+
 #include "flot.hh"
+#include <string>
 
-Flot::Flot(float v) {
-    this->val = v;
-}
+using namespace std;
 
-float get_flot() {
+
+/**
+  * Returns the value of Flot 
+  * @return val
+  */
+
+float Flot::get() {
     return this->val;
 }
 
-void set_flot(float v) {
+
+/**
+  * Sets new value to Ent
+  * @param v : new value  
+  */
+
+void Flot::set(float v) {
     this->val = v;
+}
+
+
+/**
+  * Returns string "flot", used for checking types
+  */
+
+string Flot::check() {
+    return "flot";
 }
