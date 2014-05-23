@@ -166,7 +166,7 @@ inst : asign
      | decl
      | selec
      | multselec
-     | indite
+     | indit e
      | detite
      | return
      | callfunc
@@ -181,6 +181,7 @@ checkid : ID
             int column = @1.first_column;
             Symbol *s = new Symbol(*$1,currentScope,line,column);
             checkUse(symtable,&errors,s);
+            $$ = s;
         }
         ;
 
@@ -194,7 +195,14 @@ addid   : ID
         }
         ;
 asign : checkid EQUAL exp
+        {
+            Asign a = Asignment($1, $3);
+            $$ = a;
+        }
       | checkid arr EQUAL arrvalues
+        {
+
+        }
       ;
 
 arrvalues : exp
@@ -239,15 +247,15 @@ sinoselect :  SINO enterscope instbl leavescope
            ;
 
 
-multselec: CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
-         ;
+multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
+          ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
            ;
 
-optionslist: optionslist sepaux option
-           | option
-           ;
+optionslist : optionslist sepaux option
+            | option
+            ;
 
 option: BSLASH leftsideopt ARROW instbl
       ;
