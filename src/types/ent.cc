@@ -11,6 +11,7 @@
   * Class definitions for integer type
   */
 
+
 #include "ent.hh"
 #include <string>
 
@@ -34,13 +35,4 @@ int Ent::get() {
 
 void Ent::set(int v) {
     this->val = v;
-}
-
-
-/**
-  * Returns string "ent", used for checking types
-  */
-
-string Ent::check() {
-    return "ent";
 }

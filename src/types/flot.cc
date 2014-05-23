@@ -36,12 +36,3 @@ float Flot::get() {
 void Flot::set(float v) {
     this->val = v;
 }
-
-
-/**
-  * Returns string "flot", used for checking types
-  */
-
-string Flot::check() {
-    return "flot";
-}

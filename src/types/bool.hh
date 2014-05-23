@@ -12,14 +12,23 @@
   */
 
 
-#include <string>
+#ifndef BOOL_HH
+#define BOOL_HH
 
-class Bool {
+#include <string>
+#include "exp.hh"
+
+class Bool: public Exp {
     private:
         bool val;
     public:
         explicit Bool(bool v) : val(v) { }
         int get();
         void set(bool v);
-        std::string check();
+
+        /** Exp methods */
+        std::string check() { return "bool"; };
+        int offset() { return 1; };  //1 byte
 };
+
+#endif

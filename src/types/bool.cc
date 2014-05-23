@@ -35,12 +35,3 @@ int Bool::get() {
 void Bool::set(bool v) {
     this->val = v;
 }
-
-
-/**
-  * Returns string "bool", used for checking types
-  */
-
-string Bool::check() {
-    return "bool";
-}

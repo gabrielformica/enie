@@ -10,6 +10,7 @@
     #include <stdio.h>
     #include "symtable.hh"
     #include "parserhelper.hh"
+    #include "types/ent.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
 }
