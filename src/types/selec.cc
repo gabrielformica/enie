@@ -9,31 +9,34 @@
   *
   * @section Description
   *
-  * Class definitions for asignment instruction type
+  * Class implementations for selection instruction type
   *
   */
 
+#include <string>
 #include "selec.hh"
 
-Symbol* get_symbol() {
+Symbol* Selec::get_symbol() {
     return this->sym;
 }
 
-// Expression* get_expression() {
-//     return this->expr;
-// }
+Exp* Selec::get_expression() {
+    return this->expr;
+}
 
 
-void set_symbol(Symbol *s) {
+void Selec::set_symbol(Symbol *s) {
     this->sym = s;
 }
 
-// void set_expression(Expression *e) {
-//     this->expr = e;
-// }
+void Selec::set_expression(Exp *e) {
+    this->expr = e;
+}
 
-bool check() {
-    if (this->sym->type == this->expr->type) {
+bool Selec::check() {
+    std::string exp_type = this->expr->check();
+
+    if (exp_type == "bool") {
         return true;
     }
 

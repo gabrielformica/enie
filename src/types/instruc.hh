@@ -18,8 +18,12 @@ class Instruc {
         int line, col;
     public:
         explicit Instruc() : { }
+        virtual ~Instruc();
+
         int get_line();
         int get_col();
         void set_line();
         void set_col();
+
+        virtual bool check() = 0;
 };

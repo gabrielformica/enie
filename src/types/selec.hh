@@ -9,19 +9,27 @@
   *
   * @section Description
   *
-  * Class definitions for asignment instruction
+  * Class definitions for selection instruction type
   *
   */
+
+#ifndef SELEC_HH
+#define SELEC_HH
 
 class Selec : public Instruc {
     private:
         Symbol *sym;
-        // Expression *expr;
+        Exp *expr;
     public:
-        explicit Selec(Symbol *s, Expression *e) : sym(s), exp(e) { }
+        typedef Instruc super;
+
+        explicit Selec(Symbol *s, Exp *e) : sym(s), exp(e) { }
+
         Symbol* get_symbol();
-        // Expression* get_expression();
+        Exp* get_expression();
         void set_symbol(Symbol *s);
-        // void set_expression(Expression *e);
+        void set_expression(Exp *e);
         bool check();
 };
+
+#endif
