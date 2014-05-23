@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file asign.hh
+  * @file multselec.hh
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,16 +9,16 @@
   *
   * @section Description
   *
-  * Class definitions for asignment instruction
+  * Class definitions for case instruction type
   *
   */
 
-class Asign : public Instruc {
+class Multselec : public Instruc {
     private:
         Symbol *sym;
         // Expression *expr;
     public:
-        explicit Asign(Symbol *s, Expression *e) : sym(s), exp(e) { }
+        explicit Multselec(Symbol *s, Expression *e) : sym(s), exp(e) { }
         Symbol* get_symbol();
         // Expression* get_expression();
         void set_symbol(Symbol *s);

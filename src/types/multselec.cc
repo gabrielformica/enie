@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file asign.cc
+  * @file multselec.cc
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,11 +9,11 @@
   *
   * @section Description
   *
-  * Class definitions for asignment instruction type
+  * Class implementations for case instruction type
   *
   */
 
-#include "asign.hh"
+#include "multselec.hh"
 
 Symbol* get_symbol() {
     return this->sym;

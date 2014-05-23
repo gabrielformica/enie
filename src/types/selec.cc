@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file asign.cc
+  * @file selec.cc
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -13,7 +13,7 @@
   *
   */
 
-#include "asign.hh"
+#include "selec.hh"
 
 Symbol* get_symbol() {
     return this->sym;

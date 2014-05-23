@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file asign.hh
+  * @file selec.hh
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -13,12 +13,12 @@
   *
   */
 
-class Asign : public Instruc {
+class Selec : public Instruc {
     private:
         Symbol *sym;
         // Expression *expr;
     public:
-        explicit Asign(Symbol *s, Expression *e) : sym(s), exp(e) { }
+        explicit Selec(Symbol *s, Expression *e) : sym(s), exp(e) { }
         Symbol* get_symbol();
         // Expression* get_expression();
         void set_symbol(Symbol *s);
