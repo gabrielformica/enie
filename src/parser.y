@@ -14,6 +14,7 @@
     #include "types/instruc.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
+    #include "types/instbl.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -35,6 +36,7 @@
     Instlist *instListType;
     Symbol *symType;
     Exp *expType;
+    Instbl *instblType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -175,7 +177,11 @@ instlist : instlist sepaux inst
          | error
          ;
 
-instbl  : OBRACE sepaux instlist sepaux CBRACE
+instbl : OBRACE sepaux instlist sepaux CBRACE
+            {
+                Instbl bl($<instListType>3);
+                $<instblType>$ = &bl;
+            }
         ;
 
 inst : asign
@@ -214,7 +220,7 @@ addid   : ID
 asign : checkid EQUAL exp
         {
             Asign a = Asign($<symType>1, $<expType>3);
-           // $<instType>$ = &a;
+            $<instType>$ = &a;
         }
       | checkid arr EQUAL arrvalues
         {
