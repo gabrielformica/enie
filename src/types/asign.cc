@@ -18,6 +18,10 @@
 #include "exp.hh"
 #include "../symtable.hh"
 
+Asign::Asign(Symbol *s, Exp *e) {
+    this->exp = e;
+    this->sym = s;
+}
 
 Symbol* Asign::get_symbol() {
     return this->sym;

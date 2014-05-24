@@ -231,8 +231,8 @@ addid   : ID
 
 asign : checkid EQUAL exp
         {
-            Asign a = Asign($<symType>1, $<expType>3);
-            $<instType>$ = &a;
+            Asign *a =  new Asign($<symType>1, $<expType>3);
+            $<instType>$ = a;
         }
       | checkid arr EQUAL arrvalues
         {

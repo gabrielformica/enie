@@ -26,7 +26,7 @@ class Asign: public Instruc {
         Symbol *sym;
         Exp *exp;
     public:
-        explicit Asign(Symbol *s, Exp *e) : sym(s), exp(e) { }
+        Asign(Symbol *s, Exp *e);
 
         Symbol* get_symbol();
         Exp* getExpression();
