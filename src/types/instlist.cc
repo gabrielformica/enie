@@ -22,3 +22,6 @@ std::list<Instruc*> Instlist::getList() {
     return this->listinst;
 }
 
+void Instlist::addInst(Instruc *i) {
+    this->listinst.push_back(i);
+}

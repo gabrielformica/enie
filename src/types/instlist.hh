@@ -30,6 +30,7 @@ class Instlist {
         }
 
         std::list<Instruc*> getList();
+        void addInst(Instruc *i);
 };
 
 #endif

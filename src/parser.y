@@ -163,6 +163,9 @@ arglist : arglist COMMA declonly
         ;
 
 instlist : instlist sepaux inst
+            {
+                $<instListType>1->addInst($<instType>3);
+            }
          | inst
             {
                 Instlist l($<instType>1);
