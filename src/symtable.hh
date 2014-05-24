@@ -21,8 +21,7 @@ class Symbol {
     int column;
     std::string type;
   public:
-    explicit Symbol(std::string i, int s, int l, int c, std::string t = "") : 
-             id(i), scope(s), line(l), column(c), type(t) {} 
+    Symbol(std::string, int, int, int);
 
     std::string getId();
     int getScope();
