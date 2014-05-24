@@ -13,6 +13,7 @@
     #include "types/ent.hh"
     #include "types/instruc.hh"
     #include "types/asign.hh"
+    #include "types/instlist.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -31,6 +32,7 @@
     int intval;
     float floatval;
     Instruc *instType;
+    Instlist *instListType;
     Symbol *symType;
     Exp *expType;
 }
@@ -162,6 +164,10 @@ arglist : arglist COMMA declonly
 
 instlist : instlist sepaux inst
          | inst
+            {
+                Instlist l($<instType>1);
+                $<instListType>$ = &l;
+            }
          | error
          ;
 
@@ -230,7 +236,7 @@ declonly : typeid
          | typeid arr
          ;
 
-typeid : type addid 
+typeid : type addid
        ;
 
 type : ENT
