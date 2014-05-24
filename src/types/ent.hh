@@ -20,28 +20,28 @@
 
 class Ent: public Exp {
     private:
-        int val;
+        int value;
     public:
-        explicit Ent(int v) : val(v) { }
-        int get();
-        void set(int v);
+        explicit Ent(int v) : value(v) { }
+        int getValue();
+        void setValue(int v);
 
         /** Exp methods */
-        std::string check() { return "ent"; };
+        std::string getType() { return "ent"; };
         int offset() { return 32; };  //32 byte
         
         /* Overloading operators */
-        bool operator<(Ent n) { return (this->val < n.val); }
-        bool operator>(Ent n) { return (this->val > n.val); }
-        bool operator<=(Ent n) { return (this->val <= n.val); }
-        bool operator>=(Ent n) { return (this->val >= n.val); }
-        bool operator==(Ent n) { return (this->val == n.val); }
+        bool operator<(Ent n) { return (this->value < n.value); }
+        bool operator>(Ent n) { return (this->value > n.value); }
+        bool operator<=(Ent n) { return (this->value <= n.value); }
+        bool operator>=(Ent n) { return (this->value >= n.value); }
+        bool operator==(Ent n) { return (this->value == n.value); }
 
-        Ent operator+(Ent n) { return Ent(this->val + n.val); }
-        Ent operator-(Ent n) { return Ent(this->val - n.val); }
-        Ent operator*(Ent n) { return Ent(this->val * n.val); }
-        Ent operator/(Ent n) { return Ent(this->val / n.val); }
-        Ent operator%(Ent n) { return Ent(this->val % n.val); }
+        Ent operator+(Ent n) { return Ent(this->value + n.value); }
+        Ent operator-(Ent n) { return Ent(this->value - n.value); }
+        Ent operator*(Ent n) { return Ent(this->value * n.value); }
+        Ent operator/(Ent n) { return Ent(this->value / n.value); }
+        Ent operator%(Ent n) { return Ent(this->value % n.value); }
 };
 
 #endif

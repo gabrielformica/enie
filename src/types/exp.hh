@@ -19,8 +19,7 @@
 
 class Exp {
     public:
-        virtual std::string check() = 0;
-        virtual int offset() = 0;
+        virtual std::string getType() = 0;
 };
 
 #endif

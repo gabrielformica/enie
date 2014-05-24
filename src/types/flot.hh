@@ -20,27 +20,28 @@
 
 class Flot: public Exp {
     private:
-        float val;
+        float value;
+
     public:
-        explicit Flot(float v) : val(v) { }
-        float get();
-        void set(float v);
+        explicit Flot(float v) : value(v) { }
+        float getValue();
+        void setValue(float v);
 
         /** Exp methods */
-        std::string check() { return "flot"; }
+        std::string getType() { return "flot"; }
         int offset() { return 64; }  //64 byte
 
         /* Overloading operators */
-        bool operator<(Flot n) { return (this->val < n.val); }
-        bool operator>(Flot n) { return (this->val > n.val); }
-        bool operator<=(Flot n) { return (this->val <= n.val); }
-        bool operator>=(Flot n) { return (this->val >= n.val); }
-        bool operator==(Flot n) { return (this->val == n.val); }
+        bool operator<(Flot n) { return (this->value < n.value); }
+        bool operator>(Flot n) { return (this->value > n.value); }
+        bool operator<=(Flot n) { return (this->value <= n.value); }
+        bool operator>=(Flot n) { return (this->value >= n.value); }
+        bool operator==(Flot n) { return (this->value == n.value); }
 
-        Flot operator+(Flot n) { return Flot(this->val + n.val); }
-        Flot operator-(Flot n) { return Flot(this->val - n.val); }
-        Flot operator*(Flot n) { return Flot(this->val * n.val); }
-        Flot operator/(Flot n) { return Flot(this->val / n.val); }
+        Flot operator+(Flot n) { return Flot(this->value + n.value); }
+        Flot operator-(Flot n) { return Flot(this->value - n.value); }
+        Flot operator*(Flot n) { return Flot(this->value * n.value); }
+        Flot operator/(Flot n) { return Flot(this->value / n.value); }
 };
 
 #endif

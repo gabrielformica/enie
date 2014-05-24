@@ -22,8 +22,8 @@ using namespace std;
   * @return val
   */
 
-int Bool::get() {
-    return this->val;
+int Bool::getValue() {
+    return this->value;
 }
 
 
@@ -32,6 +32,6 @@ int Bool::get() {
   * @param v : new value  
   */
 
-void Bool::set(bool v) {
-    this->val = v;
+void Bool::setValue(bool v) {
+    this->value = v;
 }
