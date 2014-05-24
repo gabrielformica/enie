@@ -165,6 +165,7 @@ arglist : arglist COMMA declonly
 instlist : instlist sepaux inst
             {
                 $<instListType>1->addInst($<instType>3);
+                $<instListType>$ = $<instListType>1;
             }
          | inst
             {
