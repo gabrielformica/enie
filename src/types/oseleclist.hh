@@ -21,17 +21,15 @@
 
 class Oseleclist {
     private:
-        std::list<Oselec*> list;
+        std::list<Oselec*> *list;
     public:
         typedef Instruc super;
 
-        explicit Oseleclist(Oselec *os) {
-            std::list<Oselec *> l(1, os);
-            this->list = l;
-        }
+        Oseleclist();
+        Oseleclist(Oselec *os);
 
-        std::list<Oselec*> getList() { return this->list; }
-        void addOselec(Oselec *os) { this->list.push_back(os); }
+        std::list<Oselec*>* getList();
+        void addOselec(Oselec *os);
 };
 
 #endif

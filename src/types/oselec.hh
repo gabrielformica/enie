@@ -27,7 +27,7 @@ class Oselec : public Instruc {
     public:
         typedef Instruc super;
 
-        explicit Oselec(Exp *e, Instbl *bl) : exp(e), block(bl) { }
+        Oselec(Exp *e, Instbl *bl);
 
         Exp* getExpression();
         Instbl* getBlock();

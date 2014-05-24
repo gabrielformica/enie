@@ -19,12 +19,23 @@
 #include "oselec.hh"
 #include "exp.hh"
 
+Selec::Selec(Exp *e, Instbl *bl, Oseleclist *l) {
+    this->exp = e;
+    this->block = bl;
+    this->list = l;
+}
+
+
 Exp* Selec::getExpression() {
     return this->exp;
 }
 
+void Selec::initList(Oselec *os) {
+    this->list = new Oseleclist(os);
+}
+
 Oseleclist* Selec::getList() {
-    return this->oselecList;
+    return this->list;
 }
 
 bool Selec::check() {

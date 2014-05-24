@@ -15,7 +15,9 @@
     #include "types/asign.hh"
     #include "types/instlist.hh"
     #include "types/instbl.hh"
+    #include "types/selec.hh"
     #include "types/oseleclist.hh"
+    #include "types/leer.hh"
     #include "types/retorno.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
@@ -40,7 +42,9 @@
     Exp *expType;
     Instbl *instblType;
     Oseleclist *oslType;
+    Selec *selecType;
     Retorno *returnType;
+    Leer *leerType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -194,9 +198,13 @@ inst : asign
      | multselec
      | indite   // creada pero no en parser
      | detite   // creada pero no en parser
-     | return
+     | return   // done
      | callfunc
      | LEER exp
+        {
+            Leer l($<expType>2);
+            $<leerType>$ = &l;
+        }
      | ESCRIBIR exp
      ;
 
@@ -262,19 +270,23 @@ type : ENT
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+        {
+            Selec *s = new Selec($<expType>3, $<instblType>6, $<oslType>8);
+            $<selecType>$ = s;
+        }
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
             {
-                Oselec os($<expType>4, $<instblType>7);
-                $<oslType>1->addOselec(&os);
+                Oselec *os = new Oselec($<expType>4, $<instblType>7);
+                $<oslType>1->addOselec(os);
                 $<oslType>$ = $<oslType>1;
             }
         |  OSI LPAR exp RPAR enterscope instbl leavescope
             {
-                Oselec os($<expType>3, $<instblType>6);
-                Oseleclist l(&os);
-                $<oslType>$ = &l;
+                Oselec *os = new Oselec($<expType>3, $<instblType>6);
+                Oseleclist *l = new Oseleclist(os);
+                $<oslType>$ = l;
             }
         ;
 

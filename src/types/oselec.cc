@@ -15,7 +15,13 @@
 
 #include <string>
 #include "oselec.hh"
+#include "instbl.hh"
 #include "exp.hh"
+
+Oselec::Oselec(Exp *e, Instbl *bl) {
+    this->exp = e;
+    this->block = bl;
+}
 
 Exp* Oselec::getExpression() {
     return this->exp;

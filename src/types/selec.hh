@@ -28,14 +28,15 @@ class Selec : public Instruc {
     private:
         Exp *exp;
         Instbl *block;
-        Oseleclist *oselecList;
+        Oseleclist *list;
 
     public:
         typedef Instruc super;
 
-        explicit Selec(Exp *e, Instbl *bl) : exp(e), block(bl) { }
+        Selec(Exp *e, Instbl *bl, Oseleclist *l);
 
         Exp* getExpression();
+        void initList(Oselec *os);
         Oseleclist* getList();
         Instbl* getBlock();
         bool check();
