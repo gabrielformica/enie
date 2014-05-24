@@ -293,8 +293,8 @@ return : RETORNA
 exp : term
     | exp PLUS exp
         {
-            std::string t1 =  ($<expType>1)->check();
-            std::string t2 =  ($<expType>3)->check();
+            std::string t1 =  ($<expType>1)->getType();
+            std::string t2 =  ($<expType>3)->getType();
             if (t1 == t2) {
                 if ((t1 == "ent") || (t1 == "flot")) {
                 }

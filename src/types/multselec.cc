@@ -37,7 +37,7 @@ void Multselec::setExpression(Exp *e) {
 
 bool Multselec::check() {
 
-    if (this->sym->getType() == this->exp->check()) {
+    if (this->sym->getType() == this->exp->getType()) {
         return true;
     }
 

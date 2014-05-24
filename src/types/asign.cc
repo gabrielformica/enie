@@ -36,7 +36,7 @@ void Asign::set_symbol(Symbol *s) {
 // }
 
 bool Asign::check() {
-    std::string exp_type = this->exp->check();
+    std::string exp_type = this->exp->getType();
   //  //std::string sym_type = this->sym->getType();
 
   //  if (sym_type == exp_type) {

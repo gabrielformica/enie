@@ -36,7 +36,7 @@ void Inedite::set_expression(Exp *e) {
 }
 
 bool Inedite::check() {
-    std::string exp_type = this->exp->check();
+    std::string exp_type = this->exp->getType();
 
     if (exp_type == "bool") {
         return true;

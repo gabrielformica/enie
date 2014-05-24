@@ -36,7 +36,7 @@ void Selec::set_expression(Exp *e) {
 }
 
 bool Selec::check() {
-    std::string exp_type = this->exp->check();
+    std::string exp_type = this->exp->getType();
 
     if (exp_type == "bool") {
         return true;
