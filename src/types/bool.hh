@@ -20,14 +20,14 @@
 
 class Bool: public Exp {
     private:
-        bool val;
+        bool value;
     public:
-        explicit Bool(bool v) : val(v) { }
-        int get();
-        void set(bool v);
+        explicit Bool(bool v) : value(v) { }
+        int getValue();
+        void setValue(bool v);
 
         /** Exp methods */
-        std::string check() { return "bool"; };
+        std::string getType() { return "bool"; };
         int offset() { return 1; };  //1 byte
 };
 

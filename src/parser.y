@@ -200,6 +200,7 @@ addid   : ID
             tryAddSymbol(symtable,&errors,&s);
         }
         ;
+
 asign : checkid EQUAL exp
         {
             Asign a = Asign($<symType>1, $<expType>3);
@@ -218,7 +219,6 @@ arrvalues : exp
 arrvalueslist : arrvalueslist COMMA arrvalues
               | arrvalues
               ;
-
 
 decl : typeid EQUAL exp
      | typeid arr EQUAL arrvalues
@@ -282,6 +282,15 @@ return : RETORNA
 
 exp : term
     | exp PLUS exp
+        {
+            std::string t1 =  ($<expType>1)->check();
+            std::string t2 =  ($<expType>3)->check();
+            if (t1 == t2) {
+                if ((t1 == "ent") || (t1 == "flot")) {
+                }
+            }
+
+        }
     | exp MINUS exp
     | exp MULT exp
     | exp DIV exp

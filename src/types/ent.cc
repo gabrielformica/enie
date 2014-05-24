@@ -23,8 +23,8 @@ using namespace std;
   * @return val
   */
 
-int Ent::get() {
-    return this->val;
+int Ent::getValue() {
+    return this->value;
 }
 
 
@@ -33,6 +33,6 @@ int Ent::get() {
   * @param v : new value  
   */
 
-void Ent::set(int v) {
-    this->val = v;
+void Ent::setValue(int v) {
+    this->value = v;
 }

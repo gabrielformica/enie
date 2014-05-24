@@ -1,31 +1,18 @@
 /**
   * Copyright 2014
   *
-  * @file 
+  * @file
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
   * @author: Melecio Ponte <pontezambrano@gmail.com>
   *
   * @section Description
   *
-  * Class definitions for floating point type
+  * Class implementations for array type
   */
 
 
-#include "flot.hh"
-#include <string>
-
-using namespace std;
-
-
-/**
-  * Returns the value of Flot 
-  * @return val
-  */
-
-float Flot::getValue() {
-    return this->value;
-}
+#include "arreglo.hh"
 
 
 /**
@@ -33,6 +20,6 @@ float Flot::getValue() {
   * @param v : new value  
   */
 
-void Flot::setValue(float v) {
+void Arreglo::setValue(void *v) {
     this->value = v;
 }
