@@ -16,6 +16,7 @@
     #include "types/instlist.hh"
     #include "types/instbl.hh"
     #include "types/oseleclist.hh"
+    #include "types/retorno.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -39,6 +40,7 @@
     Exp *expType;
     Instbl *instblType;
     Oseleclist *oslType;
+    Retorno *returnType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -188,10 +190,10 @@ instbl : OBRACE sepaux instlist sepaux CBRACE
 
 inst : asign
      | decl
-     | selec
+     | selec    // done
      | multselec
-     | indite
-     | detite
+     | indite   // creada pero no en parser
+     | detite   // creada pero no en parser
      | return
      | callfunc
      | LEER exp
@@ -305,7 +307,15 @@ detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescop
        ;
 
 return : RETORNA
+            {
+                Retorno r(NULL);
+                $<returnType>$ = &r;
+            }
        | RETORNA exp
+            {
+                Retorno r($<expType>2);
+                $<returnType>$ = &r;
+            }
        ;
 
 exp : term
