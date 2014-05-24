@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file selec.cc
+  * @file oselec.cc
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,25 +9,23 @@
   *
   * @section Description
   *
-  * Class implementations for selection instruction type
+  * Class implementations for selection's else if instruction type
   *
   */
 
 #include <string>
-#include <list>
-#include "selec.hh"
 #include "oselec.hh"
 #include "exp.hh"
 
-Exp* Selec::getExpression() {
+Exp* Oselec::getExpression() {
     return this->exp;
 }
 
-Oseleclist* Selec::getList() {
-    return this->oselecList;
+Instbl* Oselec::getBlock() {
+    return this->block;
 }
 
-bool Selec::check() {
+bool Oselec::check() {
     std::string exp_type = this->exp->getType();
 
     if (exp_type == "bool") {

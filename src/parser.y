@@ -15,6 +15,7 @@
     #include "types/asign.hh"
     #include "types/instlist.hh"
     #include "types/instbl.hh"
+    #include "types/oseleclist.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -37,6 +38,7 @@
     Symbol *symType;
     Exp *expType;
     Instbl *instblType;
+    Oseleclist *oslType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -261,7 +263,17 @@ selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
-        |
+            {
+                Oselec os($<expType>4, $<instblType>7);
+                $<oslType>1->addOselec(&os);
+                $<oslType>$ = $<oslType>1;
+            }
+        |  OSI LPAR exp RPAR enterscope instbl leavescope
+            {
+                Oselec os($<expType>3, $<instblType>6);
+                Oseleclist l(&os);
+                $<oslType>$ = &l;
+            }
         ;
 
 sinoselect :  SINO enterscope instbl leavescope

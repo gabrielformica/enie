@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file asign.hh
+  * @file decl.hh
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,29 +9,32 @@
   *
   * @section Description
   *
-  * Class definitions for asignment instruction
+  * Class definition for declaration instruction type
   *
   */
 
 
-#ifndef ASIGN_HH
-#define ASIGN_HH
+#ifndef DECL_HH
+#define DECL_HH
 
 #include "exp.hh"
 #include "instruc.hh"
 #include "../symtable.hh"
 
-class Asign: public Instruc {
+class Decl : public Instruc {
     private:
         Symbol *sym;
         Exp *exp;
+
     public:
-        explicit Asign(Symbol *s, Exp *e) : sym(s), exp(e) { }
+        typedef Instruc super;
+
+        explicit Decl(Symbol *s, Exp *e) : sym(s), exp(e) { }
 
         Symbol* get_symbol();
-        Exp* getExpression();
-        void setSymbol(Symbol *s);
-        void setExpression(Exp *e);
+        Exp* get_expression();
+        void set_symbol(Symbol *s);
+        void set_expression(Exp *e);
         bool check();
 };
 

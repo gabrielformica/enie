@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file asign.cc
+  * @file selec.cc
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,39 +9,38 @@
   *
   * @section Description
   *
-  * Class definitions for asignment instruction type
+  * Class implementations for selection instruction type
   *
   */
 
 #include <string>
-#include "asign.hh"
+#include "decl.hh"
 #include "exp.hh"
 #include "../symtable.hh"
 
-
-Symbol* Asign::get_symbol() {
+Symbol* Decl::get_symbol() {
     return this->sym;
 }
 
-// Expression* get_expression() {
-//     return this->expr;
-// }
+Exp* Decl::get_expression() {
+    return this->exp;
+}
 
-void Asign::setSymbol(Symbol *s) {
+
+void Decl::set_symbol(Symbol *s) {
     this->sym = s;
 }
 
-void Asign::setExpression(Exp *e) {
+void Decl::set_expression(Exp *e) {
     this->exp = e;
 }
 
-bool Asign::check() {
+bool Decl::check() {
     std::string exp_type = this->exp->getType();
-    std::string sym_type = this->sym->getType();
 
-   if (sym_type == exp_type) {
-       return true;
-   }
+    if (exp_type == "bool") {
+        return true;
+    }
 
     return false;
 }
