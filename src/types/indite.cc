@@ -18,15 +18,20 @@
 #include "exp.hh"
 #include "instbl.hh"
 
-Exp* Inedite::getExpression() {
+Indite::Indite(Exp *e, Instbl *bl) {
+    this->exp = e;
+    this->block = bl;
+}
+
+Exp* Indite::getExpression() {
     return this->exp;
 }
 
-Instbl* Inedite::getBlock() {
+Instbl* Indite::getBlock() {
     return this->block;
 }
 
-bool Inedite::check() {
+bool Indite::check() {
     std::string exp_type = this->exp->getType();
 
     if (exp_type == "bool") {

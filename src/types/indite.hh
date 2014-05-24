@@ -21,7 +21,7 @@
 #include "instbl.hh"
 #include "instruc.hh"
 
-class Inedite : public Instruc {
+class Indite : public Instruc {
     private:
         Exp *exp;
         Instbl *block;
@@ -29,7 +29,7 @@ class Inedite : public Instruc {
     public:
         typedef Instruc super;
 
-        explicit Inedite(Exp *e, Instbl *bl) : exp(e), block(bl) { }
+        Indite(Exp *e, Instbl *bl);
 
         Exp* getExpression();
         Instbl* getBlock();

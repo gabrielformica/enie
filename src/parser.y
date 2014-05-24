@@ -12,6 +12,7 @@
     #include "types/exp.hh"
     #include "types/ent.hh"
     #include "types/instruc.hh"
+    #include "types/indite.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
     #include "types/instbl.hh"
@@ -45,6 +46,7 @@
     Selec *selecType;
     Retorno *returnType;
     Leer *leerType;
+    Indite *indiType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -313,6 +315,10 @@ leftsideopt : CONSTCAD
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
+            {
+                Indite *i = new Indite($<expType>3, $<instblType>6);
+                $<indiType>$ = i;
+            }
        ;
 
 detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
