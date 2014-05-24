@@ -20,7 +20,8 @@ class Retorno {
     private:
         Exp *exp;
     public:
-        explicit Retorno(Exp *e) : exp(e) { }
+
+        Retorno(Exp *e) : exp(e) { }
 
         Exp* getExpression() { return this->exp; }
 };

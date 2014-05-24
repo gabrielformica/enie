@@ -13,9 +13,11 @@
     #include "types/ent.hh"
     #include "types/instruc.hh"
     #include "types/indite.hh"
+    #include "types/detite.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
     #include "types/instbl.hh"
+    #include "types/decl.hh"
     #include "types/selec.hh"
     #include "types/oseleclist.hh"
     #include "types/leer.hh"
@@ -47,6 +49,7 @@
     Retorno *returnType;
     Leer *leerType;
     Indite *indiType;
+    Decl *declType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -326,13 +329,13 @@ detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescop
 
 return : RETORNA
             {
-                Retorno r(NULL);
-                $<returnType>$ = &r;
+                Retorno *r = new Retorno(NULL);
+                $<returnType>$ = r;
             }
        | RETORNA exp
             {
-                Retorno r($<expType>2);
-                $<returnType>$ = &r;
+                Retorno *r = new Retorno($<expType>2);
+                $<returnType>$ = r;
             }
        ;
 
