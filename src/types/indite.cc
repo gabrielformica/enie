@@ -16,23 +16,14 @@
 #include <string>
 #include "indite.hh"
 #include "exp.hh"
-#include "../symtable.hh"
+#include "instbl.hh"
 
-Symbol* Inedite::get_symbol() {
-    return this->sym;
-}
-
-Exp* Inedite::get_expression() {
+Exp* Inedite::getExpression() {
     return this->exp;
 }
 
-
-void Inedite::set_symbol(Symbol *s) {
-    this->sym = s;
-}
-
-void Inedite::set_expression(Exp *e) {
-    this->exp = e;
+Instbl* Inedite::getBlock() {
+    return this->block;
 }
 
 bool Inedite::check() {
