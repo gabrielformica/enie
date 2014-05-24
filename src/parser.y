@@ -21,6 +21,7 @@
     #include "types/selec.hh"
     #include "types/oseleclist.hh"
     #include "types/leer.hh"
+    #include "types/escribir.hh"
     #include "types/retorno.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
@@ -48,6 +49,7 @@
     Selec *selecType;
     Retorno *returnType;
     Leer *leerType;
+    Escribir *escribirType;
     Indite *indiType;
     Decl *declType;
 }
@@ -207,10 +209,14 @@ inst : asign
      | callfunc
      | LEER exp
         {
-            Leer l($<expType>2);
-            $<leerType>$ = &l;
+            Leer *l = new Leer($<expType>2);
+            $<leerType>$ = l;
         }
      | ESCRIBIR exp
+        {
+            Escribir *e = new Escribir($<expType>2);
+            $<escribirType>$ = e;
+        }
      ;
 
 checkid : ID
