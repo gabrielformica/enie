@@ -19,16 +19,10 @@
 #include "exp.hh"
 
 class Bool: public Exp {
-    private:
-        bool value;
     public:
-        explicit Bool(bool v) : value(v) { }
-        int getValue();
-        void setValue(bool v);
+        typedef Exp super;
 
-        /** Exp methods */
-        std::string getType() { return "bool"; };
-        int offset() { return 1; };  //1 byte
+        explicit Bool() : super("bool") { }
 };
 
 #endif

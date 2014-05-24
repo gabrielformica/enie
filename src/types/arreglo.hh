@@ -20,18 +20,19 @@
 
 class Arreglo: public Exp {
     private:
-        std::string type;
-        size_t size;  //size of array = size of elements * number of elements
-        void *value;
+        std::string elem_type;
+        int first_index;
+        int last_index;
  
     public: 
-        explicit Arreglo(size_t s, void *v = 0) : size(s), value(v) { }
+        typedef Exp super;
 
-        void setValue(void *v);
-
-        /** Exp methods */
-        std::string getType() { return "arreglo"; }
-        int offset() { return size; }  //size of elements * number of elements
+        explicit Arreglo(std::string elem_t, int f, int l) :  
+                 super("arr("+elem_t+")"), 
+                 elem_type(elem_t),  
+                 first_index(f),
+                 last_index(l)
+                 { }
 
 };
 

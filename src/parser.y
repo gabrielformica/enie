@@ -10,7 +10,10 @@
     #include <stdio.h>
     #include "symtable.hh"
     #include "types/exp.hh"
+    #include "types/expbin.hh"
     #include "types/ent.hh"
+    #include "types/flot.hh"
+    #include "types/type_error.hh"
     #include "types/instruc.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
@@ -295,11 +298,23 @@ exp : term
         {
             std::string t1 =  ($<expType>1)->getType();
             std::string t2 =  ($<expType>3)->getType();
-            if (t1 == t2) {
-                if ((t1 == "ent") || (t1 == "flot")) {
-                }
+            if ( (t1 == t2) && ((t1 == "ent") || (t1 == "flot")) ) {
+                    ExpBin eb = ExpBin($<expType>1,$<expType>3,t1);
+                    $<expType>$ = &eb; 
+                
             }
+            else {
+                ExpBin eb = ExpBin($<expType>1,$<expType>3,t1);
 
+                //The line and the column of the binary expression are
+                //the line and the column of the first exp
+
+                int line = @1.first_line;       //line of the error
+                int column = @1.first_column;   //column of the error
+
+                TypeError err = TypeError(line, column, &eb);
+                $<expType>$ = &err;
+            }
         }
     | exp MINUS exp
     | exp MULT exp

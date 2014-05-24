@@ -19,29 +19,10 @@
 #include "exp.hh"
 
 class Ent: public Exp {
-    private:
-        int value;
     public:
-        explicit Ent(int v) : value(v) { }
-        int getValue();
-        void setValue(int v);
+        typedef Exp super;
 
-        /** Exp methods */
-        std::string getType() { return "ent"; };
-        int offset() { return 32; };  //32 byte
-        
-        /* Overloading operators */
-        bool operator<(Ent n) { return (this->value < n.value); }
-        bool operator>(Ent n) { return (this->value > n.value); }
-        bool operator<=(Ent n) { return (this->value <= n.value); }
-        bool operator>=(Ent n) { return (this->value >= n.value); }
-        bool operator==(Ent n) { return (this->value == n.value); }
-
-        Ent operator+(Ent n) { return Ent(this->value + n.value); }
-        Ent operator-(Ent n) { return Ent(this->value - n.value); }
-        Ent operator*(Ent n) { return Ent(this->value * n.value); }
-        Ent operator/(Ent n) { return Ent(this->value / n.value); }
-        Ent operator%(Ent n) { return Ent(this->value % n.value); }
+        explicit Ent() : super("ent") { }
 };
 
 #endif
