@@ -48,6 +48,7 @@
     */
     Symbol *symType;
     Exp *expType;
+    /*
     Instbl *instblType;
     Oseleclist *oslType;
     Selec *selecType;
@@ -59,6 +60,7 @@
     Option *optType;
     Optlist *optlistType;
     Multselec *multselType;
+    */
 }
 
 /* Tokens de las palabras reservadas */
@@ -205,8 +207,10 @@ instlist : instlist sepaux inst
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
             {
+                /*
                 Instbl bl($<instListType>3);
                 $<instblType>$ = &bl;
+                */
             }
         ;
 
@@ -220,13 +224,17 @@ inst : asign
      | callfunc
      | LEER exp
         {
+            /*
             Leer *l = new Leer($<expType>2);
             $<leerType>$ = l;
+            */
         }
      | ESCRIBIR exp
         {
+            /*
             Escribir *e = new Escribir($<expType>2);
             $<escribirType>$ = e;
+            */
         }
      ;
 
@@ -296,22 +304,28 @@ type : ENT    { $<str>$ = new std::string("ent"); }
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
         {
+            /*
             Selec *s = new Selec($<expType>3, $<instblType>6, $<oslType>8);
             $<selecType>$ = s;
+            */
         }
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
             {
+                /*
                 Oselec *os = new Oselec($<expType>4, $<instblType>7);
                 $<oslType>1->addOselec(os);
                 $<oslType>$ = $<oslType>1;
+                */
             }
         |  OSI LPAR exp RPAR enterscope instbl leavescope
             {
+                /*
                 Oselec *os = new Oselec($<expType>3, $<instblType>6);
                 Oseleclist *l = new Oseleclist(os);
                 $<oslType>$ = l;
+                */
             }
         ;
 
@@ -322,8 +336,10 @@ sinoselect :  SINO enterscope instbl leavescope
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
                 {
+                    /*
                     Multselec *ms = new Multselec($<symType>2, $<optlistType>5);
                     $<multselType>$ = ms;
+                    */
                 }
           ;
 
@@ -332,39 +348,51 @@ lastoption : sepaux BSLASH QUESTION ARROW instbl
 
 optionslist : optionslist sepaux option
                 {
+                    /*
                     $<optlistType>1->addOption($<optType>3);
                     $<optlistType>$ = $<optlistType>1;
+                    */
                 }
             | option
                 {
+                    /*
                     Optlist *ol = new Optlist($<optType>1);
                     $<optlistType>$ = ol;
+                    */
                 }
             ;
 
 option: BSLASH leftsideopt ARROW instbl
             {
+                /*
                 $<optType>2->setBlock($<instblType>4);
                 $<optType>$ = $<optType>2;
+                */
             }
       ;
 
 leftsideopt : CONSTCAD
                 {
+                    /*
                     Option *o = new Option(*$1);
                     $<optType>$ = o;
+                    */
                 }
             | checkid
                 {
+                    /*
                     Option *o = new Option($<symType>1);
                     $<optType>$ = o;
+                    */
                 }
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
             {
+                /*
                 Indite *i = new Indite($<expType>3, $<instblType>6);
                 $<indiType>$ = i;
+                */
             }
        ;
 
@@ -373,13 +401,17 @@ detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescop
 
 return : RETORNA
             {
+                /*
                 Retorno *r = new Retorno(NULL);
                 $<returnType>$ = r;
+                */
             }
        | RETORNA exp
             {
+                /*
                 Retorno *r = new Retorno($<expType>2);
                 $<returnType>$ = r;
+                */
             }
        ;
 
