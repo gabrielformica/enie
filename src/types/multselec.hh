@@ -17,22 +17,20 @@
 #ifndef MULTSELEC_HH
 #define MULTSELEC_HH
 
-#include "exp.hh"
 #include "instruc.hh"
 #include "../symtable.hh"
+#include "optlist.hh"
 
 class Multselec: public Instruc {
     private:
         Symbol *sym;
-        Exp *exp;
+        Optlist *optl;
 
     public:
-        explicit Multselec(Symbol *s, Exp *e) : sym(s), exp(e) { }
+        Multselec(Symbol *s, Optlist *ol);
 
-        Symbol* getSymbol();
-        Exp* getExpression();
         void setSymbol(Symbol *s);
-        void setExpression(Exp *e);
+        Symbol* getSymbol();
         bool check();
 };
 

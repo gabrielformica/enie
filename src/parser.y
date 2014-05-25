@@ -23,6 +23,9 @@
     #include "types/leer.hh"
     #include "types/escribir.hh"
     #include "types/retorno.hh"
+    #include "types/option.hh"
+    #include "types/optlist.hh"
+    #include "types/multselec.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -52,6 +55,9 @@
     Escribir *escribirType;
     Indite *indiType;
     Decl *declType;
+    Option *optType;
+    Optlist *optlistType;
+    Multselec *multselType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -224,9 +230,9 @@ checkid : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol s(*$1,currentScope,line,column);
-            checkUse(symtable,&errors,&s);
-            $<symType>$ = &s;
+            Symbol *s = new Symbol(*$1, currentScope, line, column);
+            checkUse(symtable, &errors, s);
+            $<symType>$ = s;
         }
         ;
 
@@ -235,8 +241,9 @@ addid   : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol s(*$1,currentScope,line,column);
-            tryAddSymbol(symtable,&errors,&s);
+            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            tryAddSymbol(symtable, &errors, s);
+            $<symType>$ = s;
         }
         ;
 
@@ -307,20 +314,44 @@ sinoselect :  SINO enterscope instbl leavescope
 
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
+                {
+                    Multselec *ms = new Multselec($<symType>2, $<optlistType>5);
+                    $<multselType>$ = ms;
+                }
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
            ;
 
 optionslist : optionslist sepaux option
+                {
+                    $<optlistType>1->addOption($<optType>3);
+                    $<optlistType>$ = $<optlistType>1;
+                }
             | option
+                {
+                    Optlist *ol = new Optlist($<optType>1);
+                    $<optlistType>$ = ol;
+                }
             ;
 
 option: BSLASH leftsideopt ARROW instbl
+            {
+                $<optType>2->setBlock($<instblType>4);
+                $<optType>$ = $<optType>2;
+            }
       ;
 
 leftsideopt : CONSTCAD
+                {
+                    Option *o = new Option(*$1);
+                    $<optType>$ = o;
+                }
             | checkid
+                {
+                    Option *o = new Option($<symType>1);
+                    $<optType>$ = o;
+                }
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
