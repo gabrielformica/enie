@@ -27,6 +27,7 @@ class Symbol {
         int scope;
         int line;
         int column;
+
     public:
         Symbol(std::string, std::string, int, int, int);
         Symbol(std::string, int, int, int);

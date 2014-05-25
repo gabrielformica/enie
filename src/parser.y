@@ -8,35 +8,27 @@
     #include <vector>
     #include <stdlib.h>
     #include <stdio.h>
+    #include "symtable/symbol.hh"
+    #include "symtable/func_symbol.hh"
     #include "symtable/symtable.hh"
     #include "types/exp.hh"
-    #include "types/id.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
-    #include "types/tilde.hh"
     #include "types/flot.hh"
     #include "types/bool.hh"
     #include "types/car.hh"
+    #include "types/nada.hh"
     #include "types/cadena.hh"
     #include "types/type_error.hh"
     #include "types/type_system_utils.hh"
+    /*primitivos*/
+    #include "types/arglist.hh"
+    #include "types/signa.hh"
     #include "types/instruc.hh"
     #include "types/indite.hh"
     #include "types/detite.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
-    #include "types/instbl.hh"
-    #include "types/decl.hh"
-    #include "types/selec.hh"
-    #include "types/oseleclist.hh"
-    #include "types/leer.hh"
-    #include "types/escribir.hh"
-    #include "types/retorno.hh"
-    #include "types/option.hh"
-    #include "types/optlist.hh"
-    #include "types/arreglo.hh"
-    #include "types/indexlist.hh"
-    #include "types/multselec.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -58,7 +50,6 @@
     Instlist *instListType;
     Symbol *symType;
     Exp *expType;
-    Id *idType;
     Instbl *instblType;
     Oseleclist *oslType;
     Selec *selecType;
@@ -70,8 +61,6 @@
     Option *optType;
     Optlist *optlistType;
     Multselec *multselType;
-    IndexList *inlistType;
-    Arreglo *arrType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -188,14 +177,15 @@ header  : idheader COLCOL enterscope signa
 idheader : addid
          ;
 
-signa   : arglist ARROW type
-        | arglist
-        | TILDE
-        | TILDE ARROW type
+signa   : arglist ARROW type { $<signa>$ = new Signa($<argList>1, *$<str>3); }
+        | arglist { $<signa>$ = new Signa($<argList>1, "nada"); }
+        | TILDE   { $<signa>$ = new Signa(new ArgList(), "nada"); }
+        | TILDE ARROW type { $<signa>$ = new Signa(new ArgList(), *$<str>3); }
         ;
 
-arglist : arglist COMMA declonly
-        | declonly
+arglist : arglist COMMA declonly { $<argList>1->append($<symType>3); $<argList>$ = $<argList>1; }
+        | declonly  { $<argList>$ = new ArgList($<symType>1); } 
+        | arglist COMMA VAR declonly
         | VAR declonly
         ;
 
@@ -255,7 +245,7 @@ addid   : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol *s = new Symbol(*$1,currentScope,line,column);
+            Symbol *s = new Symbol(*$1, currentScope, line, column);
             tryAddSymbol(symtable, &errors, s);
             $<symType>$ = s;
         }
@@ -286,11 +276,15 @@ decl : typeid EQUAL exp
      | declbox
      ;
 
-declonly : typeid
+declonly : typeid { $<symType>$ = $<symType>1; }
          | typeid arr
          ;
 
-typeid : type addid  { $<symType>2->setType(*$<str>1); }
+typeid : type addid 
+            {
+                $<symType>2->setType(*$<str>1);
+                $<symType>$ = $<symType>2;
+            }  
        ;
 
 type : ENT    { $<str>$ = new std::string("ent"); }
