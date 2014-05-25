@@ -18,8 +18,14 @@
 #include <string>
 
 class Exp {
+    private:
+        std::string type;
+
     public:
-        virtual std::string getType() = 0;
+        explicit Exp(std::string t) : type(t) { }
+
+        std::string getType() { return type; }; 
+        //virtual std::string print() = 0;
 };
 
 #endif

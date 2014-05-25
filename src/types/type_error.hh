@@ -8,26 +8,27 @@
   *
   * @section Description
   *
-  * Class definitions for binary expressions
+  * Class definitions for type error
   */
 
 
-#ifndef EXPBIN_HH
-#define EXPBIN_HH
+#ifndef TYPE_ERROR_HH
+#define TYPE_ERROR_HH
 
 #include <string>
 #include "exp.hh"
 
-class ExpBin: public Exp {
+class TypeError: public Exp {
     private:
-        Exp *left;
-        Exp *right;
+        int line;
+        int column;
+        Exp *exp;
 
     public:
         typedef Exp super;
 
-        explicit ExpBin(Exp *l, Exp *r, std::string t) : 
-                 left(l), right(r), super(t) { }
+        explicit TypeError(int l, int c, Exp *e) : 
+                 line(l), column(c), exp(e), super("error") {}
 
 };
 
