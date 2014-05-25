@@ -20,9 +20,8 @@
 
 class Bool: public Exp {
     public:
-        typedef Exp super;
-
-        explicit Bool() : super("bool") { }
+        /** class constructor */
+        Bool() { this->type = "bool"; }
 };
 
 #endif

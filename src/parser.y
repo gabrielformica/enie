@@ -9,6 +9,7 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
+    /*
     #include "types/exp.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
@@ -17,6 +18,7 @@
     #include "types/instruc.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
+    */
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -34,10 +36,12 @@
     std::string *str;
     int intval;
     float floatval;
+    /*
     Instruc *instType;
     Instlist *instListType;
     Symbol *symType;
     Exp *expType;
+    */
 }
 
 /* Tokens de las palabras reservadas */
@@ -167,13 +171,17 @@ arglist : arglist COMMA declonly
 
 instlist : instlist sepaux inst
             {
+            /*
                 $<instListType>1->addInst($<instType>3);
                 $<instListType>$ = $<instListType>1;
+                */
             }
          | inst
             {
+            /*
                 Instlist l($<instType>1);
                 $<instListType>$ = &l;
+                */
             }
          | error
          ;
@@ -198,9 +206,9 @@ checkid : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol s(*$1,currentScope,line,column);
-            checkUse(symtable,&errors,&s);
-            $<symType>$ = &s;
+            Symbol *s = new Symbol(*$1, currentScope, line, column);
+            checkUse(symtable, &errors, s);
+            //$<symType>$ = &s;
         }
         ;
 
@@ -209,15 +217,16 @@ addid   : ID
             int currentScope = symtable->getCurrentScope();
             int line = @1.first_line;
             int column = @1.first_column;
-            Symbol s(*$1,currentScope,line,column);
-            tryAddSymbol(symtable,&errors,&s);
+            Symbol *s = new Symbol(*$1, currentScope, line, column);
+            tryAddSymbol(symtable, &errors, s);
         }
         ;
 
 asign : checkid EQUAL exp
         {
+        /*
             Asign a = Asign($<symType>1, $<expType>3);
-           // $<instType>$ = &a;
+           */
         }
       | checkid arr EQUAL arrvalues
         {
@@ -296,6 +305,7 @@ return : RETORNA
 exp : term
     | exp PLUS exp
         {
+        /*
             std::string t1 =  ($<expType>1)->getType();
             std::string t2 =  ($<expType>3)->getType();
             if ( (t1 == t2) && ((t1 == "ent") || (t1 == "flot")) ) {
@@ -315,6 +325,7 @@ exp : term
                 TypeError err = TypeError(line, column, &eb);
                 $<expType>$ = &err;
             }
+            */
         }
     | exp MINUS exp
     | exp MULT exp

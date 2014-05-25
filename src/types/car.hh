@@ -8,22 +8,20 @@
   *
   * @section Description
   *
-  * Class definitions for expressions
+  * Class definitions for car type
   */
 
 
-#ifndef EXP_HH
-#define EXP_HH
+#ifndef CAR_HH
+#define CAR_HH
 
 #include <string>
+#include "exp.hh"
 
-class Exp {
-    protected:
-        std::string type;
-
+class Car: public Exp {
     public:
-        std::string getType() { return type; }; 
-        //virtual std::string print() = 0;
+        /** class constructor */
+        Car() { this->type = "car"; } 
 };
 
 #endif

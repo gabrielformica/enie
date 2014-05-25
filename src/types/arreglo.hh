@@ -25,14 +25,13 @@ class Arreglo: public Exp {
         int last_index;
  
     public: 
-        typedef Exp super;
-
-        explicit Arreglo(std::string elem_t, int f, int l) :  
-                 super("arr("+elem_t+")"), 
-                 elem_type(elem_t),  
-                 first_index(f),
-                 last_index(l)
-                 { }
+        /** class constructor */
+        Arreglo(int f, int l, std::string elem_t) { 
+            this->elem_type = elem_t;
+            this->first_index = f;
+            this->last_index = l;
+            this->type = "array(" + elem_t + ")";
+        } 
 
 };
 

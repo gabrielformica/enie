@@ -20,9 +20,8 @@
 
 class Ent: public Exp {
     public:
-        typedef Exp super;
-
-        explicit Ent() : super("ent") { }
+        /** class constructor */
+        Ent() { this->type = "ent"; } 
 };
 
 #endif

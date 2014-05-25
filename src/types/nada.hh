@@ -8,22 +8,20 @@
   *
   * @section Description
   *
-  * Class definitions for expressions
+  * Class definitions for nada type
   */
 
 
-#ifndef EXP_HH
-#define EXP_HH
+#ifndef NADA_HH
+#define NADA_HH 
 
 #include <string>
+#include "exp.hh"
 
-class Exp {
-    protected:
-        std::string type;
-
+class Nada: public Exp {
     public:
-        std::string getType() { return type; }; 
-        //virtual std::string print() = 0;
+        /** class constructor */
+        Nada() { this->type = "nada"; } 
 };
 
 #endif
