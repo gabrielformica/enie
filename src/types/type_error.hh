@@ -20,16 +20,16 @@
 
 class TypeError: public Exp {
     private:
+        Exp *exp;
         int line;
         int column;
-        Exp *exp;
 
     public:
         /** class constructor */
-        TypeError(int l, int c, Exp *e) { 
+        TypeError(Exp *e, int l, int c) { 
+            this->exp = e;
             this->line = l;
             this->column = c;
-            this->exp = e;
             this->type = "error";
         } 
 };

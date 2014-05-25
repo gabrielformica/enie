@@ -27,9 +27,16 @@ class ExpBin: public Exp {
         /** class constructor */
         ExpBin(Exp *l, Exp *r) { 
             this->left = l;
-            this->right = l;
+            this->right = r;
             this->type = l->getType(); 
         } 
+
+        /** class constructor */
+        ExpBin(Exp *l, Exp *r, std::string t) { 
+            this->left = l;
+            this->right = r;
+            this->type = t; 
+        }
 
 };
 

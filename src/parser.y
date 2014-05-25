@@ -9,12 +9,16 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable.hh"
-    /*
     #include "types/exp.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
     #include "types/flot.hh"
+    #include "types/bool.hh"
+    #include "types/car.hh"
+    #include "types/cadena.hh"
     #include "types/type_error.hh"
+    #include "types/type_system_utils.hh"
+    /*
     #include "types/instruc.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
@@ -40,8 +44,8 @@
     Instruc *instType;
     Instlist *instListType;
     Symbol *symType;
-    Exp *expType;
     */
+    Exp *expType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -224,9 +228,9 @@ addid   : ID
 
 asign : checkid EQUAL exp
         {
-        /*
+          /*
             Asign a = Asign($<symType>1, $<expType>3);
-           */
+          */
         }
       | checkid arr EQUAL arrvalues
         {
@@ -305,58 +309,133 @@ return : RETORNA
 exp : term
     | exp PLUS exp
         {
-        /*
-            std::string t1 =  ($<expType>1)->getType();
-            std::string t2 =  ($<expType>3)->getType();
-            if ( (t1 == t2) && ((t1 == "ent") || (t1 == "flot")) ) {
-                    ExpBin eb = ExpBin($<expType>1,$<expType>3,t1);
-                    $<expType>$ = &eb; 
-                
-            }
-            else {
-                ExpBin eb = ExpBin($<expType>1,$<expType>3,t1);
-
-                //The line and the column of the binary expression are
-                //the line and the column of the first exp
-
-                int line = @1.first_line;       //line of the error
-                int column = @1.first_column;   //column of the error
-
-                TypeError err = TypeError(line, column, &eb);
-                $<expType>$ = &err;
-            }
-            */
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "+", l, c);
         }
     | exp MINUS exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "-", l, c);
+        }
     | exp MULT exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "*", l, c);
+        }
     | exp DIV exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "/", l, c);
+        }
     | exp MOD exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "%", l, c);
+        }
     | exp POWER exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "^", l, c);
+        }
     | exp OR exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "||", l, c);
+        }
     | exp AND exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "&&", l, c);
+        }
     | exp LTHAN exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "<", l, c);
+        }
     | exp GTHAN exp
+       {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, ">", l, c);
+        }
     | exp LETHAN exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "<=", l, c);
+        }
     | exp GETHAN exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, ">=", l, c);
+        }
     | exp EQUIV exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "==", l, c);
+        }
     | exp INEQUIV exp
+        {
+            int l = @1.first_line;      //line of the binary expression
+            int c = @1.first_column;  //column of the binary expression
+            $<expType>$ = get_expbin($<expType>1, $<expType>3, "!=", l, c);
+        }
     | exp DOTDOT exp
     | NEGATION exp
+        {
+            int l = @2.first_line;      //line of the binary expression
+            int c = @2.first_column;  //column of the binary expression
+            if ($<expType>2->getType() == "bool") {
+                $<expType>$ = new Bool();
+            }
+            else {
+                $<expType>$ = new TypeError($<expType>2, l, c);
+            }
+        }
+
     | MINUS exp  %prec NEG
+        {
+            int l = @2.first_line;      //line of the binary expression
+            int c = @2.first_column;  //column of the binary expression
+            if ($<expType>2->getType() == "ent") {
+                $<expType>$ = new Ent();
+            }
+            else if ($<expType>2->getType() == "flot") {
+                $<expType>$ = new Flot();
+            }
+            else {
+                $<expType>$ = new TypeError($<expType>2, l, c);
+            }
+        }
+
     | LPAR exp RPAR
+        {
+            $<expType>$ = $<expType>2;
+        }
     ;
 
 
 term : checkid     /*ID*/
-     | NUMENT
-     | NUMFLOT
-     | CIERTO
-     | FALSO
+     | NUMENT      {$<expType>$ = new Ent(); }
+     | NUMFLOT     {$<expType>$ = new Flot();}
+     | CIERTO      {$<expType>$ = new Bool();}
+     | FALSO       {$<expType>$ = new Bool();}
      | checkid arr  /*ID arr*/
      | callfunc
-     | CONSTCAD
+     | CONSTCAD    {$<expType>$ = new Cadena();}
      | boxelem
-     | error
+     | error     
      ;
 
 arr : arr OBRACK exp CBRACK
