@@ -31,6 +31,8 @@
     #include "types/detite.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
+    #include "types/function.hh"
+    #include "types/function_list.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -57,6 +59,7 @@
     Header *header;
     Function *function;
     Instbl *instblType;
+    FunctionList *functionlist;
     /*
     Oseleclist *oslType;
     Selec *selecType;
@@ -154,7 +157,7 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : begin enterscope funcl end leavescope
+enie    : begin enterscope funcl end leavescope { $<functionlist>$ = $<functionlist>3; }
         ;
 
 begin   : sepaux
@@ -169,7 +172,11 @@ sepaux  : sepaux SEP
         ;
 
 funcl   : funcl sepaux func leavescope
-        | func leavescope
+            {
+                $<functionlist>1->append($<function>3);
+                $<functionlist>$ = $<functionlist>1;
+            }
+        | func leavescope  { $<functionlist>$ = new FunctionList($<function>1); }
         | error SEP
         ;
 
