@@ -16,7 +16,7 @@
 #include <string>
 #include "asign.hh"
 #include "exp.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 
 Asign::Asign(Symbol *s, Exp *e) {
     this->exp = e;

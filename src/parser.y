@@ -11,7 +11,6 @@
     #include "symtable/symbol.hh"
     #include "symtable/func_symbol.hh"
     #include "symtable/symtable.hh"
-    /*primitivos*/
     #include "types/exp.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
@@ -27,13 +26,11 @@
     #include "types/signa.hh"
     #include "types/header.hh"
     #include "types/function.hh"
-    /*
     #include "types/instruc.hh"
     #include "types/indite.hh"
     #include "types/detite.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
-    */
     #include "parserhelper.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
@@ -51,10 +48,8 @@
     std::string *str;
     int intval;
     float floatval;
-    /*
     Instruc *instType;
     Instlist *instListType;
-    */
     Symbol *symType;
     Exp *expType;
     ArgList *argList;
@@ -210,27 +205,21 @@ arglist : arglist COMMA declonly { $<argList>1->append($<symType>3); $<argList>$
 
 instlist : instlist sepaux inst
             {
-            /*
                 $<instListType>1->addInst($<instType>3);
                 $<instListType>$ = $<instListType>1;
-                */
             }
          | inst
             {
-            /*
                 Instlist l($<instType>1);
                 $<instListType>$ = &l;
-                */
             }
          | error
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
             {
-                /*
                 Instbl bl($<instListType>3);
                 $<instblType>$ = &bl;
-                */
             }
         ;
 
@@ -244,17 +233,13 @@ inst : asign
      | callfunc
      | LEER exp
         {
-            /*
             Leer *l = new Leer($<expType>2);
             $<leerType>$ = l;
-            */
         }
      | ESCRIBIR exp
         {
-            /*
             Escribir *e = new Escribir($<expType>2);
             $<escribirType>$ = e;
-            */
         }
      ;
 
@@ -282,10 +267,8 @@ addid   : ID
 
 asign : checkid EQUAL exp
         {
-          /*
             Asign *a =  new Asign($<symType>1, $<expType>3);
             $<instType>$ = a;
-          */
         }
       | checkid arr EQUAL arrvalues
         {
@@ -328,28 +311,22 @@ type : ENT    { $<str>$ = new std::string("ent"); }
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
         {
-            /*
             Selec *s = new Selec($<expType>3, $<instblType>6, $<oslType>8);
             $<selecType>$ = s;
-            */
         }
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
             {
-                /*
                 Oselec *os = new Oselec($<expType>4, $<instblType>7);
                 $<oslType>1->addOselec(os);
                 $<oslType>$ = $<oslType>1;
-                */
             }
         |  OSI LPAR exp RPAR enterscope instbl leavescope
             {
-                /*
                 Oselec *os = new Oselec($<expType>3, $<instblType>6);
                 Oseleclist *l = new Oseleclist(os);
                 $<oslType>$ = l;
-                */
             }
         ;
 
@@ -360,10 +337,8 @@ sinoselect :  SINO enterscope instbl leavescope
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
                 {
-                    /*
                     Multselec *ms = new Multselec($<symType>2, $<optlistType>5);
                     $<multselType>$ = ms;
-                    */
                 }
           ;
 
@@ -372,51 +347,39 @@ lastoption : sepaux BSLASH QUESTION ARROW instbl
 
 optionslist : optionslist sepaux option
                 {
-                    /*
                     $<optlistType>1->addOption($<optType>3);
                     $<optlistType>$ = $<optlistType>1;
-                    */
                 }
             | option
                 {
-                    /*
                     Optlist *ol = new Optlist($<optType>1);
                     $<optlistType>$ = ol;
-                    */
                 }
             ;
 
 option: BSLASH leftsideopt ARROW instbl
             {
-                /*
                 $<optType>2->setBlock($<instblType>4);
                 $<optType>$ = $<optType>2;
-                */
             }
       ;
 
 leftsideopt : CONSTCAD
                 {
-                    /*
                     Option *o = new Option(*$1);
                     $<optType>$ = o;
-                    */
                 }
             | checkid
                 {
-                    /*
                     Option *o = new Option($<symType>1);
                     $<optType>$ = o;
-                    */
                 }
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
             {
-                /*
                 Indite *i = new Indite($<expType>3, $<instblType>6);
                 $<indiType>$ = i;
-                */
             }
        ;
 
@@ -425,17 +388,13 @@ detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescop
 
 return : RETORNA
             {
-                /*
                 Retorno *r = new Retorno(NULL);
                 $<returnType>$ = r;
-                */
             }
        | RETORNA exp
             {
-                /*
                 Retorno *r = new Retorno($<expType>2);
                 $<returnType>$ = r;
-                */
             }
        ;
 
@@ -556,22 +515,48 @@ exp : term { $<expType>$ = $<expType>1; }
     ;
 
 
-term : checkid     { $<symType>$ = $<symType>1; } /*ID*/
-     | NUMENT      { $<expType>$ = new Ent(); }
-     | NUMFLOT     { $<expType>$ = new Flot(); }
-     | CIERTO      { $<expType>$ = new Bool(); }
-     | FALSO       { $<expType>$ = new Bool(); }
+term : checkid
+        {
+            Id *id = new Id($<symType>1->getId);
+            $<expType>$ = id;
+        }
+     | NUMENT      {$<expType>$ = new Ent();}
+     | NUMFLOT     {$<expType>$ = new Flot();}
+     | CIERTO      {$<expType>$ = new Bool();}
+     | FALSO       {$<expType>$ = new Bool();}
      | checkid arr  /*ID arr*/
-     | callfunc    
+        {
+            Id *id = new Id($<symType>1->getId());
+            $<arrType>$ = new Arreglo(id, $<inlistType>2);
+        }
+     | callfunc
      | CONSTCAD    {$<expType>$ = new Cadena();}
      | boxelem
-     | error     
+     | error
      ;
 
 arr : arr OBRACK exp CBRACK
+        {
+            $<inlistType>1->addExp($<expType>3);
+            $<inlistType>$ = $<inlistType>1;
+        }
     | OBRACK exp CBRACK
+        {
+            Indexlist *a = new Indexlist(Exp *e);
+            $<inlistType>$ = a;
+        }
     | arr OBRACK TILDE CBRACK
+        {
+            Tilde *t = new Tilde();
+            $<inlistType>1->addExp(t);
+            $<inlistType>$ = $<inlistType>1;
+        }
     | OBRACK TILDE CBRACK
+        {
+            Tilde *t = new Tilde();
+            Indexlist *a = new Indexlist(t);
+            $<inlistType>$ = a;
+        }
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE

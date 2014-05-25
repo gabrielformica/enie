@@ -47,3 +47,18 @@ bool Selec::check() {
 
     return false;
 }
+
+std::string Selec::toString(int depth) {
+    char space = ' ';
+    std::string o_indent = std::string(depth, space);
+    std::string i_indent = std::string(4, space);
+    std::string rep = "";
+
+    rep = o_indent + "INSTRUCCION: SELECCION\n";
+    rep = rep + this->exp->toString(depth+4) + "\n";
+    rep = rep + this->block->toString(depth+4) + "\n";
+    rep = rep + this->list->toString(depth+4) + "\n";
+
+    return rep;
+}
+

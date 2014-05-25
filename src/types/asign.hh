@@ -19,7 +19,7 @@
 
 #include "exp.hh"
 #include "instruc.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 
 class Asign: public Instruc {
     private:

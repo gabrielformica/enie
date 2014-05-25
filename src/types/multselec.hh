@@ -18,7 +18,7 @@
 #define MULTSELEC_HH
 
 #include "instruc.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 #include "optlist.hh"
 
 class Multselec: public Instruc {

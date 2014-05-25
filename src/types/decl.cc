@@ -16,7 +16,7 @@
 #include <string>
 #include "decl.hh"
 #include "exp.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 
 Decl::Decl(Symbol *s, Exp *e) {
     this->sym = s;

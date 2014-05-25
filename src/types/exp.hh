@@ -22,8 +22,8 @@ class Exp {
         std::string type;
 
     public:
-        std::string getType() { return type; }; 
-        //virtual std::string print() = 0;
+        std::string getType() { return type; };
+        virtual std::string toString() = 0;
 };
 
 #endif

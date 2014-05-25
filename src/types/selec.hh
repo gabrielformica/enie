@@ -17,6 +17,7 @@
 #ifndef SELEC_HH
 #define SELEC_HH
 
+#include <string>
 #include <list>
 #include "exp.hh"
 #include "instruc.hh"
@@ -40,6 +41,8 @@ class Selec : public Instruc {
         Oseleclist* getList();
         Instbl* getBlock();
         bool check();
+
+        std::string toString(int depth);
 };
 
 #endif

@@ -15,7 +15,7 @@
 
 #include <string>
 #include "option.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 #include "instbl.hh"
 
 Option::Option(Instbl *bl, bool is, Symbol *s, std::string c) {
