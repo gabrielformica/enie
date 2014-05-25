@@ -24,10 +24,19 @@ class ExpBin: public Exp {
         Exp *right;
 
     public:
-        typedef Exp super;
+        /** class constructor */
+        ExpBin(Exp *l, Exp *r) { 
+            this->left = l;
+            this->right = r;
+            this->type = l->getType(); 
+        } 
 
-        explicit ExpBin(Exp *l, Exp *r, std::string t) : 
-                 left(l), right(r), super(t) { }
+        /** class constructor */
+        ExpBin(Exp *l, Exp *r, std::string t) { 
+            this->left = l;
+            this->right = r;
+            this->type = t; 
+        }
 
 };
 

@@ -8,22 +8,20 @@
   *
   * @section Description
   *
-  * Class definitions for expressions
+  * Class definitions for cadena type
   */
 
 
-#ifndef EXP_HH
-#define EXP_HH
+#ifndef CADENA_HH
+#define CADENA_HH
 
 #include <string>
+#include "exp.hh"
 
-class Exp {
-    protected:
-        std::string type;
-
+class Cadena: public Exp {
     public:
-        std::string getType() { return type; }; 
-        //virtual std::string print() = 0;
+        /** class constructor */
+        Cadena() { this->type = "cadena"; } 
 };
 
 #endif

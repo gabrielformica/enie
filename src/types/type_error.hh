@@ -20,16 +20,18 @@
 
 class TypeError: public Exp {
     private:
+        Exp *exp;
         int line;
         int column;
-        Exp *exp;
 
     public:
-        typedef Exp super;
-
-        explicit TypeError(int l, int c, Exp *e) : 
-                 line(l), column(c), exp(e), super("error") {}
-
+        /** class constructor */
+        TypeError(Exp *e, int l, int c) { 
+            this->exp = e;
+            this->line = l;
+            this->column = c;
+            this->type = "error";
+        } 
 };
 
 #endif

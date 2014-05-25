@@ -20,9 +20,8 @@
 
 class Flot: public Exp {
     public:
-        typedef Exp super;
-
-        explicit Flot() : super("flot") { }
+        /** class constructor */
+        Flot() { this->type = "flot"; } 
 };
 
 #endif
