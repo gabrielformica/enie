@@ -15,7 +15,7 @@
 
 
 #include "multselec.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 #include "optlist.hh"
 
 Multselec::Multselec(Symbol *s, Optlist *ol) {

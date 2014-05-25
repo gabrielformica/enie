@@ -1,38 +1,31 @@
 /**
   * Copyright 2014
   *
-  * @file
+  * @file arreglo.hh
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
   * @author: Melecio Ponte <pontezambrano@gmail.com>
   *
   * @section Description
   *
-  * Class definitions for array type
+  * Class definitions for integer type
   */
 
 
-#ifndef ARRAY_HH
-#define ARRAY_HH 
+#ifndef ARREGLO_HH
+#define ARREGLO_HH
 
-#include <string>
-#include "exp.hh"
+#include "indexlist.hh"
+#include "id.hh"
 
 class Arreglo: public Exp {
     private:
-        std::string elem_type;
-        int first_index;
-        int last_index;
- 
-    public: 
+        Id *id;
+        Indexlist *list;
+    public:
         /** class constructor */
-        Arreglo(int f, int l, std::string elem_t) { 
-            this->elem_type = elem_t;
-            this->first_index = f;
-            this->last_index = l;
-            this->type = "array(" + elem_t + ")";
-        } 
-
+        Arreglo()
+        Arreglo(Id *i, Indexlist *l);
 };
 
 #endif

@@ -10,15 +10,16 @@
     #include <stdio.h>
     #include "symtable/symtable.hh"
     #include "types/exp.hh"
+    #include "types/id.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
+    #include "types/tilde.hh"
     #include "types/flot.hh"
     #include "types/bool.hh"
     #include "types/car.hh"
     #include "types/cadena.hh"
     #include "types/type_error.hh"
     #include "types/type_system_utils.hh"
-    /*
     #include "types/instruc.hh"
     #include "types/indite.hh"
     #include "types/detite.hh"
@@ -33,6 +34,8 @@
     #include "types/retorno.hh"
     #include "types/option.hh"
     #include "types/optlist.hh"
+    #include "types/arreglo.hh"
+    #include "types/indexlist.hh"
     #include "types/multselec.hh"
     #include "parserhelper.hh"
     extern FILE* yyin;
@@ -55,6 +58,7 @@
     Instlist *instListType;
     Symbol *symType;
     Exp *expType;
+    Id *idType;
     Instbl *instblType;
     Oseleclist *oslType;
     Selec *selecType;
@@ -66,6 +70,8 @@
     Option *optType;
     Optlist *optlistType;
     Multselec *multselType;
+    IndexList *inlistType;
+    Arreglo *arrType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -284,7 +290,7 @@ declonly : typeid
          | typeid arr
          ;
 
-typeid : type addid  { $<symType>2->setType(*$<str>1); }  
+typeid : type addid  { $<symType>2->setType(*$<str>1); }
        ;
 
 type : ENT    { $<str>$ = new std::string("ent"); }
@@ -501,22 +507,48 @@ exp : term
     ;
 
 
-term : checkid     /*ID*/
-     | NUMENT      {$<expType>$ = new Ent(); }
+term : checkid
+        {
+            Id *id = new Id($<symType>1->getId);
+            $<expType>$ = id;
+        }
+     | NUMENT      {$<expType>$ = new Ent();}
      | NUMFLOT     {$<expType>$ = new Flot();}
      | CIERTO      {$<expType>$ = new Bool();}
      | FALSO       {$<expType>$ = new Bool();}
      | checkid arr  /*ID arr*/
-     | callfunc    
+        {
+            Id *id = new Id($<symType>1->getId());
+            $<arrType>$ = new Arreglo(id, $<inlistType>2);
+        }
+     | callfunc
      | CONSTCAD    {$<expType>$ = new Cadena();}
      | boxelem
-     | error     
+     | error
      ;
 
 arr : arr OBRACK exp CBRACK
+        {
+            $<inlistType>1->addExp($<expType>3);
+            $<inlistType>$ = $<inlistType>1;
+        }
     | OBRACK exp CBRACK
+        {
+            Indexlist *a = new Indexlist(Exp *e);
+            $<inlistType>$ = a;
+        }
     | arr OBRACK TILDE CBRACK
+        {
+            Tilde *t = new Tilde();
+            $<inlistType>1->addExp(t);
+            $<inlistType>$ = $<inlistType>1;
+        }
     | OBRACK TILDE CBRACK
+        {
+            Tilde *t = new Tilde();
+            Indexlist *a = new Indexlist(t);
+            $<inlistType>$ = a;
+        }
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE

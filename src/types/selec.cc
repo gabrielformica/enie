@@ -48,7 +48,7 @@ bool Selec::check() {
     return false;
 }
 
-std::string Selec::toString(int depth = 0) {
+std::string Selec::toString(int depth) {
     char space = ' ';
     std::string o_indent = std::string(depth, space);
     std::string i_indent = std::string(4, space);

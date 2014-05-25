@@ -42,7 +42,7 @@ class Selec : public Instruc {
         Instbl* getBlock();
         bool check();
 
-        std::string toString(int depth = 0);
+        std::string toString(int depth);
 };
 
 #endif

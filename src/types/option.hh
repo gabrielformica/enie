@@ -18,7 +18,7 @@
 
 #include <string>
 #include "instbl.hh"
-#include "../symtable.hh"
+#include "../symtable/symtable.hh"
 
 class Option {
     private:
