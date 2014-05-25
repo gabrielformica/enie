@@ -2,8 +2,9 @@ GPPFLAGS= -std=gnu++11 -lfl
 GPP= g++ 
 YACC= bison -v
 LEX= flex --yylineno
-OBJ= lex.yy.c  parser.tab.c symtable.cc parserhelper.cc $(TYPES)
-TYPES= $(wildcard types/*.cc)
+OBJ= lex.yy.c  parser.tab.c parserhelper.cc types/type_system_utils.cc $(SYMTABLE) #$(TYPES)
+#TYPES= $(wildcard types/*.cc)
+SYMTABLE= $(wildcard symtable/*.cc)
 
 enie: $(OBJ)
 	$(GPP) $(OBJ) $(GPPFLAGS)   -o enie
