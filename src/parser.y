@@ -208,8 +208,8 @@ instbl : OBRACE sepaux instlist sepaux CBRACE
 inst : asign
      | decl
      | selec    // done
-     | multselec
-     | indite   // creada pero no en parser
+     | multselec // done
+     | indite   // done
      | detite   // creada pero no en parser
      | return   // done
      | callfunc

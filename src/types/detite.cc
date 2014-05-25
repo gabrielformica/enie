@@ -19,6 +19,12 @@
 #include "exp.hh"
 #include "instbl.hh"
 
+Detite::Detite(Exp *e, Instbl *bl, Decl *de) {
+    this->exp = e;
+    this->block = bl;
+    this->declar = de;
+}
+
 Exp* Detite::getExpression() {
     return this->exp;
 }

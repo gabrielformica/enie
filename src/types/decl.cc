@@ -18,20 +18,26 @@
 #include "exp.hh"
 #include "../symtable.hh"
 
-Symbol* Decl::get_symbol() {
+Decl::Decl(Symbol *s, Exp *e) {
+    this->sym = s;
+    this->exp = e;
+}
+
+
+Symbol* Decl::getSymbol() {
     return this->sym;
 }
 
-Exp* Decl::get_expression() {
+Exp* Decl::getExpression() {
     return this->exp;
 }
 
 
-void Decl::set_symbol(Symbol *s) {
+void Decl::setSymbol(Symbol *s) {
     this->sym = s;
 }
 
-void Decl::set_expression(Exp *e) {
+void Decl::setExpression(Exp *e) {
     this->exp = e;
 }
 

@@ -29,12 +29,12 @@ class Decl : public Instruc {
     public:
         typedef Instruc super;
 
-        explicit Decl(Symbol *s, Exp *e) : sym(s), exp(e) { }
+        Decl(Symbol *s, Exp *e);
 
-        Symbol* get_symbol();
-        Exp* get_expression();
-        void set_symbol(Symbol *s);
-        void set_expression(Exp *e);
+        Symbol* getSymbol();
+        Exp* getExpression();
+        void setSymbol(Symbol *s);
+        void setExpression(Exp *e);
         bool check();
 };
 

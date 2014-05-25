@@ -31,8 +31,7 @@ class Detite : public Instruc {
     public:
         typedef Instruc super;
 
-        explicit Detite(Exp *e, Instbl *bl, Decl *de) : exp(e), block(bl),
-                        declar(de) { }
+        Detite(Exp *e, Instbl *bl, Decl *de);
 
         Exp* getExpression();
         Instbl* getBlock();
