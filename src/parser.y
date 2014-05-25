@@ -209,6 +209,9 @@ instbl : OBRACE sepaux instlist sepaux CBRACE
         ;
 
 inst : asign
+        {
+            $<instType>$ = $<instType>1;
+        }
      | decl
      | selec    // done
      | multselec // done
@@ -386,8 +389,8 @@ exp : term
             std::string t2 =  ($<expType>3)->getType();
             if ( (t1 == t2) && ((t1 == "ent") || (t1 == "flot")) ) {
                     ExpBin eb = ExpBin($<expType>1,$<expType>3,t1);
-                    $<expType>$ = &eb; 
-                
+                    $<expType>$ = &eb;
+
             }
             else {
                 ExpBin eb = ExpBin($<expType>1,$<expType>3,t1);
