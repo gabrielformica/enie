@@ -21,6 +21,7 @@
 class FuncSymbol: public Symbol {
     private:
         bool forwarded;
+
     public:
         FuncSymbol(std::string, std::string, int, int, int, bool);
         bool isForwarded();

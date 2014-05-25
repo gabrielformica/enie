@@ -3,7 +3,7 @@ GPP= g++
 YACC= bison -v
 LEX= flex --yylineno
 OBJ= lex.yy.c  parser.tab.c parserhelper.cc types/type_system_utils.cc $(TYPES2) $(SYMTABLE) #$(TYPES)
-TYPES2= types/arglist.cc types/signa.cc
+TYPES2= types/function.cc types/arglist.cc types/signa.cc types/header.cc
 #TYPES= $(wildcard types/*.cc)
 SYMTABLE= $(wildcard symtable/*.cc)
 

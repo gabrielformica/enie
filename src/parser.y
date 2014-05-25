@@ -25,6 +25,8 @@
     /*primitivos*/
     #include "types/arglist.hh"
     #include "types/signa.hh"
+    #include "types/header.hh"
+    #include "types/function.hh"
     /*
     #include "types/instruc.hh"
     #include "types/indite.hh"
@@ -57,8 +59,10 @@
     Exp *expType;
     ArgList *argList;
     Signa *signa;
-    /*
+    Header *header;
+    Function *function;
     Instbl *instblType;
+    /*
     Oseleclist *oslType;
     Selec *selecType;
     Retorno *returnType;
@@ -174,13 +178,19 @@ funcl   : funcl sepaux func leavescope
         | error SEP
         ;
 
-func    : header instbl
-        | header  
+func    : header instbl { $<function>$ = new Function($<header>1, $<instblType>2); }
+        | header       // { $<function>$ = new Function($<header>1, new Instbl(); }
         ;
 
 
 header  : idheader COLCOL enterscope signa 
+            { 
+                $<header>$ = new Header($<symType>1->getId(), $<signa>4);
+            }
         | ENIE COLCOL enterscope signa
+            { 
+                $<header>$ = new Header("enie", $<signa>4);
+            }
         ;
 
 idheader : addid
@@ -429,7 +439,7 @@ return : RETORNA
             }
        ;
 
-exp : term
+exp : term { $<expType>$ = $<expType>1; }
     | exp PLUS exp
         {
             int l = @1.first_line;    //line of the binary expression
@@ -546,11 +556,11 @@ exp : term
     ;
 
 
-term : checkid     /*ID*/
-     | NUMENT      {$<expType>$ = new Ent(); }
-     | NUMFLOT     {$<expType>$ = new Flot();}
-     | CIERTO      {$<expType>$ = new Bool();}
-     | FALSO       {$<expType>$ = new Bool();}
+term : checkid     { $<symType>$ = $<symType>1; } /*ID*/
+     | NUMENT      { $<expType>$ = new Ent(); }
+     | NUMFLOT     { $<expType>$ = new Flot(); }
+     | CIERTO      { $<expType>$ = new Bool(); }
+     | FALSO       { $<expType>$ = new Bool(); }
      | checkid arr  /*ID arr*/
      | callfunc    
      | CONSTCAD    {$<expType>$ = new Cadena();}
