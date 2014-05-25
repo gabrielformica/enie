@@ -8,16 +8,23 @@
     #include <vector>
     #include <stdlib.h>
     #include <stdio.h>
+    #include "symtable/symbol.hh"
+    #include "symtable/func_symbol.hh"
     #include "symtable/symtable.hh"
+    /*primitivos*/
     #include "types/exp.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
     #include "types/flot.hh"
     #include "types/bool.hh"
     #include "types/car.hh"
+    #include "types/nada.hh"
     #include "types/cadena.hh"
     #include "types/type_error.hh"
     #include "types/type_system_utils.hh"
+    /*primitivos*/
+    #include "types/arglist.hh"
+    #include "types/signa.hh"
     /*
     #include "types/instruc.hh"
     #include "types/indite.hh"
@@ -48,6 +55,8 @@
     */
     Symbol *symType;
     Exp *expType;
+    ArgList *argList;
+    Signa *signa;
     /*
     Instbl *instblType;
     Oseleclist *oslType;
@@ -166,25 +175,26 @@ funcl   : funcl sepaux func leavescope
         ;
 
 func    : header instbl
-        | header
+        | header  
         ;
 
 
-header  : idheader COLCOL enterscope signa
+header  : idheader COLCOL enterscope signa 
         | ENIE COLCOL enterscope signa
         ;
 
 idheader : addid
          ;
 
-signa   : arglist ARROW type
-        | arglist
-        | TILDE
-        | TILDE ARROW type
+signa   : arglist ARROW type { $<signa>$ = new Signa($<argList>1, *$<str>3); }
+        | arglist { $<signa>$ = new Signa($<argList>1, "nada"); }
+        | TILDE   { $<signa>$ = new Signa(new ArgList(), "nada"); }
+        | TILDE ARROW type { $<signa>$ = new Signa(new ArgList(), *$<str>3); }
         ;
 
-arglist : arglist COMMA declonly
-        | declonly
+arglist : arglist COMMA declonly { $<argList>1->append($<symType>3); $<argList>$ = $<argList>1; }
+        | declonly  { $<argList>$ = new ArgList($<symType>1); } 
+        | arglist COMMA VAR declonly
         | VAR declonly
         ;
 
@@ -287,11 +297,15 @@ decl : typeid EQUAL exp
      | declbox
      ;
 
-declonly : typeid
+declonly : typeid { $<symType>$ = $<symType>1; }
          | typeid arr
          ;
 
-typeid : type addid  { $<symType>2->setType(*$<str>1); }  
+typeid : type addid 
+            {
+                $<symType>2->setType(*$<str>1);
+                $<symType>$ = $<symType>2;
+            }  
        ;
 
 type : ENT    { $<str>$ = new std::string("ent"); }
