@@ -26,12 +26,12 @@ class Asign: public Instruc {
         Symbol *sym;
         Exp *exp;
     public:
-        explicit Asign(Symbol *s, Exp *e) : sym(s), exp(e) { }
+        Asign(Symbol *s, Exp *e);
 
         Symbol* get_symbol();
-        Exp* get_expression();
-        void set_symbol(Symbol *s);
-        void set_expression(Exp *e);
+        Exp* getExpression();
+        void setSymbol(Symbol *s);
+        void setExpression(Exp *e);
         bool check();
 };
 

@@ -18,23 +18,21 @@
 #define INEDITE_HH
 
 #include "exp.hh"
+#include "instbl.hh"
 #include "instruc.hh"
-#include "../symtable.hh"
 
-class Inedite : public Instruc {
+class Indite : public Instruc {
     private:
-        Symbol *sym;
         Exp *exp;
+        Instbl *block;
 
     public:
         typedef Instruc super;
 
-        explicit Inedite(Symbol *s, Exp *e) : sym(s), exp(e) { }
+        Indite(Exp *e, Instbl *bl);
 
-        Symbol* get_symbol();
-        Exp* get_expression();
-        void set_symbol(Symbol *s);
-        void set_expression(Exp *e);
+        Exp* getExpression();
+        Instbl* getBlock();
         bool check();
 };
 

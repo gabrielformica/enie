@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file selec.hh
+  * @file oselec.hh
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,35 +9,27 @@
   *
   * @section Description
   *
-  * Class definitions for selection instruction type
+  * Class definitions for selection's else if instruction type
   *
   */
 
 
-#ifndef SELEC_HH
-#define SELEC_HH
+#ifndef OSELEC_HH
+#define OSELEC_HH
 
-#include <list>
 #include "exp.hh"
-#include "instruc.hh"
 #include "instbl.hh"
-#include "oselec.hh"
-#include "oseleclist.hh"
 
-class Selec : public Instruc {
+class Oselec : public Instruc {
     private:
         Exp *exp;
         Instbl *block;
-        Oseleclist *list;
-
     public:
         typedef Instruc super;
 
-        Selec(Exp *e, Instbl *bl, Oseleclist *l);
+        Oselec(Exp *e, Instbl *bl);
 
         Exp* getExpression();
-        void initList(Oselec *os);
-        Oseleclist* getList();
         Instbl* getBlock();
         bool check();
 };

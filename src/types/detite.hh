@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file selec.hh
+  * @file detite.hh
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,36 +9,33 @@
   *
   * @section Description
   *
-  * Class definitions for selection instruction type
+  * Class definitions for determined iteration instruction type
   *
   */
 
 
-#ifndef SELEC_HH
-#define SELEC_HH
+#ifndef DETITE_HH
+#define DETITE_HH
 
-#include <list>
 #include "exp.hh"
-#include "instruc.hh"
 #include "instbl.hh"
-#include "oselec.hh"
-#include "oseleclist.hh"
+#include "decl.hh"
+#include "instruc.hh"
 
-class Selec : public Instruc {
+class Detite : public Instruc {
     private:
         Exp *exp;
         Instbl *block;
-        Oseleclist *list;
+        Decl *declar;
 
     public:
         typedef Instruc super;
 
-        Selec(Exp *e, Instbl *bl, Oseleclist *l);
+        Detite(Exp *e, Instbl *bl, Decl *de);
 
         Exp* getExpression();
-        void initList(Oselec *os);
-        Oseleclist* getList();
         Instbl* getBlock();
+        Decl* getDecl();
         bool check();
 };
 

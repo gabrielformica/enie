@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file multselec.hh
+  * @file decl.hh
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,28 +9,32 @@
   *
   * @section Description
   *
-  * Class definitions for case instruction type
+  * Class definition for declaration instruction type
   *
   */
 
 
-#ifndef MULTSELEC_HH
-#define MULTSELEC_HH
+#ifndef DECL_HH
+#define DECL_HH
 
+#include "exp.hh"
 #include "instruc.hh"
 #include "../symtable.hh"
-#include "optlist.hh"
 
-class Multselec: public Instruc {
+class Decl : public Instruc {
     private:
         Symbol *sym;
-        Optlist *optl;
+        Exp *exp;
 
     public:
-        Multselec(Symbol *s, Optlist *ol);
+        typedef Instruc super;
 
-        void setSymbol(Symbol *s);
+        Decl(Symbol *s, Exp *e);
+
         Symbol* getSymbol();
+        Exp* getExpression();
+        void setSymbol(Symbol *s);
+        void setExpression(Exp *e);
         bool check();
 };
 

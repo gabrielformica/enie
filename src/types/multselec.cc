@@ -14,32 +14,24 @@
   */
 
 
-#include "exp.hh"
 #include "multselec.hh"
 #include "../symtable.hh"
+#include "optlist.hh"
+
+Multselec::Multselec(Symbol *s, Optlist *ol) {
+    this->sym = s;
+    this->optl = ol;
+}
+
 
 Symbol* Multselec::getSymbol() {
     return this->sym;
 }
 
-Exp* Multselec::getExpression() {
-    return this->exp;
-}
-
-
 void Multselec::setSymbol(Symbol *s) {
     this->sym = s;
 }
 
-void Multselec::setExpression(Exp *e) {
-    this->exp = e;
-}
-
 bool Multselec::check() {
-
-    if (this->sym->getType() == this->exp->getType()) {
-        return true;
-    }
-
-    return false;
+    return true;
 }

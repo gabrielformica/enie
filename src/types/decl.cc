@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file indite.cc
+  * @file selec.cc
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,29 +9,39 @@
   *
   * @section Description
   *
-  * Class implementations for intermined iteration instruction type
+  * Class implementations for selection instruction type
   *
   */
 
 #include <string>
-#include "indite.hh"
+#include "decl.hh"
 #include "exp.hh"
-#include "instbl.hh"
+#include "../symtable.hh"
 
-Indite::Indite(Exp *e, Instbl *bl) {
+Decl::Decl(Symbol *s, Exp *e) {
+    this->sym = s;
     this->exp = e;
-    this->block = bl;
 }
 
-Exp* Indite::getExpression() {
+
+Symbol* Decl::getSymbol() {
+    return this->sym;
+}
+
+Exp* Decl::getExpression() {
     return this->exp;
 }
 
-Instbl* Indite::getBlock() {
-    return this->block;
+
+void Decl::setSymbol(Symbol *s) {
+    this->sym = s;
 }
 
-bool Indite::check() {
+void Decl::setExpression(Exp *e) {
+    this->exp = e;
+}
+
+bool Decl::check() {
     std::string exp_type = this->exp->getType();
 
     if (exp_type == "bool") {

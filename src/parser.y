@@ -20,6 +20,8 @@
     #include "types/type_system_utils.hh"
     /*
     #include "types/instruc.hh"
+    #include "types/indite.hh"
+    #include "types/detite.hh"
     #include "types/asign.hh"
     #include "types/instlist.hh"
     */
@@ -46,6 +48,17 @@
     */
     Symbol *symType;
     Exp *expType;
+    Instbl *instblType;
+    Oseleclist *oslType;
+    Selec *selecType;
+    Retorno *returnType;
+    Leer *leerType;
+    Escribir *escribirType;
+    Indite *indiType;
+    Decl *declType;
+    Option *optType;
+    Optlist *optlistType;
+    Multselec *multselType;
 }
 
 /* Tokens de las palabras reservadas */
@@ -190,19 +203,31 @@ instlist : instlist sepaux inst
          | error
          ;
 
-instbl  : OBRACE sepaux instlist sepaux CBRACE
+instbl : OBRACE sepaux instlist sepaux CBRACE
+            {
+                Instbl bl($<instListType>3);
+                $<instblType>$ = &bl;
+            }
         ;
 
 inst : asign
      | decl
-     | selec
-     | multselec
-     | indite
-     | detite
-     | return
+     | selec    // done
+     | multselec // done
+     | indite   // done
+     | detite   // creada pero no en parser
+     | return   // done
      | callfunc
      | LEER exp
+        {
+            Leer *l = new Leer($<expType>2);
+            $<leerType>$ = l;
+        }
      | ESCRIBIR exp
+        {
+            Escribir *e = new Escribir($<expType>2);
+            $<escribirType>$ = e;
+        }
      ;
 
 checkid : ID
@@ -212,6 +237,7 @@ checkid : ID
             int column = @1.first_column;
             Symbol *s = new Symbol(*$1, currentScope, line, column);
             checkUse(symtable, &errors, s);
+            $<symType>$ = s;
         }
         ;
 
@@ -229,7 +255,8 @@ addid   : ID
 asign : checkid EQUAL exp
         {
           /*
-            Asign a = Asign($<symType>1, $<expType>3);
+            Asign *a =  new Asign($<symType>1, $<expType>3);
+            $<instType>$ = a;
           */
         }
       | checkid arr EQUAL arrvalues
@@ -268,10 +295,24 @@ type : ENT    { $<str>$ = new std::string("ent"); }
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+        {
+            Selec *s = new Selec($<expType>3, $<instblType>6, $<oslType>8);
+            $<selecType>$ = s;
+        }
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
-        |
+            {
+                Oselec *os = new Oselec($<expType>4, $<instblType>7);
+                $<oslType>1->addOselec(os);
+                $<oslType>$ = $<oslType>1;
+            }
+        |  OSI LPAR exp RPAR enterscope instbl leavescope
+            {
+                Oselec *os = new Oselec($<expType>3, $<instblType>6);
+                Oseleclist *l = new Oseleclist(os);
+                $<oslType>$ = l;
+            }
         ;
 
 sinoselect :  SINO enterscope instbl leavescope
@@ -280,30 +321,66 @@ sinoselect :  SINO enterscope instbl leavescope
 
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
+                {
+                    Multselec *ms = new Multselec($<symType>2, $<optlistType>5);
+                    $<multselType>$ = ms;
+                }
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
            ;
 
 optionslist : optionslist sepaux option
+                {
+                    $<optlistType>1->addOption($<optType>3);
+                    $<optlistType>$ = $<optlistType>1;
+                }
             | option
+                {
+                    Optlist *ol = new Optlist($<optType>1);
+                    $<optlistType>$ = ol;
+                }
             ;
 
 option: BSLASH leftsideopt ARROW instbl
+            {
+                $<optType>2->setBlock($<instblType>4);
+                $<optType>$ = $<optType>2;
+            }
       ;
 
 leftsideopt : CONSTCAD
+                {
+                    Option *o = new Option(*$1);
+                    $<optType>$ = o;
+                }
             | checkid
+                {
+                    Option *o = new Option($<symType>1);
+                    $<optType>$ = o;
+                }
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
+            {
+                Indite *i = new Indite($<expType>3, $<instblType>6);
+                $<indiType>$ = i;
+            }
        ;
 
 detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
        ;
 
 return : RETORNA
+            {
+                Retorno *r = new Retorno(NULL);
+                $<returnType>$ = r;
+            }
        | RETORNA exp
+            {
+                Retorno *r = new Retorno($<expType>2);
+                $<returnType>$ = r;
+            }
        ;
 
 exp : term

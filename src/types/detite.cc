@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file indite.cc
+  * @file detite.cc
   *
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
@@ -9,29 +9,35 @@
   *
   * @section Description
   *
-  * Class implementations for intermined iteration instruction type
+  * Class implementations for determined iteration instruction type
   *
   */
 
 #include <string>
-#include "indite.hh"
+#include "detite.hh"
+#include "decl.hh"
 #include "exp.hh"
 #include "instbl.hh"
 
-Indite::Indite(Exp *e, Instbl *bl) {
+Detite::Detite(Exp *e, Instbl *bl, Decl *de) {
     this->exp = e;
     this->block = bl;
+    this->declar = de;
 }
 
-Exp* Indite::getExpression() {
+Exp* Detite::getExpression() {
     return this->exp;
 }
 
-Instbl* Indite::getBlock() {
+Instbl* Detite::getBlock() {
     return this->block;
 }
 
-bool Indite::check() {
+Decl* Detite::getDecl() {
+    return this->declar;
+}
+
+bool Detite::check() {
     std::string exp_type = this->exp->getType();
 
     if (exp_type == "bool") {

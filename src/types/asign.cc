@@ -18,6 +18,10 @@
 #include "exp.hh"
 #include "../symtable.hh"
 
+Asign::Asign(Symbol *s, Exp *e) {
+    this->exp = e;
+    this->sym = s;
+}
 
 Symbol* Asign::get_symbol() {
     return this->sym;
@@ -27,21 +31,21 @@ Symbol* Asign::get_symbol() {
 //     return this->expr;
 // }
 
-void Asign::set_symbol(Symbol *s) {
+void Asign::setSymbol(Symbol *s) {
     this->sym = s;
 }
 
-// void set_expression(Expression *e) {
-//     this->expr = e;
-// }
+void Asign::setExpression(Exp *e) {
+    this->exp = e;
+}
 
 bool Asign::check() {
     std::string exp_type = this->exp->getType();
-  //  //std::string sym_type = this->sym->getType();
+    std::string sym_type = this->sym->getType();
 
-  //  if (sym_type == exp_type) {
-  //      return true;
-  //  }
+   if (sym_type == exp_type) {
+       return true;
+   }
 
     return false;
 }

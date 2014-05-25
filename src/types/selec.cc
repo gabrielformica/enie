@@ -14,25 +14,28 @@
   */
 
 #include <string>
+#include <list>
 #include "selec.hh"
+#include "oselec.hh"
 #include "exp.hh"
-#include "../symtable.hh"
 
-Symbol* Selec::get_symbol() {
-    return this->sym;
+Selec::Selec(Exp *e, Instbl *bl, Oseleclist *l) {
+    this->exp = e;
+    this->block = bl;
+    this->list = l;
 }
 
-Exp* Selec::get_expression() {
+
+Exp* Selec::getExpression() {
     return this->exp;
 }
 
-
-void Selec::set_symbol(Symbol *s) {
-    this->sym = s;
+void Selec::initList(Oselec *os) {
+    this->list = new Oseleclist(os);
 }
 
-void Selec::set_expression(Exp *e) {
-    this->exp = e;
+Oseleclist* Selec::getList() {
+    return this->list;
 }
 
 bool Selec::check() {
