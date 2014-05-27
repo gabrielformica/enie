@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include "parserhelper.hh"
+#include "symtable/symtable.hh"
+#include "symtable/symbol.hh"
 
 using namespace std;
 

@@ -9,8 +9,10 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include "symtable/symbol.hh"
-    #include "symtable/func_symbol.hh"
     #include "symtable/symtable.hh"
+    #include "parserhelper.hh"
+    /*
+    #include "symtable/func_symbol.hh"
     #include "types/exp.hh"
     #include "types/expbin.hh"
     #include "types/ent.hh"
@@ -21,7 +23,9 @@
     #include "types/cadena.hh"
     #include "types/type_error.hh"
     #include "types/type_system_utils.hh"
+    */
     /*primitivos*/
+    /*
     #include "types/arglist.hh"
     #include "types/signa.hh"
     #include "types/header.hh"
@@ -33,7 +37,7 @@
     #include "types/instlist.hh"
     #include "types/function.hh"
     #include "types/function_list.hh"
-    #include "parserhelper.hh"
+    */
     extern FILE* yyin;
     extern std::vector<std::string> errors;
 }
@@ -50,9 +54,10 @@
     std::string *str;
     int intval;
     float floatval;
+    Symbol *symType;
+    /*
     Instruc *instType;
     Instlist *instListType;
-    Symbol *symType;
     Exp *expType;
     ArgList *argList;
     Signa *signa;
@@ -70,6 +75,7 @@
     Option *optType;
     Optlist *optlistType;
     Multselec *multselType;
+    */
 }
 
 /* Tokens de las palabras reservadas */
@@ -155,7 +161,7 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : begin enterscope funcl end leavescope { $<functionlist>$ = $<functionlist>3; }
+enie    : begin enterscope funcl end leavescope /* { $<functionlist>$ = $<functionlist>3; } */
         ;
 
 begin   : sepaux
@@ -170,30 +176,37 @@ sepaux  : sepaux SEP
         ;
 
 funcl   : funcl sepaux func leavescope
+           /*
             {
                 $<functionlist>1->append($<function>3);
                 $<functionlist>$ = $<functionlist>1;
             }
-        | func leavescope  { $<functionlist>$ = new FunctionList($<function>1); }
+            */
+        | func leavescope /* { $<functionlist>$ = new FunctionList($<function>1); } */
         | error SEP
         ;
 
-func    : header instbl { $<function>$ = new Function($<header>1, $<instblType>2); }
-        | header       // { $<function>$ = new Function($<header>1, new Instbl(); }
+func    : header instbl /* { $<function>$ = new Function($<header>1, $<instblType>2); } */
+        | header       /* { $<function>$ = new Function($<header>1, new Instbl(); } */
         ;
 
 
 header  : idheader COLCOL enterscope signa 
+           /*
             { 
                 $<header>$ = new Header($<symType>1->getId(), $<signa>4);
             }
+            */
         | ENIE COLCOL enterscope signa
+           /* 
             { 
                 $<header>$ = new Header("enie", $<signa>4);
             }
+            */
         ;
 
-idheader : ID 
+idheader : addid    /* It will change to ID */ 
+         /*
             {
                 int currentScope = symtable->getCurrentScope();
                 int line = @1.first_line;
@@ -202,91 +215,101 @@ idheader : ID
                 tryAddSymbol(symtable, &errors, s);
                 $<symType>$ = s;
             }
+         */
          ;
 
-signa   : arglist ARROW type { $<signa>$ = new Signa($<argList>1, *$<str>3); }
-        | arglist { $<signa>$ = new Signa($<argList>1, "nada"); }
-        | TILDE   { $<signa>$ = new Signa(new ArgList(), "nada"); }
-        | TILDE ARROW type { $<signa>$ = new Signa(new ArgList(), *$<str>3); }
+signa   : arglist ARROW type /* { $<signa>$ = new Signa($<argList>1, *$<str>3); } */
+        | arglist /* { $<signa>$ = new Signa($<argList>1, "nada"); } */
+        | TILDE  /*  { $<signa>$ = new Signa(new ArgList(), "nada"); } */
+        | TILDE ARROW type /* { $<signa>$ = new Signa(new ArgList(), *$<str>3); } */
         ;
 
-arglist : arglist COMMA declonly { $<argList>1->append($<symType>3); $<argList>$ = $<argList>1; }
-        | declonly  { $<argList>$ = new ArgList($<symType>1); } 
+arglist : arglist COMMA declonly /* { $<argList>1->append($<symType>3); $<argList>$ = $<argList>1; } */
+        | declonly /*  { $<argList>$ = new ArgList($<symType>1); }  */
         | arglist COMMA VAR declonly
         | VAR declonly
         ;
 
 instlist : instlist sepaux inst
+          /* 
             {
                 $<instListType>1->addInst($<instType>3);
                 $<instListType>$ = $<instListType>1;
             }
+            */
          | inst
+           /*
             {
                 Instlist l($<instType>1);
                 $<instListType>$ = &l;
             }
+            */
          | error
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
+            /*
             {
                 Instbl bl($<instListType>3);
                 $<instblType>$ = &bl;
             }
+            */
         ;
 
 inst : asign
      | decl
-     | selec    // done
-     | multselec // done
-     | indite   // done
-     | detite   // creada pero no en parser
-     | return   // done
+     | selec  
+     | multselec 
+     | indite  
+     | detite  
+     | return  
      | callfunc
      | LEER exp
+     /*
         {
             Leer *l = new Leer($<expType>2);
             $<leerType>$ = l;
         }
+      */
      | ESCRIBIR exp
+      /*
         {
             Escribir *e = new Escribir($<expType>2);
             $<escribirType>$ = e;
         }
+       */
      ;
 
 checkid : ID
-        {
-            int currentScope = symtable->getCurrentScope();
-            int line = @1.first_line;
-            int column = @1.first_column;
-            Symbol *s = new Symbol(*$1, currentScope, line, column);
-            checkUse(symtable, &errors, s);
-            $<symType>$ = s;
-        }
+            {
+                int currentScope = symtable->getCurrentScope();
+                int line = @1.first_line;
+                int column = @1.first_column;
+                Symbol *s = new Symbol(*$1, currentScope, line, column);
+                checkUse(symtable, &errors, s);
+                $<symType>$ = s;
+            }
         ;
 
 addid   : ID
-        {
-            int currentScope = symtable->getCurrentScope();
-            int line = @1.first_line;
-            int column = @1.first_column;
-            Symbol *s = new Symbol(*$1, currentScope, line, column);
-            tryAddSymbol(symtable, &errors, s);
-            $<symType>$ = s;
-        }
+            {
+                int currentScope = symtable->getCurrentScope();
+                int line = @1.first_line;
+                int column = @1.first_column;
+                Symbol *s = new Symbol(*$1, currentScope, line, column);
+                tryAddSymbol(symtable, &errors, s);
+                $<symType>$ = s;
+            }
         ;
 
 asign : checkid EQUAL exp
+       /*
         {
             Asign *a =  new Asign($<symType>1, $<expType>3);
             $<instType>$ = a;
         }
+        */
       | checkid arr EQUAL arrvalues
-        {
-
-        }
       ;
 
 arrvalues : exp
@@ -303,44 +326,52 @@ decl : typeid EQUAL exp
      | declbox
      ;
 
-declonly : typeid { $<symType>$ = $<symType>1; }
+declonly : typeid /* { $<symType>$ = $<symType>1; } */
          | typeid arr
          ;
 
 typeid : type addid 
+           /*
             {
                 $<symType>2->setType(*$<str>1);
                 $<symType>$ = $<symType>2;
             }  
+            */
        ;
 
-type : ENT    { $<str>$ = new std::string("ent"); }
-     | CAR    { $<str>$ = new std::string("car"); }
-     | FLOT   { $<str>$ = new std::string("flot"); }
-     | NADA   { $<str>$ = new std::string("nada"); }
-     | BOOL   { $<str>$ = new std::string("bool"); }
-     | CADENA { $<str>$ = new std::string("cadena"); }
+type : ENT     /* { $<str>$ = new std::string("ent"); }      */  
+     | CAR     /* { $<str>$ = new std::string("car"); }      */
+     | FLOT    /* { $<str>$ = new std::string("flot"); }     */
+     | NADA    /* { $<str>$ = new std::string("nada"); }     */
+     | BOOL    /* { $<str>$ = new std::string("bool"); }     */
+     | CADENA  /* { $<str>$ = new std::string("cadena"); }   */
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+        /*
         {
             Selec *s = new Selec($<expType>3, $<instblType>6, $<oslType>8);
             $<selecType>$ = s;
         }
+        */
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
+            /*
             {
                 Oselec *os = new Oselec($<expType>4, $<instblType>7);
                 $<oslType>1->addOselec(os);
                 $<oslType>$ = $<oslType>1;
             }
+            */
         |  OSI LPAR exp RPAR enterscope instbl leavescope
+        /*
             {
                 Oselec *os = new Oselec($<expType>3, $<instblType>6);
                 Oseleclist *l = new Oseleclist(os);
                 $<oslType>$ = l;
             }
+        */
         ;
 
 sinoselect :  SINO enterscope instbl leavescope
@@ -349,155 +380,202 @@ sinoselect :  SINO enterscope instbl leavescope
 
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
+          /*
                 {
                     Multselec *ms = new Multselec($<symType>2, $<optlistType>5);
                     $<multselType>$ = ms;
                 }
+            */
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
            ;
 
 optionslist : optionslist sepaux option
+            /*
                 {
                     $<optlistType>1->addOption($<optType>3);
                     $<optlistType>$ = $<optlistType>1;
                 }
+            */
             | option
+            /*
                 {
                     Optlist *ol = new Optlist($<optType>1);
                     $<optlistType>$ = ol;
                 }
+            */
             ;
 
 option: BSLASH leftsideopt ARROW instbl
+      /*
             {
                 $<optType>2->setBlock($<instblType>4);
                 $<optType>$ = $<optType>2;
             }
+       */
       ;
 
 leftsideopt : CONSTCAD
+            /*
                 {
                     Option *o = new Option(*$1);
                     $<optType>$ = o;
                 }
+            */
             | checkid
+            /*
                 {
                     Option *o = new Option($<symType>1);
                     $<optType>$ = o;
                 }
+            */
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
+       /*
             {
                 Indite *i = new Indite($<expType>3, $<instblType>6);
                 $<indiType>$ = i;
             }
+        */
        ;
 
 detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
        ;
 
 return : RETORNA
+       /*
             {
                 Retorno *r = new Retorno(NULL);
                 $<returnType>$ = r;
             }
+        */
        | RETORNA exp
+       /*
             {
                 Retorno *r = new Retorno($<expType>2);
                 $<returnType>$ = r;
             }
+        */
        ;
 
-exp : term { $<expType>$ = $<expType>1; }
+exp : term   /*{ $<expType>$ = $<expType>1; } */
     | exp PLUS exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "+", l, c);
         }
+     */
     | exp MINUS exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "-", l, c);
         }
+    */
     | exp MULT exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "*", l, c);
         }
+    */
     | exp DIV exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "/", l, c);
         }
+    */
     | exp MOD exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "%", l, c);
         }
+    */
     | exp POWER exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "^", l, c);
         }
+    */
     | exp OR exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "||", l, c);
         }
+    */
     | exp AND exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "&&", l, c);
         }
+    */
     | exp LTHAN exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "<", l, c);
         }
+    */
     | exp GTHAN exp
+    /*
        {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, ">", l, c);
         }
+    */
     | exp LETHAN exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "<=", l, c);
         }
+    */
     | exp GETHAN exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, ">=", l, c);
         }
+    */
     | exp EQUIV exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "==", l, c);
         }
+    */
     | exp INEQUIV exp
+    /*
         {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
             $<expType>$ = get_expbin($<expType>1, $<expType>3, "!=", l, c);
         }
+    */
     | exp DOTDOT exp
     | NEGATION exp
+    /*
         {
             int l = @2.first_line;    //line of the binary expression
             int c = @2.first_column;  //column of the binary expression
@@ -508,8 +586,10 @@ exp : term { $<expType>$ = $<expType>1; }
                 $<expType>$ = new TypeError($<expType>2, l, c);
             }
         }
+    */
 
     | MINUS exp  %prec NEG
+    /*
         {
             int l = @2.first_line;    //line of the binary expression
             int c = @2.first_column;  //column of the binary expression
@@ -523,53 +603,66 @@ exp : term { $<expType>$ = $<expType>1; }
                 $<expType>$ = new TypeError($<expType>2, l, c);
             }
         }
+    */
 
-    | LPAR exp RPAR { $<expType>$ = $<expType>2; }
+    | LPAR exp RPAR /* { $<expType>$ = $<expType>2; } */
     ;
 
 
 term : checkid
+     /*
         {
             Id *id = new Id($<symType>1->getId);
             $<expType>$ = id;
         }
-     | NUMENT      {$<expType>$ = new Ent();}
-     | NUMFLOT     {$<expType>$ = new Flot();}
-     | CIERTO      {$<expType>$ = new Bool();}
-     | FALSO       {$<expType>$ = new Bool();}
+    */
+     | NUMENT     /* {$<expType>$ = new Ent();}  */
+     | NUMFLOT    /* {$<expType>$ = new Flot();} */
+     | CIERTO     /* {$<expType>$ = new Bool();} */
+     | FALSO      /* {$<expType>$ = new Bool();}   */
      | checkid arr  /*ID arr*/
+     /*
         {
             Id *id = new Id($<symType>1->getId());
             $<arrType>$ = new Arreglo(id, $<inlistType>2);
         }
+    */
      | callfunc
-     | CONSTCAD    {$<expType>$ = new Cadena();}
+     | CONSTCAD   /* {$<expType>$ = new Cadena(); } */
      | boxelem
      | error
      ;
 
 arr : arr OBRACK exp CBRACK
+    /*
         {
             $<inlistType>1->addExp($<expType>3);
             $<inlistType>$ = $<inlistType>1;
         }
+    */
     | OBRACK exp CBRACK
+    /*
         {
             Indexlist *a = new Indexlist(Exp *e);
             $<inlistType>$ = a;
         }
+    */
     | arr OBRACK TILDE CBRACK
+    /*
         {
             Tilde *t = new Tilde();
             $<inlistType>1->addExp(t);
             $<inlistType>$ = $<inlistType>1;
         }
+    */
     | OBRACK TILDE CBRACK
+    /*
         {
             Tilde *t = new Tilde();
             Indexlist *a = new Indexlist(t);
             $<inlistType>$ = a;
         }
+    */
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
