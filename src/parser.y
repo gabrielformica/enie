@@ -278,7 +278,7 @@ instlist : instlist sepaux inst
          | error
          ;
 
-instbl : OBRACE sepaux instlist sepaux CBRACE
+instbl : OBRACE sepaux instlist sepaux CBRACE 
             /*
             {
                 Instbl bl($<instListType>3);
@@ -380,7 +380,6 @@ type : ENT     { $<type>$ = entero; }
      | NADA    { $<type>$ = nada; }
      | BOOL    { $<type>$ = booleano; }
      | CADENA  { $<type>$ = cadena; }
-     | ID       // para structs and shit
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
@@ -400,7 +399,6 @@ oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
                 $<oslType>$ = $<oslType>1;
             }
             */
-        |  OSI LPAR exp RPAR enterscope instbl leavescope
         /*
             {
                 Oselec *os = new Oselec($<expType>3, $<instblType>6);
@@ -408,10 +406,11 @@ oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
                 $<oslType>$ = l;
             }
         */
+        | /* lambda */
         ;
 
 sinoselect :  SINO enterscope instbl leavescope
-           |
+           | /* lambda */
            ;
 
 
@@ -848,7 +847,7 @@ void error_handler(std::string err, int line, int col) {
     errors.push_back(e);
 }
 
-void yyerror (const char *s) {
+void yyerror(const char *s) {
     error_handler(s, yylloc.first_line, yylloc.first_column);
 }
 
