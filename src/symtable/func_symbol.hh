@@ -23,7 +23,7 @@ class FuncSymbol: public Symbol {
         bool forwarded;
 
     public:
-        FuncSymbol(std::string, std::string, int, int, int, bool);
+        FuncSymbol(std::string, int, int, int, bool);
         bool isForwarded();
 };
 

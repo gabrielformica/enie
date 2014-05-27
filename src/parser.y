@@ -60,7 +60,6 @@
     Function *function;
     Instbl *instblType;
     FunctionList *functionlist;
-    /*
     Oseleclist *oslType;
     Selec *selecType;
     Retorno *returnType;
@@ -71,7 +70,6 @@
     Option *optType;
     Optlist *optlistType;
     Multselec *multselType;
-    */
 }
 
 /* Tokens de las palabras reservadas */
@@ -195,7 +193,15 @@ header  : idheader COLCOL enterscope signa
             }
         ;
 
-idheader : addid
+idheader : ID 
+            {
+                int currentScope = symtable->getCurrentScope();
+                int line = @1.first_line;
+                int column = @1.first_column;
+                FuncSymbol *fs = new FuncSymbol(*$1, currentScope, line, column, false);
+                tryAddSymbol(symtable, &errors, s);
+                $<symType>$ = s;
+            }
          ;
 
 signa   : arglist ARROW type { $<signa>$ = new Signa($<argList>1, *$<str>3); }

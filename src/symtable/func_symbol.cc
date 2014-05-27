@@ -19,9 +19,9 @@
 
 /** Class constructor */
 
-FuncSymbol::FuncSymbol(std::string id, std::string type, 
+FuncSymbol::FuncSymbol(std::string id, 
                        int scope, int line, int column, bool forwarded
-                       ) : Symbol(id, type, scope, line, column) {
+                       ) : Symbol(id, "@function", scope, line, column) {
 
     this->forwarded = forwarded;
 }
