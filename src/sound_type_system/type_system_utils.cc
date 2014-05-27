@@ -12,14 +12,18 @@
   */
 
 
-#include "type_system_utils.hh"
 #include <string>
 #include <iostream>
-#include "exp.hh"
-#include "expbin.hh"
-#include "ent.hh"
-#include "flot.hh"
-#include "type_error.hh"
+#include "type_system_utils.hh"
+#include "base/type.hh"
+#include "base/ent.hh"
+#include "base/flot.hh"
+#include "../nodes/node.hh"
+#include "../nodes/exp.hh"
+#include "../nodes/expbin.hh"
+#include "base/type_error.hh"
+
+
 
 
 /**
@@ -33,15 +37,19 @@
   * @return A ExpBin, if it's valid. TypeError Exp if it's not
   */
 
-Exp *get_expbin(Exp *e1, Exp *e2, std::string ope, int line, int column) {
+Exp *get_expbin(Exp *e1, Exp *e2, std::string ope) {
     if (check_expbin(e1, e2, ope)) {
-       Exp *exp = new ExpBin(e1, e2);
-       return exp;
+        Exp *exp = new ExpBin(e1, e2, e1->getType());
+        return exp;
     }
 
-    Exp *exp = new ExpBin(e1, e2, "error"); 
-    Exp *error = new TypeError(exp, line, column);
-    return error;
+    if (e1->getTypeStr() == "error")
+        return e1;
+
+    if (e2->getTypeStr() == "error") 
+        return e2;
+
+    return NULL;
 }
 
 
@@ -54,8 +62,8 @@ Exp *get_expbin(Exp *e1, Exp *e2, std::string ope, int line, int column) {
 
 
 bool check_expbin(Exp *e1, Exp *e2, std::string ope) {
-    std::string t1 =  e1->getType();
-    std::string t2 =  e2->getType();
+    std::string t1 =  e1->getTypeStr();
+    std::string t2 =  e2->getTypeStr();
 
     if (t1 != t2)
         return false;

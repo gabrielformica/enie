@@ -8,24 +8,28 @@
   *
   * @section Description
   *
-  * Class definitions for expressions
+  * Node class definition
   */
 
 
-#ifndef EXP_HH
-#define EXP_HH
+#ifndef NODE_HH
+#define NODE_HH
 
-#include "node.hh"
 #include "../sound_type_system/base/type.hh"
 
-class Exp : public Node {
+class Node {
+    protected:
+        Type *type;
+
     public:
-        typedef Node super;
-
+        
         /** Class constructor */
-        Exp(Type *t) : super(t) { }
+        Node(Type *t) : type(t) { }
 
+        Type *getType() { return type; }
 
+        std::string getTypeStr() { return type->typeString(); }
+        
 };
 
 #endif

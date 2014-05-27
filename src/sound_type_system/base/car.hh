@@ -17,6 +17,7 @@
 #ifndef CAR_HH
 #define CAR_HH
 
+#include <string>
 #include "type.hh"
 
 class Car: public Type {
@@ -25,6 +26,8 @@ class Car: public Type {
 
         /** class constructor */
         Car() : super(1) { } 
+
+        std::string typeString() { return "car"; }
 };
 
 #endif

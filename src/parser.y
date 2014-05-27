@@ -11,6 +11,15 @@
     #include "symtable/symbol.hh"
     #include "symtable/symtable.hh"
     #include "parserhelper.hh"
+    #include "sound_type_system/type_system_utils.hh"
+    #include "sound_type_system/base/ent.hh"
+    #include "sound_type_system/base/bool.hh"
+    #include "sound_type_system/base/flot.hh"
+    #include "sound_type_system/base/nada.hh"
+    #include "sound_type_system/base/type_error.hh"
+    #include "nodes/node.hh"
+    #include "nodes/exp.hh"
+    #include "nodes/expbin.hh"
     /*
     #include "symtable/func_symbol.hh"
     #include "types/exp.hh"
@@ -47,6 +56,12 @@
     std::vector<std::string> errors;
     void yyerror(char const *);
     int yylex(void);
+
+    Type *entero = new Ent();
+    Type *booleano = new Bool();
+    Type *flot = new Flot();
+    Type *nada = new Nada();
+
     using namespace std;
 }
 
@@ -55,6 +70,9 @@
     int intval;
     float floatval;
     Symbol *symType;
+    Type *type;
+    Node *node;
+    Exp *exp;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -156,6 +174,8 @@
 %right POWER
 %left NEG
 %right NEGATION
+
+/* No terminales */
 
 
  /* Gramatica empieza aqui */
@@ -460,15 +480,25 @@ return : RETORNA
         */
        ;
 
-exp : term   /*{ $<expType>$ = $<expType>1; } */
+exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
     | exp PLUS exp
-    /*
         {
-            int l = @1.first_line;    //line of the binary expression
-            int c = @1.first_column;  //column of the binary expression
-            $<expType>$ = get_expbin($<expType>1, $<expType>3, "+", l, c);
+            Exp *exp = NULL; 
+            exp = get_expbin($<exp>1, $<exp>3, "+");
+
+            //constructing binary expression with type error
+            if (exp == NULL) {      
+               int l = @1.first_line;    //line of the binary expression
+               int c = @1.first_column;  //column of the binary expression
+               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+               TypeError *t = new TypeError("");
+               std::cout << "creando error" << std::endl;
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+            }
+            else {
+                $<exp>$ = exp;
+            }
         }
-     */
     | exp MINUS exp
     /*
         {
@@ -574,7 +604,7 @@ exp : term   /*{ $<expType>$ = $<expType>1; } */
         }
     */
     | exp DOTDOT exp
-    | NEGATION exp
+    | NEGATION exp  { $<node>$ = $<node>2; }
     /*
         {
             int l = @2.first_line;    //line of the binary expression
@@ -588,7 +618,7 @@ exp : term   /*{ $<expType>$ = $<expType>1; } */
         }
     */
 
-    | MINUS exp  %prec NEG
+    | MINUS exp  %prec NEG { $<node>$ = $<node>2; }
     /*
         {
             int l = @2.first_line;    //line of the binary expression
@@ -605,7 +635,7 @@ exp : term   /*{ $<expType>$ = $<expType>1; } */
         }
     */
 
-    | LPAR exp RPAR /* { $<expType>$ = $<expType>2; } */
+    | LPAR exp RPAR  { $<node>$ = $<node>2; } /* { $<expType>$ = $<expType>2; } */
     ;
 
 
@@ -616,9 +646,9 @@ term : checkid
             $<expType>$ = id;
         }
     */
-     | NUMENT     /* {$<expType>$ = new Ent();}  */
+     | NUMENT    { $<exp>$ = new Exp(entero) ; } /* {$<expType>$ = new Ent();}  */
      | NUMFLOT    /* {$<expType>$ = new Flot();} */
-     | CIERTO     /* {$<expType>$ = new Bool();} */
+     | CIERTO    { $<exp>$ = new Exp(booleano) ; }/* {$<expType>$ = new Bool();} */
      | FALSO      /* {$<expType>$ = new Bool();}   */
      | checkid arr  /*ID arr*/
      /*

@@ -17,6 +17,7 @@
 #ifndef NADA_HH
 #define NADA_HH 
 
+#include <string>
 #include "type.hh"
 
 class Nada: public Type {
@@ -25,6 +26,8 @@ class Nada: public Type {
 
         /** class constructor */
         Nada() : super(0) { } 
+
+        std::string typeString() { return "nada"; }
 };
 
 #endif

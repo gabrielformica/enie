@@ -17,6 +17,7 @@
 #ifndef FLOT_HH
 #define FLOT_HH
 
+#include <string>
 #include "type.hh"
 
 class Flot: public Type {
@@ -25,6 +26,8 @@ class Flot: public Type {
         
         /** class constructor */
         Flot() : super(8) { } 
+
+        std::string typeString() { return "flot"; }
 };
 
 #endif

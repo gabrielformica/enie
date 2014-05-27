@@ -16,7 +16,9 @@
 #define EXPBIN_HH
 
 #include <string>
+#include "node.hh"
 #include "exp.hh"
+#include "../sound_type_system/base/type.hh"
 
 class ExpBin: public Exp {
     private:
@@ -24,19 +26,13 @@ class ExpBin: public Exp {
         Exp *right;
 
     public:
-        /** class constructor */
-        ExpBin(Exp *l, Exp *r) { 
-            this->left = l;
-            this->right = r;
-            this->type = l->getType(); 
-        } 
+        typedef Exp super;
 
         /** class constructor */
-        ExpBin(Exp *l, Exp *r, std::string t) { 
-            this->left = l;
-            this->right = r;
-            this->type = t; 
-        }
+        ExpBin(Exp *left, Exp *right, Type *type) : super(type) { 
+            this->left = left;
+            this->right = right;
+        } 
 
 };
 

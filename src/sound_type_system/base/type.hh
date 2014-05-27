@@ -16,9 +16,13 @@
 #define TYPE_HH
 
 class Type {
-    int bytes;   //Number of bytes of the type
+    protected:
+        int bytes;   //Number of bytes of the type
 
-    Type(int b) : bytes(b) { }
+    public:
+        Type(int b) : bytes(b) { }
+        
+        virtual std::string typeString() = 0 ;
 
 };
 

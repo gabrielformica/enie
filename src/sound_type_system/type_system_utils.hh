@@ -16,12 +16,14 @@
 #define TYPE_SYSTEM_HH
 
 #include <string>
-#include "exp.hh"
-#include "expbin.hh"
-#include "ent.hh"
-#include "flot.hh"
+#include "base/type.hh"
+#include "base/ent.hh"
+#include "base/flot.hh"
+#include "../nodes/node.hh"
+#include "../nodes/exp.hh"
+#include "../nodes/expbin.hh"
 
-Exp *get_expbin(Exp *, Exp *, std::string, int, int);
+Exp *get_expbin(Exp *, Exp *, std::string);
 
 bool check_expbin(Exp *, Exp *, std::string);
 

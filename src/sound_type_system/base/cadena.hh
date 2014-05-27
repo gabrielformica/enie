@@ -17,6 +17,7 @@
 #ifndef CADENA_HH
 #define CADENA_HH
 
+#include <string>
 #include "type.hh"
 
 class Cadena: public Type {
@@ -25,6 +26,8 @@ class Cadena: public Type {
 
         /** class constructor */
         Cadena() : super(0) { } 
+
+        std::string typeString() { return "cadena"; }
 };
 
 #endif

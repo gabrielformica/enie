@@ -17,6 +17,7 @@
 #ifndef BOOL_HH
 #define BOOL_HH
 
+#include <string>
 #include "type.hh"
 
 class Bool: public Type {
@@ -25,6 +26,8 @@ class Bool: public Type {
 
         /** class constructor */
         Bool() : super(1) { }
+
+        std::string typeString() { return "bool"; }
 };
 
 #endif

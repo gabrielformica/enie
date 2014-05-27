@@ -16,23 +16,20 @@
 #define TYPE_ERROR_HH
 
 #include "type.hh"
-#include "nodes/exp.hh"
 
 class TypeError: public Type {
     private:
-        Exp *exp;
-        int line;
-        int column;
+        std::string error;
 
     public:
-        typedef super Type;
+        typedef Type super;
 
         /** class constructor */
-        TypeError(Exp *e, int l, int c) : super(0) { 
-            this->exp = e;
-            this->line = l;
-            this->column = c;
+        TypeError(std::string error) : super(0) { 
+            this->error = error;
         } 
+
+        std::string typeString() { return "error"; }
 };
 
 #endif
