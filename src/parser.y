@@ -279,9 +279,6 @@ instlist : instlist sepaux inst
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
-            {
-                std::cout << "Bloque" << std::endl;
-            }
             /*
             {
                 Instbl bl($<instListType>3);
@@ -411,11 +408,11 @@ oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
                 $<oslType>$ = l;
             }
         */
-        |
+        | /* lambda */
         ;
 
 sinoselect :  SINO enterscope instbl leavescope
-           |
+           | /* lambda */
            ;
 
 
@@ -852,7 +849,7 @@ void error_handler(std::string err, int line, int col) {
     errors.push_back(e);
 }
 
-void yyerror (const char *s) {
+void yyerror(const char *s) {
     error_handler(s, yylloc.first_line, yylloc.first_column);
 }
 
@@ -870,7 +867,6 @@ int main (int argc, char **argv) {
             it != errors.end(); ++it) {
             cerr << *it << endl;
         }
-        symtable->printTable();
         return 1;
     }
 
