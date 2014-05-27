@@ -14,7 +14,10 @@
     #include "sound_type_system/type_system_utils.hh"
     #include "sound_type_system/base/ent.hh"
     #include "sound_type_system/base/bool.hh"
+    #include "sound_type_system/base/arreglo.hh"
     #include "sound_type_system/base/flot.hh"
+    #include "sound_type_system/base/cadena.hh"
+    #include "sound_type_system/base/car.hh"
     #include "sound_type_system/base/nada.hh"
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
@@ -61,6 +64,8 @@
     Type *booleano = new Bool();
     Type *flot = new Flot();
     Type *nada = new Nada();
+    Type *cadena = new Cadena();
+    Type *car = new Car();
 
     using namespace std;
 }
@@ -225,17 +230,23 @@ header  : idheader COLCOL enterscope signa
             */
         ;
 
-idheader : addid    /* It will change to ID */
-         /*
-            {
-                int currentScope = symtable->getCurrentScope();
-                int line = @1.first_line;
-                int column = @1.first_column;
-                FuncSymbol *fs = new FuncSymbol(*$1, currentScope, line, column, false);
-                tryAddSymbol(symtable, &errors, s);
-                $<symType>$ = s;
-            }
-         */
+idheader : ID    /* It will change to ID */
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @1.first_line;
+            int column = @1.first_column;
+            Symbol *s = new Symbol(*$1, NULL, currentScope, line, column);
+            tryAddSymbol(symtable, &errors, s);
+        }
+
+//            {
+//                int currentScope = symtable->getCurrentScope();
+//                int line = @1.first_line;
+//                int column = @1.first_column;
+//                Symbol *fs = new FuncSymbol(*$1, currentScope, line, column, false);
+//                tryAddSymbol(symtable, &errors, s);
+//                $<symType>$ = s;
+//            }
          ;
 
 signa   : arglist ARROW type /* { $<signa>$ = new Signa($<argList>1, *$<str>3); } */
@@ -311,16 +322,16 @@ checkid : ID
             }
         ;
 
-addid   : ID
-            {
-                int currentScope = symtable->getCurrentScope();
-                int line = @1.first_line;
-                int column = @1.first_column;
-                Symbol *s = new Symbol(*$1, currentScope, line, column);
-                tryAddSymbol(symtable, &errors, s);
-                $<symType>$ = s;
-            }
-        ;
+// addid : ID
+//       {
+//           int currentScope = symtable->getCurrentScope();
+//           int line = @1.first_line;
+//           int column = @1.first_column;
+//           Symbol *s = new Symbol(*$1, currentScope, line, column);
+//           tryAddSymbol(symtable, &errors, s);
+//           $<symType>$ = s;
+//       }
+//     ;
 
 asign : checkid EQUAL exp
        /*
@@ -347,24 +358,29 @@ decl : typeid EQUAL exp
      ;
 
 declonly : typeid /* { $<symType>$ = $<symType>1; } */
-         | typeid arr
+         | arrid
          ;
 
-typeid : type addid
-           /*
-            {
-                $<symType>2->setType(*$<str>1);
-                $<symType>$ = $<symType>2;
-            }
-            */
+arrid : typeid arr
+      ;
+
+typeid : type ID
+        {
+            int currentScope = symtable->getCurrentScope();
+            int line = @2.first_line;
+            int column = @2.first_column;
+            Symbol *s = new Symbol(*$2, $<type>1, currentScope, line, column);
+            tryAddSymbol(symtable, &errors, s);
+        }
        ;
 
-type : ENT     /* { $<str>$ = new std::string("ent"); }      */
-     | CAR     /* { $<str>$ = new std::string("car"); }      */
-     | FLOT    /* { $<str>$ = new std::string("flot"); }     */
-     | NADA    /* { $<str>$ = new std::string("nada"); }     */
-     | BOOL    /* { $<str>$ = new std::string("bool"); }     */
-     | CADENA  /* { $<str>$ = new std::string("cadena"); }   */
+type : ENT     { $<type>$ = entero; }
+     | CAR     { $<type>$ = car; }
+     | FLOT    { $<type>$ = flot; }
+     | NADA    { $<type>$ = nada; }
+     | BOOL    { $<type>$ = booleano; }
+     | CADENA  { $<type>$ = cadena; }
+     | ID       // para structs and shit
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
@@ -482,260 +498,260 @@ return : RETORNA
 
 exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
     | exp PLUS exp
-        {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "+");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+      //  {
+      //      Exp *exp = NULL;
+      //      exp = get_expbin($<exp>1, $<exp>3, "+");
+//
+//      //      //constructing binary expression with type error
+//      //      if (exp == NULL) {
+//      //         int l = @1.first_line;    //line of the binary expression
+//      //         int c = @1.first_column;  //column of the binary expression
+//      //         //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//      //         TypeError *t = new TypeError("");
+//      //         $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//      //      }
+//      //      else {
+//      //          $<exp>$ = exp;
+//      //      }
+      //  }
     | exp MINUS exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "-");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "-");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp MULT exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "*");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "*");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp DIV exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "/");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "/");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp MOD exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "%");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "%");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp POWER exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "^");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "^");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp OR exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "|");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "|");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp AND exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "&");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "&");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp LTHAN exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "<");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "<");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp GTHAN exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, ">");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, ">");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp LETHAN exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "<=");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "<=");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp GETHAN exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, ">=");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, ">=");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp EQUIV exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "==");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "==");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp INEQUIV exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "!=");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "!=");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | exp DOTDOT exp
-       {
-            Exp *exp = NULL;
-            exp = get_expbin($<exp>1, $<exp>3, "..");
-
-            //constructing binary expression with type error
-            if (exp == NULL) {
-               int l = @1.first_line;    //line of the binary expression
-               int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
-               TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
-            }
-            else {
-                $<exp>$ = exp;
-            }
-        }
+     //  {
+     //       Exp *exp = NULL;
+     //       exp = get_expbin($<exp>1, $<exp>3, "..");
+//
+//     //       //constructing binary expression with type error
+//     //       if (exp == NULL) {
+//     //          int l = @1.first_line;    //line of the binary expression
+//     //          int c = @1.first_column;  //column of the binary expression
+//     //          //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
+//     //          TypeError *t = new TypeError("");
+//     //          $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+//     //       }
+//     //       else {
+//     //           $<exp>$ = exp;
+//     //       }
+     //   }
     | NEGATION exp  { $<exp>$ = $<exp>2; }
     | MINUS exp  %prec NEG { $<exp>$ = $<exp>2; }
     | LPAR exp RPAR  { $<exp>$ = $<exp>2; }
@@ -801,8 +817,8 @@ arr : arr OBRACK exp CBRACK
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
         ;
 
-declboxtypeid : UNION addid
-              | REGISTRO addid
+declboxtypeid : UNION ID
+              | REGISTRO ID
               ;
 
 declist : declist sepaux decl

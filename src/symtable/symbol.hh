@@ -18,29 +18,31 @@
 #include <string>
 #include <list>
 #include <unordered_map>
+#include "../sound_type_system/base/type.hh"
 
 
 class Symbol {
     private:
         std::string id;
-        std::string type;
+        Type *type;
         int scope;
         int line;
         int column;
 
     public:
-        Symbol(std::string, std::string, int, int, int);
+        Symbol(std::string id, Type *t, int s, int l, int c);
         Symbol(std::string, int, int, int);
 
+
         std::string getId();
-        std::string getType();
+        Type *getType();
         int getScope();
         int getLine();
         int getColumn();
         void setScope(int);
         void setLine(int);
         void setColumn(int);
-        void setType(std::string);
+        void setType(Type*);
         void print();
 };
 

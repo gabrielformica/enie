@@ -25,7 +25,7 @@ class Cadena: public Type {
         typedef Type super;
 
         /** class constructor */
-        Cadena() : super(0) { } 
+        Cadena() : super(0) { }
 
         std::string typeString() { return "cadena"; }
 };

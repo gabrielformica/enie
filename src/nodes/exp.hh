@@ -15,6 +15,7 @@
 #ifndef EXP_HH
 #define EXP_HH
 
+#include <string>
 #include "node.hh"
 #include "../sound_type_system/base/type.hh"
 
@@ -24,7 +25,7 @@ class Exp : public Node {
 
         /** Class constructor */
         Exp(Type *t) : super(t) { }
-
+        std::string getTypeStr() { return type->typeString(); }
 
 };
 

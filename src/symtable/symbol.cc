@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Symbol class implementation 
+  * Symbol class implementation
   */
 
 
@@ -16,13 +16,14 @@
 #include <string>
 #include <unordered_map>
 #include "symbol.hh"
+#include "../sound_type_system/base/type.hh"
 
 using namespace std;
 
 
 /** Class constructor */
 
-Symbol::Symbol(std::string id, std::string t, int s, int l, int c) {
+Symbol::Symbol(std::string id, Type *t, int s, int l, int c) {
     this->id = id;
     this->type = t;
     this->scope = s;
@@ -65,7 +66,7 @@ int Symbol::getColumn() {
 
 /* Return column of the symbol*/
 
-string Symbol::getType() {
+Type *Symbol::getType() {
     return this->type;
 }
 
@@ -86,7 +87,7 @@ void Symbol::setColumn(int x) {
 }
 
 /* Set Type*/
-void Symbol::setType(std::string type) {
+void Symbol::setType(Type *type) {
     this->type = type;
 }
 
