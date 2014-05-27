@@ -8,16 +8,18 @@
   *
   * @section Description
   *
-  * Header class implementation 
+  * Type class definition
   */
 
 
-#include "header.hh"
+#ifndef TYPE_HH
+#define TYPE_HH
 
+class Type {
+    int bytes;   //Number of bytes of the type
 
-/** Class constructor */
+    Type(int b) : bytes(b) { }
 
-Header::Header(std::string id, Signa *signa) {
-    this->id = id;
-    this->signa = signa;
-}
+};
+
+#endif

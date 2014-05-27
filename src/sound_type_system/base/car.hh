@@ -8,20 +8,23 @@
   *
   * @section Description
   *
-  * Class definitions for car type
+  * Class definitions for car type 
+  *
+  * THIS IS A PRIMITIVE TYPE
   */
 
 
 #ifndef CAR_HH
 #define CAR_HH
 
-#include <string>
-#include "exp.hh"
+#include "type.hh"
 
-class Car: public Exp {
+class Car: public Type {
     public:
+        typedef Type super;
+
         /** class constructor */
-        Car() { this->type = "car"; } 
+        Car() : super(1) { } 
 };
 
 #endif

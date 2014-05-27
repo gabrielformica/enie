@@ -9,19 +9,22 @@
   * @section Description
   *
   * Class definitions for cadena type
+  *
+  * THIS IS A PRIMITIVE TYPE
   */
 
 
 #ifndef CADENA_HH
 #define CADENA_HH
 
-#include <string>
-#include "exp.hh"
+#include "type.hh"
 
-class Cadena: public Exp {
+class Cadena: public Type {
     public:
+        typedef Type super;
+
         /** class constructor */
-        Cadena() { this->type = "cadena"; } 
+        Cadena() : super(0) { } 
 };
 
 #endif

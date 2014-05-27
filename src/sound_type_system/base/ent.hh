@@ -8,20 +8,23 @@
   *
   * @section Description
   *
-  * Class definitions for integer type
+  * Class definitions for integer type 
+  *
+  * THIS IS A PRIMITIVE TYPE
   */
 
 
 #ifndef ENT_HH
 #define ENT_HH
 
-#include <string>
-#include "exp.hh"
+#include "type.hh"
 
-class Ent: public Exp {
+class Ent: public Type {
     public:
+        typedef Type super;
+
         /** class constructor */
-        Ent() { this->type = "ent"; } 
+        Ent() : super(4) { } 
 };
 
 #endif

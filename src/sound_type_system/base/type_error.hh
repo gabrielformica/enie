@@ -15,22 +15,23 @@
 #ifndef TYPE_ERROR_HH
 #define TYPE_ERROR_HH
 
-#include <string>
-#include "exp.hh"
+#include "type.hh"
+#include "nodes/exp.hh"
 
-class TypeError: public Exp {
+class TypeError: public Type {
     private:
         Exp *exp;
         int line;
         int column;
 
     public:
+        typedef super Type;
+
         /** class constructor */
-        TypeError(Exp *e, int l, int c) { 
+        TypeError(Exp *e, int l, int c) : super(0) { 
             this->exp = e;
             this->line = l;
             this->column = c;
-            this->type = "error";
         } 
 };
 

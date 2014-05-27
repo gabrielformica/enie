@@ -8,20 +8,23 @@
   *
   * @section Description
   *
-  * Class definitions for boolean type
+  * Class definitions for boolean type 
+  *
+  * THIS IS A PRIMITIVE TYPE
   */
 
 
 #ifndef BOOL_HH
 #define BOOL_HH
 
-#include <string>
-#include "exp.hh"
+#include "type.hh"
 
-class Bool: public Exp {
+class Bool: public Type {
     public:
+        typedef Type super;
+
         /** class constructor */
-        Bool() { this->type = "bool"; }
+        Bool() : super(1) { }
 };
 
 #endif

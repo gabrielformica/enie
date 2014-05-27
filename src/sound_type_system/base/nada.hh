@@ -9,19 +9,22 @@
   * @section Description
   *
   * Class definitions for nada type
+  *
+  * THIS IS A PRIMITIVE TYPE
   */
 
 
 #ifndef NADA_HH
 #define NADA_HH 
 
-#include <string>
-#include "exp.hh"
+#include "type.hh"
 
-class Nada: public Exp {
+class Nada: public Type {
     public:
+        typedef Type super;
+
         /** class constructor */
-        Nada() { this->type = "nada"; } 
+        Nada() : super(0) { } 
 };
 
 #endif
