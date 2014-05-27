@@ -10,14 +10,14 @@ quicksort :: ent v[~], ent izq, ent der -> nada {
     }
     swap(v, izq, (izq + der)/2)
 
-    ent pivotdest = izq
+    ent pivotdest
 
-    para (ent i = izq + 1; i <= der; i+1) {
-        si (v[i] < v[izq]) {
-            pivotdest = pivotdest + 1
-            swap(v, pivotdest, i)
-        }
-    }
+    // para (ent i = izq + 1; i <= der; i+1) {
+    //     si (v[i] < v[izq]) {
+    //         pivotdest = pivotdest + 1
+    //         swap(v, pivotdest, i)
+    //     }
+    // }
 
     swap(v, izq, pivotdest)
     quicksort(v,izq,pivotdest -1)
@@ -25,6 +25,6 @@ quicksort :: ent v[~], ent izq, ent der -> nada {
 }
 
 enie :: ~ {
-    ent v[~] = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1} 
+    ent v[~] = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}
     quicksort(v,0,15)
 }

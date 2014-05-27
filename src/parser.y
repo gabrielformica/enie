@@ -279,6 +279,9 @@ instlist : instlist sepaux inst
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
+            {
+                std::cout << "Bloque" << std::endl;
+            }
             /*
             {
                 Instbl bl($<instListType>3);
@@ -408,6 +411,7 @@ oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
                 $<oslType>$ = l;
             }
         */
+        |
         ;
 
 sinoselect :  SINO enterscope instbl leavescope
@@ -866,6 +870,7 @@ int main (int argc, char **argv) {
             it != errors.end(); ++it) {
             cerr << *it << endl;
         }
+        symtable->printTable();
         return 1;
     }
 
