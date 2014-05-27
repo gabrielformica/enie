@@ -29,11 +29,10 @@ class ExpBin: public Exp {
         typedef Exp super;
 
         /** class constructor */
-        ExpBin(Exp *left, Exp *right, Type *type) : super(type) { 
+        ExpBin(Exp *left, Exp *right, Type *type) : super(type) {
             this->left = left;
             this->right = right;
-        } 
-
+        }
 };
 
 #endif

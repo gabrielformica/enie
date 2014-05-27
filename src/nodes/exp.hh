@@ -25,7 +25,7 @@ class Exp : public Node {
 
         /** Class constructor */
         Exp(Type *t) : super(t) { }
-        std::string getTypeStr() { return type->typeString(); }
+        std::string getTypeStr() { return this->type->typeString(); }
 
 };
 

@@ -18,18 +18,18 @@
 #include "../sound_type_system/base/type.hh"
 
 class Node {
-    protected:
-        Type *type;
+//    protected:
 
     public:
-        
+
+        Type *type;
         /** Class constructor */
         Node(Type *t) : type(t) { }
 
         Type *getType() { return type; }
 
         std::string getTypeStr() { return type->typeString(); }
-        
+
 };
 
 #endif
