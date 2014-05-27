@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Type System function implementation 
+  * Type System function implementation
   */
 
 
@@ -27,7 +27,7 @@
 
 
 /**
-  * Returns the binary expression 
+  * Returns the binary expression
   * @param e1     : left expression
   * @param e2     : right expression
   * @param ope    : operator
@@ -46,7 +46,7 @@ Exp *get_expbin(Exp *e1, Exp *e2, std::string ope) {
     if (e1->getTypeStr() == "error")
         return e1;
 
-    if (e2->getTypeStr() == "error") 
+    if (e2->getTypeStr() == "error")
         return e2;
 
     return NULL;
@@ -106,18 +106,18 @@ bool is_arithmetic_flot(std::string o) {
 
 
 /**
-  * Tells if an operator is boolean operator 
+  * Tells if an operator is boolean operator
   * @param o : operator
   * @return True, if o is an boolean operator. False in any other case
   */
 
 bool is_boolean(std::string o) {
-    return ((o == "||") || (o == "&&") || (o == "!"));
+    return ((o == "|") || (o == "&") || (o == "!"));
 }
 
 
 /**
-  * Tells if an operator is a relational operator 
+  * Tells if an operator is a relational operator
   * @param o : operator
   * @return True, if o is a relational operator. False in any other case
   */
