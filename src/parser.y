@@ -220,7 +220,11 @@ func    : header instbl
 
 header  : idheader COLCOL enterscope signa
             {
+                std::vector<Type *> *tl = $<sigpair>1->first;
+                Type *ty = $<sigpair>1->second;
 
+                $<symType>1->setType(new Function(tl, ty));
+                std::cout << "TIPO DE FUNCION: " << $<symType>1->getType()->typeString() << std::endl;
             }
         | ENIE COLCOL enterscope signa
         ;
