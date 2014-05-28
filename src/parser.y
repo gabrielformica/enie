@@ -21,6 +21,7 @@
     #include "sound_type_system/base/nada.hh"
     #include "sound_type_system/base/constructor_type.hh"
     #include "sound_type_system/base/registro.hh"
+    #include "sound_type_system/base/union.hh"
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
@@ -865,7 +866,7 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
                 //constructor object
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();
 
-                if (type->is("registro")) {
+                if (type->is("constructor")) {
                     type->setSymbolTable($<symboltable>5);
                     $<type>$ = type;
                     std::cout << "VOY A IMPRIMIR LA SEGUNDA TABLA" << std::endl;
@@ -882,6 +883,9 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
 
 
 constructortype : UNION
+                    {
+                        $<type>$ = new Union();
+                    }
                 | REGISTRO
                     {
                         $<type>$ = new Registro();
