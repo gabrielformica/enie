@@ -85,6 +85,7 @@
     Exp *exp;
     SymbolTable *symboltable;
     std::vector<Type*> *typelist;
+    std::pair <std::vector<Type *>*, Type*> *sigpair;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -237,16 +238,28 @@ idheader : ID    /* It will change to ID */
 
 
 signa   : arglist ARROW type
+            {
+                std::pair <std::vector<Type *>*, Type*> p ($<typelist>1, $<type>3);
+                $<sigpair>$ = &p;
+            }
         | arglist
+            {
+                std::pair <std::vector<Type *>*, Type*> p ($<typelist>1, new Nada());
+                $<sigpair>$ = &p;
+            }
         | TILDE
             {
-                $<typelist>$ = new std::vector<Type*>;
-                $<typelist>$->push_back(new Nada());
+                std::vector<Type*> *tl = new std::vector<Type*>;
+                tl->push_back(new Nada());
+                std::pair <std::vector<Type *>*, Type*> p (tl, new Nada());
+                $<sigpair>$ = &p;
             }
         | TILDE ARROW type
             {
-                $<typelist>$ = new std::vector<Type*>;
-                $<typelist>$->push_back(new Nada());
+                std::vector<Type*> *tl = new std::vector<Type*>;
+                tl->push_back(new Nada());
+                std::pair <std::vector<Type *>*, Type*> p (tl, $<type>3);
+                $<sigpair>$ = &p;
             }
         ;
 
@@ -866,8 +879,7 @@ callfunc : ID funcargs
                     std::string str = "error "+ str0 + "variable '"+ id +"'";
                     str += ", no ha sido declarada";
                     errors.push_back(str);
-                }
-                else {
+                } else {
                     s = symtable->lookup(*$1);
                     std::vector<Type *>* tl;
                     tl =  ((Function *) s->getType())->getParams();
@@ -879,7 +891,6 @@ callfunc : ID funcargs
                                 break;
                             }
                         }
-
                     } else {
                         s = NULL;
                     }
@@ -897,7 +908,11 @@ funcargs : LPAR explist RPAR
                 $<typelist>$ = $<typelist>1;
             }
          | LPAR RPAR
-
+            {
+                std::vector<Type *> *tl = new std::vector<Type *>;
+                tl->push_back(new Nada());
+                $<typelist>$ = $<typelist>1;
+            }
          ;
 
 explist : explist COMMA exp
