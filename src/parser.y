@@ -19,6 +19,8 @@
     #include "sound_type_system/base/cadena.hh"
     #include "sound_type_system/base/car.hh"
     #include "sound_type_system/base/nada.hh"
+    #include "sound_type_system/base/constructor_type.hh"
+    #include "sound_type_system/base/registro.hh"
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
@@ -78,6 +80,7 @@
     Type *type;
     Node *node;
     Exp *exp;
+    SymbolTable *symboltable;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -357,13 +360,14 @@ decl : typeid EQUAL exp
      | declbox
      ;
 
-declonly : typeid /* { $<symType>$ = $<symType>1; } */
-         | arrid   
+declonly : typeid  { $<symType>$ = $<symType>1; } 
+         | arrid   { $<symType>$ = $<symType>1; } 
          ;
 
 arrid : typeid arr
         {
             ((Arreglo *) $<type>2)->setRootTypeElem($<symType>1->getType());
+            $<symType>$ = $<symType>1;
         }
       ;
 
@@ -384,7 +388,7 @@ type : ENT     { $<type>$ = entero; }
      | NADA    { $<type>$ = nada; }
      | BOOL    { $<type>$ = booleano; }
      | CADENA  { $<type>$ = cadena; }
-     | ID       // para structs and shit
+    // | //ID       // para structs and shit
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
@@ -831,15 +835,58 @@ arr : OBRACK exp CBRACK arr
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
+            {
+                //constructor object
+                ConstructorType *type = (ConstructorType *) $<symType>1->getType();  
+
+                if (type->is("registro")) {
+                    type->setSymbolTable($<symboltable>4);
+                    $<type>$ = type;
+                }
+                else {
+                    //error declaracion
+                    $<type>$  = new TypeError("");    
+                }
+            }
         ;
 
-declboxtypeid : UNION ID
-              | REGISTRO ID
+
+constructortype : UNION 
+                | REGISTRO
+                    {
+                        $<type>1 = new Registro();
+                    }
+                ;
+
+declboxtypeid : constructortype ID
+                  {
+                      int currentScope = symtable->getCurrentScope();
+                      int line = @2.first_line;
+                      int column = @2.first_column;
+                      Symbol *s = new Symbol(*$2, $<type>1, currentScope, line, column);
+                      tryAddSymbol(symtable, &errors, s);
+                      $<symType>$ = s;  //return the symbol
+                  }
               ;
 
-declist : declist sepaux decl
-        | decl
+declist : declist sepaux declpritype
+            {
+                Symbol *s = $<symType>3;
+                $<symboltable>$ = new SymbolTable();
+                tryAddSymbol($<symboltable>$, &errors, s);
+            }
+        | declpritype
+            {
+                Symbol *s = $<symType>1;
+                $<symboltable>$ = new SymbolTable();
+                tryAddSymbol($<symboltable>$, &errors, s);
+            }
         ;
+
+
+declpritype : typeid EQUAL exp      { $<symType>$ = $<symType>1; }
+            | arrid EQUAL arrvalues { $<symType>$ = $<symType>1; }
+            | declonly              { $<symType>$ = $<symType>1; } //simple declaration
 
 callfunc : checkid LPAR explist RPAR
          | checkid LPAR RPAR
