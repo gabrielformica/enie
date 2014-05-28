@@ -18,11 +18,10 @@
 #include "../sound_type_system/base/type.hh"
 
 class Node {
-//    protected:
+    protected:
+        Type *type;
 
     public:
-
-        Type *type;
         /** Class constructor */
         Node(Type *t) : type(t) { }
 

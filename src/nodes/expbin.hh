@@ -24,15 +24,24 @@ class ExpBin: public Exp {
     private:
         Exp *left;
         Exp *right;
+        std::string ope;
 
     public:
         typedef Exp super;
 
         /** class constructor */
-        ExpBin(Exp *left, Exp *right, Type *type) : super(type) {
+        ExpBin(Exp *left, Exp *right, std::string ope, Type *type) :
+            super(type) {
+
             this->left = left;
             this->right = right;
+            this->ope = ope;
         }
+
+
+        Exp *getLeft() { return this->left; }
+        Exp *getRight() { return this->right; }
+        std::string getOperator() { return this->ope; }
 };
 
 #endif

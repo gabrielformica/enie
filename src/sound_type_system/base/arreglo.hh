@@ -36,6 +36,25 @@ class Arreglo: public Type {
          }
 
         std::string typeString() { return "arreglo"; }
+
+        void setRootTypeElem(Type *type) {
+            Type *temp = this->type_elem;
+            
+            if (temp == NULL) {
+                this->type_elem = type; 
+                return;
+            }
+
+            while (((Arreglo *) temp)->getTypeElem() != NULL) 
+                temp = ((Arreglo *) temp)->getTypeElem();
+
+            ((Arreglo *) temp)->type_elem = type;
+
+        }
+
+        Type *getTypeElem() { return this->type_elem; }
+
+
 };
 
 #endif

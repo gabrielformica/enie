@@ -352,8 +352,8 @@ arrvalueslist : arrvalueslist COMMA arrvalues
               ;
 
 decl : typeid EQUAL exp
-     | typeid arr EQUAL arrvalues
-     | declonly
+     | arrid EQUAL arrvalues
+     | declonly      //simple declaration
      | declbox
      ;
 
@@ -362,16 +362,20 @@ declonly : typeid /* { $<symType>$ = $<symType>1; } */
          ;
 
 arrid : typeid arr
+        {
+           ((Arreglo *) $<type>2)->setRootTypeElem($<symType>1->getType());
+        }
       ;
 
 typeid : type ID
-        {
-            int currentScope = symtable->getCurrentScope();
-            int line = @2.first_line;
-            int column = @2.first_column;
-            Symbol *s = new Symbol(*$2, $<type>1, currentScope, line, column);
-            tryAddSymbol(symtable, &errors, s);
-        }
+           {
+               int currentScope = symtable->getCurrentScope();
+               int line = @2.first_line;
+               int column = @2.first_column;
+               Symbol *s = new Symbol(*$2, $<type>1, currentScope, line, column);
+               tryAddSymbol(symtable, &errors, s);
+               $<symType>$ = s;  //return the symbol
+           }
        ;
 
 type : ENT     { $<type>$ = entero; }
@@ -509,7 +513,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
             int c = @1.first_column;  //column of the binary expression
             //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
             TypeError *t = new TypeError("");
-            $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+            $<exp>$ = new ExpBin($<exp>0, $<exp>3, "+", t);
          }
          else {
              $<exp>$ = exp;
@@ -525,7 +529,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "-", t);
             }
             else {
                 $<exp>$ = exp;
@@ -542,7 +546,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "*", t);
             }
             else {
                 $<exp>$ = exp;
@@ -559,7 +563,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                 int c = @1.first_column;  //column of the binary expression
                 //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                 TypeError *t = new TypeError("");
-                $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+                $<exp>$ = new ExpBin($<exp>0, $<exp>3, "/", t);
              }
              else {
                  $<exp>$ = exp;
@@ -576,7 +580,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "%", t);
             }
             else {
                 $<exp>$ = exp;
@@ -593,7 +597,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "^", t);
             }
             else {
                 $<exp>$ = exp;
@@ -610,7 +614,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "|", t);
             }
             else {
                 $<exp>$ = exp;
@@ -627,7 +631,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "&", t);
             }
             else {
                 $<exp>$ = exp;
@@ -644,7 +648,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "<", t);
             }
             else {
                 $<exp>$ = exp;
@@ -661,7 +665,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, ">", t);
             }
             else {
                 $<exp>$ = exp;
@@ -678,7 +682,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "<=", t);
             }
             else {
                 $<exp>$ = exp;
@@ -695,7 +699,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, ">=", t);
             }
             else {
                 $<exp>$ = exp;
@@ -712,7 +716,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "==", t);
             }
             else {
                 $<exp>$ = exp;
@@ -729,7 +733,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "!=", t);
             }
             else {
                 $<exp>$ = exp;
@@ -746,7 +750,7 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
                int c = @1.first_column;  //column of the binary expression
                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
-               $<exp>$ = new ExpBin($<exp>0, $<exp>3, t);
+               $<exp>$ = new ExpBin($<exp>0, $<exp>3, "..", t);
             }
             else {
                 $<exp>$ = exp;
@@ -779,36 +783,51 @@ term : checkid
      | error
      ;
 
-arr : arr OBRACK exp CBRACK
-    /*
+arr : OBRACK exp CBRACK arr 
         {
-            $<inlistType>1->addExp($<expType>3);
-            $<inlistType>$ = $<inlistType>1;
+            if ($<type>4->typeString() == "error") {
+                $<type>$ = $<type>4;
+            }
+            else {
+                Exp *left = ((ExpBin *) $<exp>2)->getLeft();
+                Exp *right = ((ExpBin *) $<exp>2)->getRight();
+                std::string ope = ((ExpBin *) $<exp>2)->getOperator();
+
+                if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
+                    int first_index = stoi(left->getElem());
+                    int last_index = stoi(right->getElem());
+                    if (first_index  >= last_index) {
+                        $<type>$ = new TypeError("");    
+                    }
+                    else {
+                        $<type>$ = new Arreglo($<type>4, first_index, last_index);
+                    }
+                }
+                else {
+                    $<type>$ = new TypeError("");    
+                }
+            }
         }
-    */
     | OBRACK exp CBRACK
-    /*
         {
-            Indexlist *a = new Indexlist(Exp *e);
-            $<inlistType>$ = a;
+            Exp *left = ((ExpBin *) $<exp>2)->getLeft();
+            Exp *right = ((ExpBin *) $<exp>2)->getRight();
+            std::string ope = ((ExpBin *) $<exp>2)->getOperator();
+
+            if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
+                int first_index = stoi(left->getElem());
+                int last_index = stoi(right->getElem());
+                if (first_index  >= last_index) {
+                    $<type>$ = new TypeError("");    
+                }
+                else {
+                    $<type>$ = new Arreglo(NULL, first_index, last_index);
+                }
+            }
+            else {
+                $<type>$ = new TypeError("");    
+            }
         }
-    */
-    | arr OBRACK TILDE CBRACK
-    /*
-        {
-            Tilde *t = new Tilde();
-            $<inlistType>1->addExp(t);
-            $<inlistType>$ = $<inlistType>1;
-        }
-    */
-    | OBRACK TILDE CBRACK
-    /*
-        {
-            Tilde *t = new Tilde();
-            Indexlist *a = new Indexlist(t);
-            $<inlistType>$ = a;
-        }
-    */
     ;
 
 declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE

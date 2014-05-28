@@ -39,15 +39,19 @@
 
 Exp *get_expbin(Exp *e1, Exp *e2, std::string ope) {
     if (check_expbin(e1, e2, ope)) {
-        Exp *exp = new ExpBin(e1, e2, e1->getType());
+        Exp *exp = new ExpBin(e1, e2, ope, e1->getType());
         return exp;
     }
 
-    if (e1->getTypeStr() == "error")
+    if (e1->getTypeStr() == "error") {
+        Exp *exp = new ExpBin(e1, e2, ope, e1->getType());
         return e1;
+    }
 
-    if (e2->getTypeStr() == "error")
+    if (e2->getTypeStr() == "error") {
+        Exp *exp = new ExpBin(e1, e2, ope, e2->getType());
         return e2;
+    }
 
     return NULL;
 }
