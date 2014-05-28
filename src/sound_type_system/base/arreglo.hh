@@ -35,7 +35,17 @@ class Arreglo: public Type {
             this->last_index = li;
          }
 
-        std::string typeString() { return "arreglo"; }
+        std::string typeString() { 
+            std::string str;
+            str = "arreglo(" + std::to_string(first_index) + ".."; 
+            str = str + std::to_string(last_index);
+            std::string str1 = "NULL";
+            if (this->type_elem != NULL) {
+                str1 = this->type_elem->typeString();
+            }
+            str = str + ", " + str1 + ")";
+            return str;
+        }
 
         void setRootTypeElem(Type *type) {
             Type *temp = this->type_elem;
@@ -53,6 +63,7 @@ class Arreglo: public Type {
         }
 
         Type *getTypeElem() { return this->type_elem; }
+
 
 
 };

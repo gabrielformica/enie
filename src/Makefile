@@ -1,4 +1,4 @@
-GPPFLAGS= -std=gnu++11 -lfl
+GPPFLAGS= -std=c++11 -lfl
 GPP= g++ 
 YACC= bison -v
 LEX= flex --yylineno
