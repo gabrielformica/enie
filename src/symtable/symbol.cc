@@ -97,3 +97,6 @@ void Symbol::print() {
     std::cout << "Línea:   " <<  line << "   Columna:   " << column;
     std::cout << " Alcance:   " << scope << std::endl;
 }
+
+
+

@@ -21,6 +21,8 @@
 #include "type.hh"
 
 class Car: public Type {
+    private:
+        char c;
     public:
         typedef Type super;
 
@@ -29,6 +31,7 @@ class Car: public Type {
 
         std::string typeString() { return "car"; }
         bool is(std::string t) { return t == "car"; }
+        void setBytes() { this->bytes = 1; }
 };
 
 #endif

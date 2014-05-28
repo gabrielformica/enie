@@ -21,6 +21,8 @@
 #include "type.hh"
 
 class Cadena: public Type {
+    private:
+        std::string str;
     public:
         typedef Type super;
 
@@ -29,6 +31,7 @@ class Cadena: public Type {
 
         std::string typeString() { return "cadena"; }
         bool is(std::string t) { return t == "cadena"; }
+        void setBytes() { this->bytes = str.size(); }
 };
 
 #endif

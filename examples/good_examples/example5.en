@@ -1,10 +1,10 @@
 enie :: ~ {
-    registro Tipo1 {
+    union Tipo1 {
         ent a
         ent b
     }
 
-    union Tipo2 {
+    registro Tipo2 {
         ent x
         ent y
         tipo1 soyunreg

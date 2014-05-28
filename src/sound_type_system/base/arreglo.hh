@@ -66,6 +66,14 @@ class Arreglo: public Type {
 
         bool is(std::string t) { return t == "arreglo"; }
 
+        void setBytes() {
+            Type *t = this->type_elem;
+
+            if (t->getBytes() == 0)
+                t->setBytes();
+
+            this->bytes = (first_index - last_index) * t->getBytes();
+        }
 };
 
 #endif

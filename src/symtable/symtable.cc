@@ -66,7 +66,7 @@ Symbol *SymbolTable::lookup(std::string id) {
                                      it != this->scopeStack.rend(); ++it) {
 
         Symbol *s = this->getSymbolInScope(id, *it);
-        if (s != NULL) 
+        if (s != NULL)
             return s;
 
     }
@@ -84,7 +84,7 @@ bool SymbolTable::isActive(std::string id) {
 }
 
 /* Returns Symbol if it exists in scope
- * up the symbol 
+ * up the symbol
  */
 
 Symbol *SymbolTable::getSymbolInScope(string id, int scope) {
@@ -113,4 +113,14 @@ void SymbolTable::printTable() {
     for (MapTable::iterator it = table.begin(); it != table.end(); it++ ) {
         (*it).second->print();
     }
+}
+
+std::list<Symbol *> * SymbolTable::getAllSymbols() {
+    std::list<Symbol *> *list = new std::list<Symbol *>;
+
+    for (MapTable::iterator it = table.begin(); it != table.end(); it++ ) {
+        list->push_back((*it).second);
+    }
+
+    return list;
 }
