@@ -352,9 +352,31 @@ arrvalueslist : arrvalueslist COMMA arrvalues
               ;
 
 decl : typeid EQUAL exp
+        {
+            $<symType>1->getType()->setBytes();
+            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
+            $<symType>$ = $<symType>1;
+        }
      | arrid EQUAL arrvalues
-     | declonly      //simple declaration
+        {
+            $<symType>1->getType()->setBytes();
+            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
+            $<symType>$ = $<symType>1;
+        }
+     | declonly
+        {
+            $<symType>1->getType()->setBytes();
+            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
+            $<symType>$ = $<symType>1;
+        }
      | declbox
+        {
+            $<symType>1->getType()->setBytes();
+            std::cout << "HOLA-------------------" << $<symType>1->getId() << std::endl;
+            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
+            std::cout << "CHAO-------------------" << std::endl;
+            $<symType>$ = $<symType>1;
+        }
      ;
 
 declonly : typeid  { $<symType>$ = $<symType>1; }

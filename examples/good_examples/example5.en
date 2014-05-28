@@ -1,5 +1,5 @@
 enie :: ~ {
-    union Tipo1 {
+     registro Tipo1 {
         ent a
         ent b
     }
