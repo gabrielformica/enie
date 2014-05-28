@@ -3,6 +3,7 @@
 
 %code requires {
     #include <iostream>
+    #include <utility>
     #include <string>
     #include <list>
     #include <vector>
@@ -21,6 +22,7 @@
     #include "sound_type_system/base/nada.hh"
     #include "sound_type_system/base/constructor_type.hh"
     #include "sound_type_system/base/registro.hh"
+    #include "sound_type_system/base/function.hh"
     #include "sound_type_system/base/union.hh"
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
@@ -82,6 +84,7 @@
     Node *node;
     Exp *exp;
     SymbolTable *symboltable;
+    std::vector<Type*> *typelist;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -209,12 +212,15 @@ funcl   : funcl sepaux func leavescope
         | error SEP
         ;
 
-func    : header instbl 
-        | header      
+func    : header instbl
+        | header
         ;
 
 
 header  : idheader COLCOL enterscope signa
+            {
+
+            }
         | ENIE COLCOL enterscope signa
         ;
 
@@ -225,19 +231,45 @@ idheader : ID    /* It will change to ID */
             int column = @1.first_column;
             Symbol *s = new Symbol(*$1, NULL, currentScope, line, column);
             tryAddSymbol(symtable, &errors, s);
+            $<symType>$ = s;
         }
         ;
 
-signa   : arglist ARROW type 
-        | arglist 
-        | TILDE 
-        | TILDE ARROW type 
+
+signa   : arglist ARROW type
+        | arglist
+        | TILDE
+            {
+                $<typelist>$ = new std::vector<Type*>;
+                $<typelist>$->push_back(new Nada());
+            }
+        | TILDE ARROW type
+            {
+                $<typelist>$ = new std::vector<Type*>;
+                $<typelist>$->push_back(new Nada());
+            }
         ;
 
-arglist : arglist COMMA declonly 
+arglist : arglist COMMA declonly
+            {
+                $<typelist>$ =  $<typelist>1;
+                $<typelist>$->push_back($<symType>3->getType());
+            }
         | declonly
+            {
+                $<typelist>$ = new std::vector<Type*>;
+                $<typelist>$->push_back($<symType>1->getType());
+            }
         | arglist COMMA VAR declonly
+            {
+                $<typelist>$ =  $<typelist>1;
+                $<typelist>$->push_back($<symType>4->getType());
+            }
         | VAR declonly
+            {
+                $<typelist>$ = new std::vector<Type*>;
+                $<typelist>$->push_back($<symType>1->getType());
+            }
         ;
 
 instlist : instlist sepaux inst
@@ -658,8 +690,8 @@ term : idlist
                 $<exp>$ = new Exp("", $<symType>1->getType());
             }
         }
-     | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; } 
-     | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; } 
+     | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; }
+     | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; }
      | CIERTO   { $<exp>$ = new Exp("cierto", booleano) ; }
      | FALSO    { $<exp>$ = new Exp("falso", booleano) ; }
      | checkid arr  /*ID arr*/
@@ -818,12 +850,66 @@ declpritype : type ID EQUAL exp
                 }
             ;
 
-callfunc : checkid LPAR explist RPAR
-         | checkid LPAR RPAR
+callfunc : ID funcargs
+            {
+                int line = @1.first_line;
+                int column = @1.first_column;
+
+                Symbol *s = NULL;
+
+                if (! symtable->isActive(*$1)) {  //syntax error
+                    std::string id = s->getId();
+                    int line = @1.first_line;
+                    int column = @1.first_column;
+                    std::string str0 = "(linea "+ to_string(line)+ ", columna ";
+                    str0 += to_string(column) + "): ";
+                    std::string str = "error "+ str0 + "variable '"+ id +"'";
+                    str += ", no ha sido declarada";
+                    errors.push_back(str);
+                }
+                else {
+                    s = symtable->lookup(*$1);
+                    std::vector<Type *>* tl;
+                    tl =  ((Function *) s->getType())->getParams();
+                    if ($<typelist>2->size() == tl->size() ) {
+                        int i;
+                        for (i = 0; i < tl->size(); i++) {
+                            if ( (*$<typelist>2)[i]->typeString() == (*tl)[i]->typeString() ) {
+                                s = NULL;
+                                break;
+                            }
+                        }
+
+                    } else {
+                        s = NULL;
+                    }
+                }
+
+
+                $<symType>$ = s;
+
+            }
+
+         ;
+
+funcargs : LPAR explist RPAR
+            {
+                $<typelist>$ = $<typelist>1;
+            }
+         | LPAR RPAR
+
          ;
 
 explist : explist COMMA exp
+            {
+                $<typelist>$ =  $<typelist>1;
+                $<typelist>$->push_back($<exp>3->getType());
+            }
         | exp
+            {
+                $<typelist>$ = new std::vector<Type*>;
+                $<typelist>$->push_back($<exp>1->getType());
+            }
         ;
 
 enterscope : {symtable->enterScope(); }
