@@ -332,7 +332,7 @@ checkid : ID
         ;
 
 
-asign : checkid EQUAL exp 
+asign : checkid EQUAL exp
        /*
         {
             Asign *a =  new Asign($<symType>1, $<expType>3);
@@ -350,14 +350,14 @@ arrvalueslist : arrvalueslist COMMA arrvalues
               | arrvalues
               ;
 
-decl : typeid EQUAL exp 
+decl : typeid EQUAL exp
      | arrid EQUAL arrvalues
      | declonly      //simple declaration
      | declbox
      ;
 
-declonly : typeid  { $<symType>$ = $<symType>1; } 
-         | arrid   { $<symType>$ = $<symType>1; } 
+declonly : typeid  { $<symType>$ = $<symType>1; }
+         | arrid   { $<symType>$ = $<symType>1; }
          ;
 
 arrid : typeid arr
@@ -385,16 +385,16 @@ type : ENT     { $<type>$ = entero; }
      | NADA    { $<type>$ = nada; }
      | BOOL    { $<type>$ = booleano; }
      | CADENA  { $<type>$ = cadena; }
-     | ID      
-        { 
+     | ID
+        {
             Symbol *s = symtable->lookup(*$1);
             if (s == NULL) {
                 $<type>$ = new TypeError("");
             }
-            else { 
+            else {
                 $<type>$ = s->getType();
             }
-        } 
+        }
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
@@ -772,13 +772,12 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
     ;
 
 
-term : checkid
+term : idlist
         {
-            if ($<symType>1 == NULL) {  //Syntax errors
+            if ($<symType>1 == NULL) {
                 $<exp>$ = new Exp("", new TypeError(""));
-            }
-            else {
-                $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
+            } else {
+                $<exp>$ = new Exp("", $<symType>1->getType());
             }
         }
      | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; } /* {$<expType>$ = new Ent();}  */
@@ -794,11 +793,14 @@ term : checkid
     */
      | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
      | CONSTCAD   // {$<expType>$ = new Exp(); }
-     | boxelem
      | error
      ;
 
-arr : OBRACK exp CBRACK arr 
+idlist : idlist ONEDOT ID
+       | checkid
+       ;
+
+arr : OBRACK exp CBRACK arr
         {
             if ($<type>4->typeString() == "error") {
                 $<type>$ = $<type>4;
@@ -812,14 +814,14 @@ arr : OBRACK exp CBRACK arr
                     int first_index = std::stoi(left->getElem());
                     int last_index = std::stoi(right->getElem());
                     if (first_index  >= last_index) {
-                        $<type>$ = new TypeError("");    
+                        $<type>$ = new TypeError("");
                     }
                     else {
                         $<type>$ = new Arreglo($<type>4, first_index, last_index);
                     }
                 }
                 else {
-                    $<type>$ = new TypeError("");    
+                    $<type>$ = new TypeError("");
                 }
             }
         }
@@ -833,23 +835,23 @@ arr : OBRACK exp CBRACK arr
                 int first_index = std::stoi(left->getElem());
                 int last_index = std::stoi(right->getElem());
                 if (first_index  >= last_index) {
-                    $<type>$ = new TypeError("");    
+                    $<type>$ = new TypeError("");
                 }
                 else {
                     $<type>$ = new Arreglo(NULL, first_index, last_index);
                 }
             }
             else {
-                $<type>$ = new TypeError("");    
+                $<type>$ = new TypeError("");
             }
         }
     ;
 
-declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescope 
+declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescope
             {
                 //constructor object
-                ConstructorType *type = (ConstructorType *) $<symType>1->getType();  
-                
+                ConstructorType *type = (ConstructorType *) $<symType>1->getType();
+
                 if (type->is("registro")) {
                     type->setSymbolTable($<symboltable>5);
                     $<type>$ = type;
@@ -860,13 +862,13 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
                 }
                 else {
                     //error declaracion
-                    $<type>$  = new TypeError("");    
+                    $<type>$  = new TypeError("");
                 }
             }
         ;
 
 
-constructortype : UNION 
+constructortype : UNION
                 | REGISTRO
                     {
                         $<type>$ = new Registro();
@@ -898,7 +900,7 @@ declist : declist sepaux declpritype
         ;
 
 
-declpritype : type ID EQUAL exp    
+declpritype : type ID EQUAL exp
                 {
                     int scope = 0;   //Unique scope for constructors type
                     int line = @2.first_line;
@@ -906,7 +908,7 @@ declpritype : type ID EQUAL exp
                     Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
                     $<symType>$ = s;
                 }
-            | type ID arr EQUAL arrvalues   
+            | type ID arr EQUAL arrvalues
                 {
                     int scope = 0;   //Unique scope for constructors type
                     int line = @2.first_line;
@@ -917,16 +919,16 @@ declpritype : type ID EQUAL exp
                     s->setType($<type>3);  //linking types with arr type
                     $<symType>$ = s;
                 }
-            | type ID //simple declaration  
-                { 
+            | type ID //simple declaration
+                {
                     int scope = 0;   //Unique scope for constructors type
                     int line = @2.first_line;
                     int column = @2.first_column;
                     Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
-                    $<symType>$ = s; 
-                } 
+                    $<symType>$ = s;
+                }
             | type ID arr //simple declaration
-                { 
+                {
                     int scope = 0;   //Unique scope for constructors type
                     int line = @2.first_line;
                     int column = @2.first_column;
@@ -946,8 +948,36 @@ explist : explist COMMA exp
         | exp
         ;
 
-boxelem : term ONEDOT checkid
-        ;
+//boxelem : ID ONEDOT boxelem
+//            {
+//                Symbol *s = $<symType>1;
+//            }
+
+//        | ONEDOT ID
+//            {
+//                int line = @1.first_line;
+//                int column = @1.first_column;
+//
+//                Symbol *s = NULL;
+//
+//                if (! symtable->isActive(*$1)) {  //syntax error
+//                    std::string id = s->getId();
+//                    int line = @1.first_line;
+//                    int column = @1.first_column;
+//                    std::string str0 = "(linea "+ to_string(line)+ ", columna ";
+//                    str0 += to_string(column) + "): ";
+//                    std::string str = "error "+ str0 + "variable '"+ id +"'";
+//                    str += ", no ha sido declarada";
+//                    errors.push_back(str);
+//                } else {
+//                    s = symtable->lookup(*$1);
+//                    if (! s->getType()->is("constructor"))
+//                        s = NULL;
+//                }
+//
+//                $<symType>$ = s;
+//            }
+//;
 
 
 enterscope : {symtable->enterScope(); }
