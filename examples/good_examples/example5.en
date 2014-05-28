@@ -1,12 +1,18 @@
 enie :: ~ {
-    registro tipo1 {
+    registro Tipo1 {
         ent a
         ent b
     }
 
-    registro tipo2 {
+    registro Tipo2 {
         ent x
         ent y
         tipo1 soyunreg
     }
+
+    Tipo2 a
+
+    ent b
+    b = a.soyunreg.a
+
 }

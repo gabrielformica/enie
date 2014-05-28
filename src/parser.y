@@ -797,7 +797,20 @@ term : idlist
      ;
 
 idlist : idlist ONEDOT ID
-       | checkid
+            {
+                if ($<symType>1 == NULL || ! $<symType>1->getType()->is("constructor")) {
+                    $<symType>$ = NULL;
+                } else {
+                    SymbolTable *st = ((ConstructorType *) $<symType>1->getType())->getSymbolTable();
+
+                    if (st->isActive(*$3)) {
+                        $<symType>$ = st->lookup(*$3);
+                    } else {
+                        $<symType>$ = NULL;
+                    }
+                }
+            }
+       | checkid            { $<symType>$ = $<symType>1; }
        ;
 
 arr : OBRACK exp CBRACK arr
@@ -947,38 +960,6 @@ callfunc : checkid LPAR explist RPAR
 explist : explist COMMA exp
         | exp
         ;
-
-//boxelem : ID ONEDOT boxelem
-//            {
-//                Symbol *s = $<symType>1;
-//            }
-
-//        | ONEDOT ID
-//            {
-//                int line = @1.first_line;
-//                int column = @1.first_column;
-//
-//                Symbol *s = NULL;
-//
-//                if (! symtable->isActive(*$1)) {  //syntax error
-//                    std::string id = s->getId();
-//                    int line = @1.first_line;
-//                    int column = @1.first_column;
-//                    std::string str0 = "(linea "+ to_string(line)+ ", columna ";
-//                    str0 += to_string(column) + "): ";
-//                    std::string str = "error "+ str0 + "variable '"+ id +"'";
-//                    str += ", no ha sido declarada";
-//                    errors.push_back(str);
-//                } else {
-//                    s = symtable->lookup(*$1);
-//                    if (! s->getType()->is("constructor"))
-//                        s = NULL;
-//                }
-//
-//                $<symType>$ = s;
-//            }
-//;
-
 
 enterscope : {symtable->enterScope(); }
 leavescope : {symtable->leaveScope(); }

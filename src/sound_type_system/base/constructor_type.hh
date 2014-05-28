@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Class definitions for integer type 
+  * Class definitions for integer type
   *
   * THIS IS A USER CONSTRUCTOR TYPE
   */
