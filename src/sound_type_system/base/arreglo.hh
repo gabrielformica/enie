@@ -72,7 +72,7 @@ class Arreglo: public Type {
             if (t->getBytes() == 0)
                 t->setBytes();
 
-            this->bytes = (first_index - last_index) * t->getBytes();
+            this->bytes = (1 + last_index - first_index) * t->getBytes();
         }
 };
 

@@ -37,7 +37,7 @@ class Union: public ConstructorType {
         bool is(std::string t) { return (t == "union" || t == "constructor"); }
 
         void setBytes() {
-            int sum = 0;
+            int max = 0;
             std::list<Symbol *> *list = this->table->getAllSymbols();
 
             for (std::list<Symbol *>::iterator it = list->begin();
@@ -46,10 +46,11 @@ class Union: public ConstructorType {
                 if ( (*it)->getType()->getBytes() == 0 )
                     (*it)->getType()->setBytes();
 
-                sum = sum + (*it)->getType()->getBytes();
+                int temp = (*it)->getType()->getBytes();
+                max = max > temp ? max : temp;
             }
 
-            this->bytes = sum;
+            this->bytes = max;
         }
 
 };

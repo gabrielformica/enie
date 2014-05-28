@@ -190,7 +190,7 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : begin enterscope funcl end leavescope /* { $<functionlist>$ = $<functionlist>3; } */
+enie    : begin enterscope funcl end leavescope
         ;
 
 begin   : sepaux
@@ -205,33 +205,17 @@ sepaux  : sepaux SEP
         ;
 
 funcl   : funcl sepaux func leavescope
-           /*
-            {
-                $<functionlist>1->append($<function>3);
-                $<functionlist>$ = $<functionlist>1;
-            }
-            */
-        | func leavescope /* { $<functionlist>$ = new FunctionList($<function>1); } */
+        | func leavescope
         | error SEP
         ;
 
-func    : header instbl /* { $<function>$ = new Function($<header>1, $<instblType>2); } */
-        | header       /* { $<function>$ = new Function($<header>1, new Instbl(); } */
+func    : header instbl 
+        | header      
         ;
 
 
 header  : idheader COLCOL enterscope signa
-           /*
-            {
-                $<header>$ = new Header($<symType>1->getId(), $<signa>4);
-            }
-            */
         | ENIE COLCOL enterscope signa
-           /*
-            {
-                $<header>$ = new Header("enie", $<signa>4);
-            }
-            */
         ;
 
 idheader : ID    /* It will change to ID */
@@ -244,42 +228,24 @@ idheader : ID    /* It will change to ID */
         }
         ;
 
-signa   : arglist ARROW type /* { $<signa>$ = new Signa($<argList>1, *$<str>3); } */
-        | arglist /* { $<signa>$ = new Signa($<argList>1, "nada"); } */
-        | TILDE  /*  { $<signa>$ = new Signa(new ArgList(), "nada"); } */
-        | TILDE ARROW type /* { $<signa>$ = new Signa(new ArgList(), *$<str>3); } */
+signa   : arglist ARROW type 
+        | arglist 
+        | TILDE 
+        | TILDE ARROW type 
         ;
 
-arglist : arglist COMMA declonly /* { $<argList>1->append($<symType>3); $<argList>$ = $<argList>1; } */
-        | declonly /*  { $<argList>$ = new ArgList($<symType>1); }  */
+arglist : arglist COMMA declonly 
+        | declonly
         | arglist COMMA VAR declonly
         | VAR declonly
         ;
 
 instlist : instlist sepaux inst
-          /*
-            {
-                $<instListType>1->addInst($<instType>3);
-                $<instListType>$ = $<instListType>1;
-            }
-            */
          | inst
-           /*
-            {
-                Instlist l($<instType>1);
-                $<instListType>$ = &l;
-            }
-            */
          | error
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
-            /*
-            {
-                Instbl bl($<instListType>3);
-                $<instblType>$ = &bl;
-            }
-            */
         ;
 
 inst : asign
@@ -291,19 +257,7 @@ inst : asign
      | ereturn
      | callfunc
      | LEER exp
-     /*
-        {
-            Leer *l = new Leer($<expType>2);
-            $<leerType>$ = l;
-        }
-      */
      | ESCRIBIR exp
-      /*
-        {
-            Escribir *e = new Escribir($<expType>2);
-            $<escribirType>$ = e;
-        }
-       */
      ;
 
 checkid : ID
@@ -334,12 +288,6 @@ checkid : ID
 
 
 asign : checkid EQUAL exp
-       /*
-        {
-            Asign *a =  new Asign($<symType>1, $<expType>3);
-            $<instType>$ = a;
-        }
-        */
       | checkid arr EQUAL arrvalues
       ;
 
@@ -354,27 +302,21 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 decl : typeid EQUAL exp
         {
             $<symType>1->getType()->setBytes();
-            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
             $<symType>$ = $<symType>1;
         }
      | arrid EQUAL arrvalues
         {
             $<symType>1->getType()->setBytes();
-            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
             $<symType>$ = $<symType>1;
         }
      | declonly
         {
             $<symType>1->getType()->setBytes();
-            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
             $<symType>$ = $<symType>1;
         }
      | declbox
         {
             $<symType>1->getType()->setBytes();
-            std::cout << "HOLA-------------------" << $<symType>1->getId() << std::endl;
-            std::cout << "CANTIDAD DE BYTES DE: " <<  $<symType>1->getId() <<  " -> " << $<symType>1->getType()->getBytes() << std::endl;
-            std::cout << "CHAO-------------------" << std::endl;
             $<symType>$ = $<symType>1;
         }
      ;
@@ -387,7 +329,9 @@ arrid : typeid arr
         {
             ((Arreglo *) $<type>2)->setRootTypeElem($<symType>1->getType());
             $<symType>1->setType($<type>2);   //linking types
+            $<symType>1->getType()->setBytes();
             $<symType>$ = $<symType>1;
+            std::cout << "-----> " <<  $<type>2->getBytes() << std::endl;
         }
       ;
 
@@ -421,30 +365,9 @@ type : ENT     { $<type>$ = entero; }
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
-        /*
-        {
-            Selec *s = new Selec($<expType>3, $<instblType>6, $<oslType>8);
-            $<selecType>$ = s;
-        }
-        */
       ;
 
 oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
-            /*
-            {
-                Oselec *os = new Oselec($<expType>4, $<instblType>7);
-                $<oslType>1->addOselec(os);
-                $<oslType>$ = $<oslType>1;
-            }
-            */
-        // |  OSI LPAR exp RPAR enterscope instbl leavescope
-        /*
-            {
-                Oselec *os = new Oselec($<expType>3, $<instblType>6);
-                Oseleclist *l = new Oseleclist(os);
-                $<oslType>$ = l;
-            }
-        */
         | /* lambda */
         ;
 
@@ -454,84 +377,30 @@ sinoselect :  SINO enterscope instbl leavescope
 
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
-          /*
-                {
-                    Multselec *ms = new Multselec($<symType>2, $<optlistType>5);
-                    $<multselType>$ = ms;
-                }
-            */
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
            ;
 
 optionslist : optionslist sepaux option
-            /*
-                {
-                    $<optlistType>1->addOption($<optType>3);
-                    $<optlistType>$ = $<optlistType>1;
-                }
-            */
             | option
-            /*
-                {
-                    Optlist *ol = new Optlist($<optType>1);
-                    $<optlistType>$ = ol;
-                }
-            */
             ;
 
 option: BSLASH leftsideopt ARROW instbl
-      /*
-            {
-                $<optType>2->setBlock($<instblType>4);
-                $<optType>$ = $<optType>2;
-            }
-       */
       ;
 
 leftsideopt : CONSTCAD
-            /*
-                {
-                    Option *o = new Option(*$1);
-                    $<optType>$ = o;
-                }
-            */
             | checkid
-            /*
-                {
-                    Option *o = new Option($<symType>1);
-                    $<optType>$ = o;
-                }
-            */
             ;
 
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
-       /*
-            {
-                Indite *i = new Indite($<expType>3, $<instblType>6);
-                $<indiType>$ = i;
-            }
-        */
        ;
 
 detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
        ;
 
 ereturn : RETORNA
-       /*
-            {
-                Retorno *r = new Retorno(NULL);
-                $<returnType>$ = r;
-            }
-        */
         | RETORNA exp
-       /*
-            {
-                Retorno *r = new Retorno($<expType>2);
-                $<returnType>$ = r;
-            }
-        */
         ;
 
 exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
@@ -544,7 +413,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
         if (exp == NULL) {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
-            //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
             TypeError *t = new TypeError("");
             $<exp>$ = new ExpBin($<exp>1, $<exp>3, "+", t);
          }
@@ -560,7 +428,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "-", t);
             }
@@ -577,7 +444,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "*", t);
             }
@@ -594,7 +460,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
              if (exp == NULL) {
                 int l = @1.first_line;    //line of the binary expression
                 int c = @1.first_column;  //column of the binary expression
-                //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                 TypeError *t = new TypeError("");
                 $<exp>$ = new ExpBin($<exp>1, $<exp>3, "/", t);
              }
@@ -611,7 +476,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "%", t);
             }
@@ -628,7 +492,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "^", t);
             }
@@ -645,7 +508,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "|", t);
             }
@@ -662,7 +524,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "&", t);
             }
@@ -679,7 +540,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "<", t);
             }
@@ -696,7 +556,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, ">", t);
             }
@@ -713,7 +572,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "<=", t);
             }
@@ -730,7 +588,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, ">=", t);
             }
@@ -747,7 +604,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "==", t);
             }
@@ -764,7 +620,6 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               //std::string str = "expresion binaria ->" + $<node>1->toString() + "+" $<node>3->toString();
                TypeError *t = new TypeError("");
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "!=", t);
             }
@@ -803,17 +658,11 @@ term : idlist
                 $<exp>$ = new Exp("", $<symType>1->getType());
             }
         }
-     | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; } /* {$<expType>$ = new Ent();}  */
-     | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; } /* {$<expType>$ = new Ent();}  */
-     | CIERTO   { $<exp>$ = new Exp("cierto", booleano) ; }/* {$<expType>$ = new Bool();} */
-     | FALSO    { $<exp>$ = new Exp("falso", booleano) ; }/* {$<expType>$ = new Bool();} */
+     | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; } 
+     | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; } 
+     | CIERTO   { $<exp>$ = new Exp("cierto", booleano) ; }
+     | FALSO    { $<exp>$ = new Exp("falso", booleano) ; }
      | checkid arr  /*ID arr*/
-     /*
-        {
-            Id *id = new Id($<symType>1->getId());
-            $<arrType>$ = new Arreglo(id, $<inlistType>2);
-        }
-    */
      | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
      | CONSTCAD   // {$<expType>$ = new Exp(); }
      | error
@@ -888,18 +737,8 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
                 //constructor object
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();
 
-                if (type->is("constructor")) {
-                    type->setSymbolTable($<symboltable>5);
-                    $<type>$ = type;
-                    std::cout << "VOY A IMPRIMIR LA SEGUNDA TABLA" << std::endl;
-                    type->getSymbolTable()->printTable();
-                    std::cout << "--------------------" << std::endl;
-
-                }
-                else {
-                    //error declaracion
-                    $<type>$  = new TypeError("");
-                }
+                type->setSymbolTable($<symboltable>5);   //linking types
+                $<symType>$ = $<symType>1;
             }
         ;
 
