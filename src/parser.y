@@ -241,16 +241,7 @@ idheader : ID    /* It will change to ID */
             Symbol *s = new Symbol(*$1, NULL, currentScope, line, column);
             tryAddSymbol(symtable, &errors, s);
         }
-
-//            {
-//                int currentScope = symtable->getCurrentScope();
-//                int line = @1.first_line;
-//                int column = @1.first_column;
-//                Symbol *fs = new FuncSymbol(*$1, currentScope, line, column, false);
-//                tryAddSymbol(symtable, &errors, s);
-//                $<symType>$ = s;
-//            }
-         ;
+        ;
 
 signa   : arglist ARROW type /* { $<signa>$ = new Signa($<argList>1, *$<str>3); } */
         | arglist /* { $<signa>$ = new Signa($<argList>1, "nada"); } */
@@ -296,7 +287,7 @@ inst : asign
      | multselec
      | indite
      | detite
-     | return
+     | ereturn
      | callfunc
      | LEER exp
      /*
@@ -316,27 +307,32 @@ inst : asign
 
 checkid : ID
             {
-                int currentScope = symtable->getCurrentScope();
                 int line = @1.first_line;
                 int column = @1.first_column;
-                Symbol *s = symtable->lookup(*$1, currentScope);
-                checkUse(symtable, &errors, s);
+
+                Symbol *s = NULL;
+
+                if (! symtable->isActive(*$1)) {  //syntax error
+                    std::string id = s->getId();
+                    int line = @1.first_line;
+                    int column = @1.first_column;
+                    std::string str0 = "(linea "+ to_string(line)+ ", columna ";
+                    str0 += to_string(column) + "): ";
+                    std::string str = "error "+ str0 + "variable '"+ id +"'";
+                    str += ", no ha sido declarada";
+                    errors.push_back(str);
+                }
+                else {
+                    s = symtable->lookup(*$1);
+                }
+
                 $<symType>$ = s;
+
             }
         ;
 
-// addid : ID
-//       {
-//           int currentScope = symtable->getCurrentScope();
-//           int line = @1.first_line;
-//           int column = @1.first_column;
-//           Symbol *s = new Symbol(*$1, currentScope, line, column);
-//           tryAddSymbol(symtable, &errors, s);
-//           $<symType>$ = s;
-//       }
-//     ;
 
-asign : checkid EQUAL exp
+asign : checkid EQUAL exp 
        /*
         {
             Asign *a =  new Asign($<symType>1, $<expType>3);
@@ -354,7 +350,7 @@ arrvalueslist : arrvalueslist COMMA arrvalues
               | arrvalues
               ;
 
-decl : typeid EQUAL exp
+decl : typeid EQUAL exp 
      | arrid EQUAL arrvalues
      | declonly      //simple declaration
      | declbox
@@ -489,23 +485,23 @@ indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
 detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
        ;
 
-return : RETORNA
+ereturn : RETORNA
        /*
             {
                 Retorno *r = new Retorno(NULL);
                 $<returnType>$ = r;
             }
         */
-       | RETORNA exp
+        | RETORNA exp
        /*
             {
                 Retorno *r = new Retorno($<expType>2);
                 $<returnType>$ = r;
             }
         */
-       ;
+        ;
 
-exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
+exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
     | exp PLUS exp
     {
         Exp *exp = NULL;
@@ -768,7 +764,12 @@ exp : term   { $<node>$ = $<node>1; } /*{ $<expType>$ = $<expType>1; } */
 
 term : checkid
         {
-            $<exp>$ = new Exp($<symType>1->getType());
+            if ($<symType>1 == NULL) {  //Syntax errors
+                $<exp>$ = new Exp("", new TypeError(""));
+            }
+            else {
+                $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
+            }
         }
      | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; } /* {$<expType>$ = new Ent();}  */
      | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; } /* {$<expType>$ = new Ent();}  */
@@ -781,7 +782,7 @@ term : checkid
             $<arrType>$ = new Arreglo(id, $<inlistType>2);
         }
     */
-     | callfunc
+     | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
      | CONSTCAD   // {$<expType>$ = new Exp(); }
      | boxelem
      | error
@@ -834,7 +835,7 @@ arr : OBRACK exp CBRACK arr
         }
     ;
 
-declbox : declboxtypeid OBRACE enterscope declist leavescope CBRACE
+declbox : declboxtypeid OBRACE sepaux enterscope declist leavescope sepaux CBRACE 
             {
                 //constructor object
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();  

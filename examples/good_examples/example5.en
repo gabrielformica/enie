@@ -1,0 +1,7 @@
+enie :: ~ {
+    registro tipo1 {
+        ent a
+        ent b
+    }
+    ent h
+}

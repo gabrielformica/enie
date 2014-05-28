@@ -57,27 +57,37 @@ void SymbolTable::addSymbol(Symbol *s) {
     }
 }
 
-/* Tell if id is already in scope */
-bool SymbolTable::idIsInScope(string id, int scope) {
-    return lookup(id, scope) != NULL;
-}
+
 
 /* Tell if a symbol declaration is active */
 
-bool SymbolTable::isActive(Symbol *s) {
+Symbol *SymbolTable::lookup(std::string id) {
     for (list<int>::reverse_iterator it = this->scopeStack.rbegin();
                                      it != this->scopeStack.rend(); ++it) {
 
-        if (this->idIsInScope(s->getId(), *it))
-            return true;
+        Symbol *s = this->getSymbolInScope(id, *it);
+        if (s != NULL) 
+            return s;
 
     }
-    return false;
+    return NULL;
 }
 
-/* look up the symbol */
+/* Tell if id is already in scope */
+bool SymbolTable::idIsInScope(string id, int scope) {
+    return this->getSymbolInScope(id, scope) != NULL;
+}
 
-Symbol *SymbolTable::lookup(string id, int scope) {
+
+bool SymbolTable::isActive(std::string id) {
+    return this->lookup(id) != NULL;
+}
+
+/* Returns Symbol if it exists in scope
+ * up the symbol 
+ */
+
+Symbol *SymbolTable::getSymbolInScope(string id, int scope) {
     auto its = this->table.equal_range(id);
     for (auto it = its.first; it != its.second; ++it) {
         if (scope == it->second->getScope()) {

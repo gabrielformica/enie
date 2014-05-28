@@ -24,15 +24,3 @@ void tryAddSymbol(SymbolTable *symtable, vector<string> *errors, Symbol *s) {
     }
 }
 
-void checkUse(SymbolTable *symtable, vector<string> *errors, Symbol *s) {
-    if (! symtable->isActive(s)) {
-        std::string id = s->getId();
-        int line = s->getLine();
-        int column = s->getColumn();
-        std::string str0 = "(linea "+ to_string(line)+ ", columna ";
-        str0 += to_string(column) + "): ";
-        std::string str = "error "+ str0 + "variable '"+ id +"'";
-        str += ", no ha sido declarada";
-        errors->push_back(str);
-    }
-}
