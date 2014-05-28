@@ -25,11 +25,12 @@ class TypeError: public Type {
         typedef Type super;
 
         /** class constructor */
-        TypeError(std::string error) : super(0) { 
+        TypeError(std::string error) : super(0) {
             this->error = error;
-        } 
+        }
 
         std::string typeString() { return "error"; }
+        bool is(std::string t) { return t == "error"; }
 };
 
 #endif

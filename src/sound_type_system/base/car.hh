@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Class definitions for car type 
+  * Class definitions for car type
   *
   * THIS IS A PRIMITIVE TYPE
   */
@@ -25,9 +25,10 @@ class Car: public Type {
         typedef Type super;
 
         /** class constructor */
-        Car() : super(1) { } 
+        Car() : super(1) { }
 
         std::string typeString() { return "car"; }
+        bool is(std::string t) { return t == "car"; }
 };
 
 #endif

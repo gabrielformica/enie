@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Class definitions for integer type 
+  * Class definitions for integer type
   *
   * THIS IS A USER CONSTRUCTOR TYPE
   */
@@ -34,7 +34,7 @@ class Registro: public ConstructorType {
 
         std::string typeString() { return "registro"; }
 
-        bool is(std::string type) { return type == "registro"; }
+        bool is(std::string t) { return (t == "registro" || t == "constructor"); }
 };
 
 #endif

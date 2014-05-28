@@ -23,11 +23,12 @@
 class Flot: public Type {
     public:
         typedef Type super;
-        
+
         /** class constructor */
-        Flot() : super(8) { } 
+        Flot() : super(8) { }
 
         std::string typeString() { return "flot"; }
+        bool is(std::string t) { return t == "flot"; }
 };
 
 #endif

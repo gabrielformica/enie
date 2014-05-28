@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Class definitions for boolean type 
+  * Class definitions for boolean type
   *
   * THIS IS A PRIMITIVE TYPE
   */
@@ -28,6 +28,7 @@ class Bool: public Type {
         Bool() : super(1) { }
 
         std::string typeString() { return "bool"; }
+        bool is(std::string t) { return t == "bool"; }
 };
 
 #endif

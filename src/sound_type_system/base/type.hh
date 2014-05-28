@@ -21,8 +21,9 @@ class Type {
 
     public:
         Type(int b) : bytes(b) { }
-        
+
         virtual std::string typeString() = 0 ;
+        virtual bool  is(std::string) = 0;
 
 };
 

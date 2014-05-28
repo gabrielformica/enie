@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Class definitions for integer type 
+  * Class definitions for integer type
   *
   * THIS IS A PRIMITIVE TYPE
   */
@@ -25,9 +25,10 @@ class Ent: public Type {
         typedef Type super;
 
         /** Class constructor */
-        Ent() : super(4) { } 
+        Ent() : super(4) { }
 
         std::string typeString() { return "ent"; }
+        bool is(std::string t) { return t == "ent"; }
 };
 
 #endif

@@ -28,6 +28,7 @@ class Cadena: public Type {
         Cadena() : super(0) { }
 
         std::string typeString() { return "cadena"; }
+        bool is(std::string t) { return t == "cadena"; }
 };
 
 #endif
