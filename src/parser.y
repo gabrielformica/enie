@@ -363,6 +363,7 @@ declonly : typeid  { $<symType>$ = $<symType>1; }
 arrid : typeid arr
         {
             ((Arreglo *) $<type>2)->setRootTypeElem($<symType>1->getType());
+            $<symType>1->setType($<type>2);   //linking types
             $<symType>$ = $<symType>1;
         }
       ;
@@ -384,7 +385,16 @@ type : ENT     { $<type>$ = entero; }
      | NADA    { $<type>$ = nada; }
      | BOOL    { $<type>$ = booleano; }
      | CADENA  { $<type>$ = cadena; }
-    // | //ID       // para structs and shit
+     | ID      
+        { 
+            Symbol *s = symtable->lookup(*$1);
+            if (s == NULL) {
+                $<type>$ = new TypeError("");
+            }
+            else { 
+                $<type>$ = s->getType();
+            }
+        } 
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
@@ -835,14 +845,18 @@ arr : OBRACK exp CBRACK arr
         }
     ;
 
-declbox : declboxtypeid OBRACE sepaux enterscope declist leavescope sepaux CBRACE 
+declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescope 
             {
                 //constructor object
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();  
-
+                
                 if (type->is("registro")) {
-                    type->setSymbolTable($<symboltable>4);
+                    type->setSymbolTable($<symboltable>5);
                     $<type>$ = type;
+                    std::cout << "VOY A IMPRIMIR LA SEGUNDA TABLA" << std::endl;
+                    type->getSymbolTable()->printTable();
+                    std::cout << "--------------------" << std::endl;
+
                 }
                 else {
                     //error declaracion
@@ -855,7 +869,7 @@ declbox : declboxtypeid OBRACE sepaux enterscope declist leavescope sepaux CBRAC
 constructortype : UNION 
                 | REGISTRO
                     {
-                        $<type>1 = new Registro();
+                        $<type>$ = new Registro();
                     }
                 ;
 
@@ -873,8 +887,7 @@ declboxtypeid : constructortype ID
 declist : declist sepaux declpritype
             {
                 Symbol *s = $<symType>3;
-                $<symboltable>$ = new SymbolTable();
-                tryAddSymbol($<symboltable>$, &errors, s);
+                tryAddSymbol($<symboltable>1, &errors, s);
             }
         | declpritype
             {
@@ -885,9 +898,45 @@ declist : declist sepaux declpritype
         ;
 
 
-declpritype : typeid EQUAL exp      { $<symType>$ = $<symType>1; }
-            | arrid EQUAL arrvalues { $<symType>$ = $<symType>1; }
-            | declonly              { $<symType>$ = $<symType>1; } //simple declaration
+declpritype : type ID EQUAL exp    
+                {
+                    int scope = 0;   //Unique scope for constructors type
+                    int line = @2.first_line;
+                    int column = @2.first_column;
+                    Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
+                    $<symType>$ = s;
+                }
+            | type ID arr EQUAL arrvalues   
+                {
+                    int scope = 0;   //Unique scope for constructors type
+                    int line = @2.first_line;
+                    int column = @2.first_column;
+                    Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
+
+                    ((Arreglo *) $<type>3)->setRootTypeElem($<type>1);
+                    s->setType($<type>3);  //linking types with arr type
+                    $<symType>$ = s;
+                }
+            | type ID //simple declaration  
+                { 
+                    int scope = 0;   //Unique scope for constructors type
+                    int line = @2.first_line;
+                    int column = @2.first_column;
+                    Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
+                    $<symType>$ = s; 
+                } 
+            | type ID arr //simple declaration
+                { 
+                    int scope = 0;   //Unique scope for constructors type
+                    int line = @2.first_line;
+                    int column = @2.first_column;
+                    Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
+
+                    ((Arreglo *) $<type>3)->setRootTypeElem($<type>1);
+                    s->setType($<type>3);  //linking types with arr type
+                    $<symType>$ = s;
+                }
+            ;
 
 callfunc : checkid LPAR explist RPAR
          | checkid LPAR RPAR

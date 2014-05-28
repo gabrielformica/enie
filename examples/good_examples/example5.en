@@ -3,5 +3,10 @@ enie :: ~ {
         ent a
         ent b
     }
-    ent h
+
+    registro tipo2 {
+        ent x
+        ent y
+        tipo1 soyunreg
+    }
 }

@@ -39,6 +39,8 @@ class ConstructorType: public Type {
 
         void setSymbolTable(SymbolTable *symtable) { this->table = symtable; }
 
+        SymbolTable *getSymbolTable() { return this->table; }
+
         virtual std::string typeString() = 0;
         virtual bool is(std::string) = 0;
 
