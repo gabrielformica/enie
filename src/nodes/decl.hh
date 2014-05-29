@@ -22,21 +22,21 @@
 #include "../symtable/symtable.hh"
 #include "../symtable/symbol.hh"
 
-class Decl : public Node {
+class Decl : public Instruc {
     private:
         Symbol *lhs;
         Exp *rhs;
 
     public:
-        typedef Node super;
+        typedef Instruc super;
 
         Decl(Symbol *lhs, Exp *rhs, Type *t) : super(t) {
             this->lhs = lhs;
             this->rhs = rhs;
         }
 
-        Symbol* getSymbol();
-        Exp* getExpression();
+        Symbol* getLeft() { return this->lhs; }
+        Exp* getRight() { return this->rhs; }
 };
 
 #endif

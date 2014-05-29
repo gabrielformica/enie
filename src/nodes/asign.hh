@@ -21,13 +21,13 @@
 #include "instruc.hh"
 #include "../symtable/symtable.hh"
 
-class Asign: public Node {
+class Asign: public Instruc {
     private:
         Exp *lhs;
         Exp *rhs;
 
     public:
-        typedef Node super;
+        typedef Instruc super;
 
         Asign(Exp *l, Exp *r, Type *t) : lhs(l), rhs(r), super(t) { }
 

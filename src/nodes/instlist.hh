@@ -13,24 +13,36 @@
   * instrucciones existentes.
   */
 
-#include <list>
-#include "instruc.hh"
 
 #ifndef INSTLIST_HH
 #define INSTLIST_HH
 
+#include <list>
+#include "instruc.hh"
+#include "../sound_type_system/base/type.hh"
 
-class Instlist {
+
+class Instlist : public Instruc {
     private:
-        std::list<Instruc*> listinst;
+        std::list<Instruc *>* list;
+
     public:
-        explicit Instlist(Instruc *a) {
-            std::list<Instruc*> l(1,a);
-            this->listinst = l;
+        typedef Instruc super;
+
+        Instlist(Instruc *inst, Type *t ) : super(t) {
+            this->list = new std::list<Instruc *>;
+            this->list->push_back(inst);
         }
 
-        std::list<Instruc*> getList();
-        void addInst(Instruc *i);
+        std::list<Instruc *> getList();
+
+        void addInst(Instruc *inst) {
+            if (inst->getType()->is("error")) {
+                this->type = inst->getType();
+            }
+
+            this->list->push_back(inst);
+        }
 };
 
 #endif
