@@ -20,22 +20,23 @@
 #include "exp.hh"
 #include "instruc.hh"
 #include "../symtable/symtable.hh"
+#include "../symtable/symbol.hh"
 
-class Decl : public Instruc {
+class Decl : public Node {
     private:
-        Symbol *sym;
-        Exp *exp;
+        Symbol *lhs;
+        Exp *rhs;
 
     public:
-        typedef Instruc super;
+        typedef Node super;
 
-        Decl(Symbol *s, Exp *e);
+        Decl(Symbol *lhs, Exp *rhs, Type *t) : super(t) {
+            this->lhs = lhs;
+            this->rhs = rhs;
+        }
 
         Symbol* getSymbol();
         Exp* getExpression();
-        void setSymbol(Symbol *s);
-        void setExpression(Exp *e);
-        bool check();
 };
 
 #endif

@@ -77,9 +77,10 @@ class Arreglo: public Type {
         }
 
         int getDimensions() {
-            if (! this->type_elem->is("arreglo"));
+            if (! this->type_elem->is("arreglo")) 
                 return 1;
-           
+
+
             return 1 + ((Arreglo *) this->type_elem)->getDimensions();
         }
 

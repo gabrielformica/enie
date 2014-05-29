@@ -293,7 +293,12 @@ instlist : instlist sepaux inst
 instbl : OBRACE sepaux instlist sepaux CBRACE
         ;
 
-inst : asign        { $<node>$ = $<node>1; }
+inst : asign 
+        { 
+            std::cout << "left -> " << ((Asign *)  $<node>1)->getLeft()->getElem() << " right -> " << ((Asign *) $<node>1)->getRight()->getElem(); 
+            std::cout << " Tipo -> " << $<node>1->getType()->typeString() << std::endl;
+            $<node>$ = $<node>1;
+        }
      | decl         { $<node>$ = $<node>1; }
      | selec        { $<node>$ = $<node>1; }
      | multselec    { $<node>$ = $<node>1; }
@@ -316,9 +321,9 @@ checkid : ID
                     std::string id = s->getId();
                     int line = @1.first_line;
                     int column = @1.first_column;
-                    std::string str = "(linea "+ to_string(line)+ ", columna ";
-                    str += to_string(column) + "): ";
-                    std::string str = "error "+ str + "variable '"+ id +"'";
+                    std::string str0 = "(linea "+ to_string(line)+ ", columna ";
+                    str0 += to_string(column) + "): ";
+                    std::string str = "error "+ str0 + "variable '"+ id +"'";
                     str += ", no ha sido declarada";
                     errors.push_back(str);
                 }
@@ -334,73 +339,56 @@ checkid : ID
 
 asign : asignid EQUAL exp
         {
-            Symbol *s = $<symType>1;
-
-            if (s != NULL) {
-
-            } else {
-                $<node>$ = new Asign(, $<exp>3, new TypeError(""));
+            if ($<exp>1->getType() == $<exp>3->getType()) {
+                $<node>$ = new Asign($<exp>1, $<exp>3, type_void) ;
             }
-        /*
-            if ($<symType>1->getType()->is($<exp>3->getType()->typeString())) {
-                $<node>$ = new Asign($<symType>1->getId(), $<exp>3);
+            else {
+                $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
-        */
+
         }
       | arrasign EQUAL exp
         {
-//        std::cout << "------> " << $<exp>1->getElem() << std::endl;
             Type *lhs = $<exp>1->getType();
             Type *rhs = $<exp>3->getType();
 
-            if (lhs->is("arreglo") &&  ((Arreglo *) lhs)->getRootType() == rhs) {
+            if (lhs == rhs) {
                 $<node>$ = new Asign($<exp>1, $<exp>3, type_void);
             } else {
-                $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
-            }
-        }
-      | arrasign EQUAL arrasign
-        {
-//        std::cout << "------> " << $<exp>1->getElem() << std::endl;
-            Type *lhs = $<exp>1->getType();
-            Type *rhs = $<exp>3->getType();
-            Type *lhs_root = ((Arreglo *) lhs)->getRootType();
-            Type *rhs_root = ((Arreglo *) rhs)->getRootType();
-            bool conditions = true;
-
-            conditions = conditions && lhs->is("arreglo");
-            conditions = conditions && rhs->is("arreglo");
-            conditions = conditions &&  lhs_root == rhs_root;
-
-            if (conditions) {
-                $<node>$ = new Asign($<exp>1, $<exp>3, type_void);
-            } else {
+                std::cout << "EXPLOTO AQUI " << std::endl;
                 $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
         }
       ;
 
 asignid : idlist
+            {
+                if ($<symType>1 == NULL) {
+                    $<exp>$ = new Exp($<symType>1->getId(), new TypeError(""));
+                } else {
+                    $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
+                }
+            }
         ;
 
 arrasign : checkid arrasignaux
             {
-                Type *type = $<symType>1->getType();
 
-                int i;
                 std::string str = $<symType>1->getId();
-                bool badarray = false;
 
+                bool badarray = false;
+                int i;
                 for (i = 0; i < $<explist>2->size(); i++) {
                     str = str + "[" +  ((Exp *) (*$<explist>2)[i])->getElem() + "]";
                     if (! (((Exp *) (*$<explist>2)[i])->getType()->is("ent")))
                         badarray = true;
                 }
 
-                Type *new_type;
+                Type *type = $<symType>1->getType();
                 int dimensions = ((Arreglo *) type)->getDimensions();
                 int size_arrlist = $<explist>2->size();
 
+                Type *new_type;
                 if ((! badarray) && ($<symType>1->getType()->is("arreglo")) && (dimensions == size_arrlist))
                     new_type = ((Arreglo *) $<symType>1->getType())->getRootType();
                 else
@@ -433,25 +421,31 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 
 decl : typeid EQUAL exp
         {
-            $<symType>1->getType()->setBytes();
-            $<symType>$ = $<symType>1;
+            if ($<symType>1->getType() == $<exp>3->getType()) {
+                $<node>1 = new Decl($<symType>1, $<exp>3, type_void); 
+            }
+            else {
+                $<node>1 = new Decl($<symType>1, $<exp>3, new TypeError("")); 
+            }
         }
      | arrid EQUAL arrvalues
         {
-            $<symType>1->getType()->setBytes();
-            $<symType>$ = $<symType>1;
+            if ($<symType>1->getType() == $<exp>3->getType()) {
+                $<node>1 = new Decl($<symType>1, $<exp>3, type_void); 
+            }
+            else {
+                $<node>1 = new Decl($<symType>1, $<exp>3, new TypeError("")); 
+            }
+
         }
      | declonly
         {
-            $<symType>1->getType()->setBytes();
-            $<symType>$ = $<symType>1;
         }
      | declbox
         {
-            $<symType>1->getType()->setBytes();
-            $<symType>$ = $<symType>1;
         }
      ;
+
 
 declonly : typeid  { $<symType>$ = $<symType>1; }
          | arrid   { $<symType>$ = $<symType>1; }
@@ -797,6 +791,7 @@ term : idlist
      /* | checkid arr  ID arr */
      | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
      | CONSTCAD   // {$<expType>$ = new Exp(); }
+     | arrasign
      | error
      ;
 

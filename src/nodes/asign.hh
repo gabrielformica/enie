@@ -25,17 +25,14 @@ class Asign: public Node {
     private:
         Exp *lhs;
         Exp *rhs;
+
     public:
         typedef Node super;
 
         Asign(Exp *l, Exp *r, Type *t) : lhs(l), rhs(r), super(t) { }
 
-        Symbol* get_symbol();
-        Exp* getExpression();
-        void setSymbol(Symbol *s);
-        void setExpression(Exp *e);
-        bool check();
-
+        Exp* getLeft() { return this->lhs; }
+        Exp* getRight() { return this->rhs; }
 };
 
 #endif
