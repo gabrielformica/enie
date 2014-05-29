@@ -21,18 +21,21 @@
 #include "instruc.hh"
 #include "../symtable/symtable.hh"
 
-class Asign: public Instruc {
+class Asign: public Node {
     private:
-        Symbol *sym;
-        Exp *exp;
+        Exp *lhs;
+        Exp *rhs;
     public:
-        Asign(Symbol *s, Exp *e);
+        typedef Node super;
+
+        Asign(Exp *l, Exp *r, Type *t) : lhs(l), rhs(r), super(t) { }
 
         Symbol* get_symbol();
         Exp* getExpression();
         void setSymbol(Symbol *s);
         void setExpression(Exp *e);
         bool check();
+
 };
 
 #endif

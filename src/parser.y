@@ -28,6 +28,7 @@
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
+    #include "nodes/asign.hh"
     #include "nodes/expbin.hh"
     /*
     #include "symtable/func_symbol.hh"
@@ -315,9 +316,9 @@ checkid : ID
                     std::string id = s->getId();
                     int line = @1.first_line;
                     int column = @1.first_column;
-                    std::string str0 = "(linea "+ to_string(line)+ ", columna ";
-                    str0 += to_string(column) + "): ";
-                    std::string str = "error "+ str0 + "variable '"+ id +"'";
+                    std::string str = "(linea "+ to_string(line)+ ", columna ";
+                    str += to_string(column) + "): ";
+                    std::string str = "error "+ str + "variable '"+ id +"'";
                     str += ", no ha sido declarada";
                     errors.push_back(str);
                 }
@@ -333,37 +334,63 @@ checkid : ID
 
 asign : asignid EQUAL exp
         {
+            Symbol *s = $<symType>1;
+
+            if (s != NULL) {
+
+            } else {
+                $<node>$ = new Asign(, $<exp>3, new TypeError(""));
+            }
         /*
             if ($<symType>1->getType()->is($<exp>3->getType()->typeString())) {
-                $<node>$ = new Asign($<symType>1->getId(), $<exp>3); 
+                $<node>$ = new Asign($<symType>1->getId(), $<exp>3);
             }
         */
         }
       | arrasign EQUAL exp
         {
-        std::cout << "------> " << $<exp>1->getElem() << std::endl;
-        /*
-            if ($<symType>1->getType()->is("arreglo")) {
-                
+//        std::cout << "------> " << $<exp>1->getElem() << std::endl;
+            Type *lhs = $<exp>1->getType();
+            Type *rhs = $<exp>3->getType();
+
+            if (lhs->is("arreglo") &&  ((Arreglo *) lhs)->getRootType() == rhs) {
+                $<node>$ = new Asign($<exp>1, $<exp>3, type_void);
+            } else {
+                $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
-            else {
-                $<node>$ = new Asign($<symType>1->getId(), new TypeError()); 
+        }
+      | arrasign EQUAL arrasign
+        {
+//        std::cout << "------> " << $<exp>1->getElem() << std::endl;
+            Type *lhs = $<exp>1->getType();
+            Type *rhs = $<exp>3->getType();
+            Type *lhs_root = ((Arreglo *) lhs)->getRootType();
+            Type *rhs_root = ((Arreglo *) rhs)->getRootType();
+            bool conditions = true;
+
+            conditions = conditions && lhs->is("arreglo");
+            conditions = conditions && rhs->is("arreglo");
+            conditions = conditions &&  lhs_root == rhs_root;
+
+            if (conditions) {
+                $<node>$ = new Asign($<exp>1, $<exp>3, type_void);
+            } else {
+                $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
-        */
         }
       ;
 
-asignid : idlist     
+asignid : idlist
         ;
 
 arrasign : checkid arrasignaux
             {
                 Type *type = $<symType>1->getType();
-                
 
                 int i;
                 std::string str = $<symType>1->getId();
                 bool badarray = false;
+
                 for (i = 0; i < $<explist>2->size(); i++) {
                     str = str + "[" +  ((Exp *) (*$<explist>2)[i])->getElem() + "]";
                     if (! (((Exp *) (*$<explist>2)[i])->getType()->is("ent")))
@@ -376,14 +403,14 @@ arrasign : checkid arrasignaux
 
                 if ((! badarray) && ($<symType>1->getType()->is("arreglo")) && (dimensions == size_arrlist))
                     new_type = ((Arreglo *) $<symType>1->getType())->getRootType();
-                else 
+                else
                     new_type = new TypeError("");
 
                 $<exp>$ = new Exp(str, new_type);
             }
         ;
 
-arrasignaux : arrasignaux OBRACK exp CBRACK 
+arrasignaux : arrasignaux OBRACK exp CBRACK
                 {
                     $<explist>1->push_back($<exp>3);
                     $<explist>$ = $<explist>1;
