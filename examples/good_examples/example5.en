@@ -7,7 +7,7 @@ enie :: ~ {
     registro Tipo2 {
         ent x
         ent y
-        tipo1 soyunreg
+        Tipo1 soyunreg
     }
 
     Tipo2 a
