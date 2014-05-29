@@ -20,6 +20,7 @@
     #include "sound_type_system/base/cadena.hh"
     #include "sound_type_system/base/car.hh"
     #include "sound_type_system/base/nada.hh"
+    #include "sound_type_system/base/void.hh"
     #include "sound_type_system/base/constructor_type.hh"
     #include "sound_type_system/base/registro.hh"
     #include "sound_type_system/base/function.hh"
@@ -71,6 +72,7 @@
     Type *nada = new Nada();
     Type *cadena = new Cadena();
     Type *car = new Car();
+    Type *type_void = new Void();
 
     using namespace std;
 }
@@ -85,7 +87,7 @@
     Exp *exp;
     SymbolTable *symboltable;
     std::vector<Type*> *typelist;
-    std::pair <std::vector<Type *>*, Type*> *sigpair;
+    std::vector<Exp *> *explist;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -220,7 +222,6 @@ func    : header instbl
 
 header  : idheader COLCOL enterscope signa
             {
-
                 $<symType>1->setType($<type>4);
                 std::cout << "TIPO DE FUNCION: " << $<symType>1->getType()->typeString() << std::endl;
             }
@@ -291,16 +292,16 @@ instlist : instlist sepaux inst
 instbl : OBRACE sepaux instlist sepaux CBRACE
         ;
 
-inst : asign
-     | decl
-     | selec
-     | multselec
-     | indite
-     | detite
-     | ereturn
-     | callfunc
-     | LEER exp
-     | ESCRIBIR exp
+inst : asign        { $<node>$ = $<node>1; }
+     | decl         { $<node>$ = $<node>1; }
+     | selec        { $<node>$ = $<node>1; }
+     | multselec    { $<node>$ = $<node>1; }
+     | indite       { $<node>$ = $<node>1; }
+     | detite       { $<node>$ = $<node>1; }
+     | ereturn      { $<node>$ = $<node>1; }
+     | callfunc     { $<node>$ = $<node>1; }
+     | LEER exp     { $<node>$ = $<node>1; }
+     | ESCRIBIR exp { $<node>$ = $<node>1; }
      ;
 
 checkid : ID
@@ -330,9 +331,70 @@ checkid : ID
         ;
 
 
-asign : checkid EQUAL exp
-      | checkid arr EQUAL arrvalues
+asign : asignid EQUAL exp
+        {
+        /*
+            if ($<symType>1->getType()->is($<exp>3->getType()->typeString())) {
+                $<node>$ = new Asign($<symType>1->getId(), $<exp>3); 
+            }
+        */
+        }
+      | arrasign EQUAL exp
+        {
+        std::cout << "------> " << $<exp>1->getElem() << std::endl;
+        /*
+            if ($<symType>1->getType()->is("arreglo")) {
+                
+            }
+            else {
+                $<node>$ = new Asign($<symType>1->getId(), new TypeError()); 
+            }
+        */
+        }
       ;
+
+asignid : idlist     
+        ;
+
+arrasign : checkid arrasignaux
+            {
+                Type *type = $<symType>1->getType();
+                
+
+                int i;
+                std::string str = $<symType>1->getId();
+                bool badarray = false;
+                for (i = 0; i < $<explist>2->size(); i++) {
+                    str = str + "[" +  ((Exp *) (*$<explist>2)[i])->getElem() + "]";
+                    if (! (((Exp *) (*$<explist>2)[i])->getType()->is("ent")))
+                        badarray = true;
+                }
+
+                Type *new_type;
+                int dimensions = ((Arreglo *) type)->getDimensions();
+                int size_arrlist = $<explist>2->size();
+
+                if ((! badarray) && ($<symType>1->getType()->is("arreglo")) && (dimensions == size_arrlist))
+                    new_type = ((Arreglo *) $<symType>1->getType())->getRootType();
+                else 
+                    new_type = new TypeError("");
+
+                $<exp>$ = new Exp(str, new_type);
+            }
+        ;
+
+arrasignaux : arrasignaux OBRACK exp CBRACK 
+                {
+                    $<explist>1->push_back($<exp>3);
+                    $<explist>$ = $<explist>1;
+                }
+            | OBRACK exp CBRACK
+                {
+                    std::vector<Exp *> *arrl = new std::vector<Exp *>;
+                    arrl->push_back($<exp>2);
+                    $<explist>$ = arrl;
+                }
+            ;
 
 arrvalues : exp
           | OBRACE arrvalueslist CBRACE
@@ -705,7 +767,7 @@ term : idlist
      | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; }
      | CIERTO   { $<exp>$ = new Exp("cierto", booleano) ; }
      | FALSO    { $<exp>$ = new Exp("falso", booleano) ; }
-     | checkid arr  /*ID arr*/
+     /* | checkid arr  ID arr */
      | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
      | CONSTCAD   // {$<expType>$ = new Exp(); }
      | error
@@ -725,7 +787,8 @@ idlist : idlist ONEDOT ID
                     }
                 }
             }
-       | checkid            { $<symType>$ = $<symType>1; }
+
+       | checkid   { $<symType>$ = $<symType>1; }
        ;
 
 arr : OBRACK exp CBRACK arr

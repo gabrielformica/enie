@@ -25,6 +25,7 @@ class Arreglo: public Type {
         Type *type_elem;
         int first_index;
         int last_index;
+
     public:
         typedef Type super;
 
@@ -73,6 +74,20 @@ class Arreglo: public Type {
                 t->setBytes();
 
             this->bytes = (1 + last_index - first_index) * t->getBytes();
+        }
+
+        int getDimensions() {
+            if (! this->type_elem->is("arreglo"));
+                return 1;
+           
+            return 1 + ((Arreglo *) this->type_elem)->getDimensions();
+        }
+
+        Type *getRootType() {
+            if (! this->type_elem->is("arreglo"))
+                return this->type_elem;
+
+            return ((Arreglo *) this->type_elem)->getRootType();
         }
 };
 
