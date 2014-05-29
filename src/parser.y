@@ -220,10 +220,8 @@ func    : header instbl
 
 header  : idheader COLCOL enterscope signa
             {
-                std::vector<Type *> *tl = $<sigpair>1->first;
-                Type *ty = $<sigpair>1->second;
 
-                $<symType>1->setType(new Function(tl, ty));
+                $<symType>1->setType($<type>4);
                 std::cout << "TIPO DE FUNCION: " << $<symType>1->getType()->typeString() << std::endl;
             }
         | ENIE COLCOL enterscope signa
@@ -243,27 +241,23 @@ idheader : ID    /* It will change to ID */
 
 signa   : arglist ARROW type
             {
-                std::pair <std::vector<Type *>*, Type*> p ($<typelist>1, $<type>3);
-                $<sigpair>$ = &p;
+                $<type>$ = new Function($<typelist>1, $<type>3);
             }
         | arglist
             {
-                std::pair <std::vector<Type *>*, Type*> p ($<typelist>1, new Nada());
-                $<sigpair>$ = &p;
+                $<type>$ = new Function($<typelist>1, new Nada());
             }
         | TILDE
             {
                 std::vector<Type*> *tl = new std::vector<Type*>;
                 tl->push_back(new Nada());
-                std::pair <std::vector<Type *>*, Type*> p (tl, new Nada());
-                $<sigpair>$ = &p;
+                $<type>$ = new Function(tl, new Nada());
             }
         | TILDE ARROW type
             {
                 std::vector<Type*> *tl = new std::vector<Type*>;
                 tl->push_back(new Nada());
-                std::pair <std::vector<Type *>*, Type*> p (tl, $<type>3);
-                $<sigpair>$ = &p;
+                $<type>$ = new Function(tl, new Nada());
             }
         ;
 

@@ -41,19 +41,18 @@ class Function: public Type {
 
             std::string str = "function(";
 
-            std::cout << "-----------------" << std::endl;
-            std::cout << "HOLS " << params->size() << std::endl;
-
             for (int i = 0; i < params->size(); ++i) {
                 str = str + (*params)[i]->typeString();
                 str = str + ", ";
             }
-            str = str + "-> ";
-            // str = str + ret->typeString();
+            str.erase(str.size()-2, 2);
+            str = str + " -> ";
+            str = str + ret->typeString();
             str = str + ")";
 
             return str;
         }
+
         bool is(std::string t) { return t == "function"; }
 
         void setByte() { this->bytes = 0; }
