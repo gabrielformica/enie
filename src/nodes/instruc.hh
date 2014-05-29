@@ -16,18 +16,14 @@
 
 
 #ifndef INSTRUC_HH
-#define INSTRUC_HH 
+#define INSTRUC_HH
 
-class Instruc {
-    private:
-        int line, col;
+#include "node.hh"
+
+class Instruc : public Node {
     public:
-        int get_line();
-        int get_col();
-        void set_line(int);
-        void set_col(int);
-
-        virtual bool check() = 0;
+        typedef Node super;
+        Instruc(Type *t) : super(t) { }
 };
 
 #endif

@@ -29,6 +29,9 @@
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
     #include "nodes/asign.hh"
+    #include "nodes/decl.hh"
+    #include "nodes/instlist.hh"
+    #include "nodes/instruc.hh"
     #include "nodes/expbin.hh"
     /*
     #include "symtable/func_symbol.hh"
@@ -89,6 +92,8 @@
     SymbolTable *symboltable;
     std::vector<Type*> *typelist;
     std::vector<Exp *> *explist;
+    std::vector<Instruc *> *instlist;
+    Instruc *instruc;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -286,20 +291,31 @@ arglist : arglist COMMA declonly
         ;
 
 instlist : instlist sepaux inst
+            {
+                ((Instlist *) $<instruc>1)->addInst($<instruc>3);
+                $<instruc>$ = $<instruc>1;
+            }
          | inst
+            {
+                $<instruc>$ = new Instlist($<instruc>1, $<instruc>1->getType());
+            }
          | error
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
+            {
+                $<instruc>$ = $<instruc>1;
+            }
         ;
 
-inst : asign 
-        { 
-            std::cout << "left -> " << ((Asign *)  $<node>1)->getLeft()->getElem() << " right -> " << ((Asign *) $<node>1)->getRight()->getElem(); 
-            std::cout << " Tipo -> " << $<node>1->getType()->typeString() << std::endl;
+inst : asign
+        {
             $<node>$ = $<node>1;
         }
-     | decl         { $<node>$ = $<node>1; }
+     | decl
+        {
+            $<node>$ = $<node>1;
+        }
      | selec        { $<node>$ = $<node>1; }
      | multselec    { $<node>$ = $<node>1; }
      | indite       { $<node>$ = $<node>1; }
@@ -422,27 +438,29 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 decl : typeid EQUAL exp
         {
             if ($<symType>1->getType() == $<exp>3->getType()) {
-                $<node>1 = new Decl($<symType>1, $<exp>3, type_void); 
+                $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
-                $<node>1 = new Decl($<symType>1, $<exp>3, new TypeError("")); 
+                $<node>$ = new Decl($<symType>1, $<exp>3, new TypeError(""));
             }
         }
      | arrid EQUAL arrvalues
         {
             if ($<symType>1->getType() == $<exp>3->getType()) {
-                $<node>1 = new Decl($<symType>1, $<exp>3, type_void); 
+                $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
-                $<node>1 = new Decl($<symType>1, $<exp>3, new TypeError("")); 
+                $<node>$ = new Decl($<symType>1, $<exp>3, new TypeError(""));
             }
 
         }
      | declonly
         {
+            $<node>$ = new Decl($<symType>1, NULL, new TypeError(""));
         }
      | declbox
         {
+            $<node>$ = new Decl($<symType>1, NULL, new TypeError(""));
         }
      ;
 
@@ -865,7 +883,9 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
                 //constructor object
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();
 
-                type->setSymbolTable($<symboltable>5);   //linking types
+                //linking types
+                type->setSymbolTable($<symboltable>5);
+
                 $<symType>$ = $<symType>1;
             }
         ;

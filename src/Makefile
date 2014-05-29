@@ -1,9 +1,9 @@
 GPPFLAGS= -std=c++11 -lfl
-GPP= g++ 
+GPP= g++
 YACC= bison -v
 LEX= flex --yylineno
 OBJ= lex.yy.c  parser.tab.c parserhelper.cc $(SYMTABLE) sound_type_system/type_system_utils.cc #$(TYPES2) $(SYMTABLE) #$(TYPES)
-NODES= nodes/asign.hh
+NODES= nodes/{asign,decl,inslist,instruc}.hh
 #TYPES2= types/function.cc types/arglist.cc types/signa.cc types/header.cc
 #TYPES= $(wildcard types/*.cc)
 SYMTABLE= $(wildcard symtable/*.cc)
@@ -21,6 +21,6 @@ parser.tab.h: parser.y
 	$(YACC) parser.y
 
 install:
-	cp enie /usr/bin/ 
+	cp enie /usr/bin/
 clean:
 	rm -f  *.tab.c *.tab.h enie *.output lex.yy.c
