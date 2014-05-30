@@ -1,0 +1,5 @@
+enie :: ~ {
+    para (ent i = 0; i < 15; i+1) {
+        ent b
+    }
+}

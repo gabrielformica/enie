@@ -8,54 +8,58 @@
   *
   * @section Description
   *
-  * Class definitions for selection instruction type
+  * Class definitions for osi instruction type
   */
 
 
-#ifndef SELEC_HH
-#define SELEC_HH
+#ifndef OSI_HH
+#define OSI_HH
 
 #include <string>
-#include <list>
-#include "node.hh"
 #include "exp.hh"
+#include "node.hh"
 #include "instruc.hh"
 #include "instlist.hh"
-#include "osi.hh"
 
-class Selec: public Instruc {
+class Osi: public Instruc {
     private:
         Exp *cond;
         InstList *block;
         Osi *osi;
-        InstList *sino;
 
     public:
         typedef Instruc super;
 
-        Selec(Exp *cond, InstList *il, Osi *osi, InstList *sino) : super(NULL) {
+        Osi(Exp *cond, InstList *il, Osi *osi) : super(NULL) {
+            std::cout << "BIEEEEN   --" << std::endl;
             this->cond = cond;
             this->block = il;
             this->osi = osi;
-            this->sino = sino;
+
+            std::cout << "BIEEEEN   111" << std::endl;
+
             if (cond->getType()->is("error")) {
                 this->type = cond->getType();
                 return;
             }
+
             if (il == NULL) {
                 this->type = new TypeError("Cuerpo de if es null");
                 return;
             }
-
             this->type = il->getType();   //setting void or error
+
+            std::cout << "BIEEEEN   222" << std::endl;
+           
             if (il->getType()->is("error")) 
                 return;
 
+            std::cout << "BIEEEEN" << std::endl;
             if ((osi != NULL) && (osi->getType()->is("error"))) {
                 this->type = osi->getType();
                 return;
             }
-        };
+        }
 
 };
 

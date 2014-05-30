@@ -1,0 +1,13 @@
+enie :: ~ {
+    ent a
+    ent b
+    ent c = 5
+
+    si (c == 5) {
+        ent b = -1
+        ent c = 3
+        si (b == 0) {
+            ent j
+        }
+    } 
+}

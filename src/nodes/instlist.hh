@@ -22,26 +22,27 @@
 #include "../sound_type_system/base/type.hh"
 
 
-class Instlist : public Instruc {
+class InstList : public Instruc {
     private:
         std::list<Instruc *>* list;
 
     public:
         typedef Instruc super;
 
-        Instlist(Instruc *inst, Type *t ) : super(t) {
+        InstList(Instruc *inst, Type *t) : super(t) {
             this->list = new std::list<Instruc *>;
             this->list->push_back(inst);
         }
 
-        std::list<Instruc *> getList();
-
         void addInst(Instruc *inst) {
-            if (inst->getType()->is("error")) {
+            if (inst == NULL) {
+                this->list->push_back(NULL);
+                this->type = new TypeError("");
+            }
+            else if (inst->getType()->is("error")) {
+                this->list->push_back(inst);
                 this->type = inst->getType();
             }
-
-            this->list->push_back(inst);
         }
 };
 

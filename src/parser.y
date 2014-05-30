@@ -28,11 +28,18 @@
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
+    #include "nodes/expbin.hh"
     #include "nodes/asign.hh"
     #include "nodes/decl.hh"
     #include "nodes/instlist.hh"
     #include "nodes/instruc.hh"
-    #include "nodes/expbin.hh"
+    #include "nodes/selec.hh"
+    #include "nodes/osi.hh"
+    #include "nodes/para.hh"
+    #include "nodes/mientras.hh"
+    #include "nodes/retorna.hh"
+    #include "nodes/caso.hh"
+    #include "nodes/lambda_opt.hh"
     /*
     #include "symtable/func_symbol.hh"
     #include "types/exp.hh"
@@ -92,8 +99,18 @@
     SymbolTable *symboltable;
     std::vector<Type*> *typelist;
     std::vector<Exp *> *explist;
-    std::vector<Instruc *> *instlist;
     Instruc *instruc;
+    InstList *instlist, *sino;
+    Selec *selec;
+    Osi *osi;
+    Asign *asign;
+    Decl *decl;
+    Para *para;
+    Caso *caso;
+    Mientras *mientras;
+    Retorna *retorna;
+    std::vector<LambdaOpt *> *optlist;
+    LambdaOpt *lambda_opt;
     /*
     Instruc *instType;
     Instlist *instListType;
@@ -235,14 +252,14 @@ header  : idheader COLCOL enterscope signa
         ;
 
 idheader : ID    /* It will change to ID */
-        {
-            int currentScope = symtable->getCurrentScope();
-            int line = @1.first_line;
-            int column = @1.first_column;
-            Symbol *s = new Symbol(*$1, NULL, currentScope, line, column);
-            tryAddSymbol(symtable, &errors, s);
-            $<symType>$ = s;
-        }
+            {
+                int currentScope = symtable->getCurrentScope();
+                int line = @1.first_line;
+                int column = @1.first_column;
+                Symbol *s = new Symbol(*$1, NULL, currentScope, line, column);
+                tryAddSymbol(symtable, &errors, s);
+                $<symType>$ = s;
+            }
         ;
 
 
@@ -292,38 +309,61 @@ arglist : arglist COMMA declonly
 
 instlist : instlist sepaux inst
             {
-                ((Instlist *) $<instruc>1)->addInst($<instruc>3);
-                $<instruc>$ = $<instruc>1;
+                ($<instlist>1)->addInst($<instruc>3);
+                $<instlist>$ = $<instlist>1;
             }
          | inst
             {
-                $<instruc>$ = new Instlist($<instruc>1, $<instruc>1->getType());
+                if (($<instruc>1) != NULL)  {
+                    $<instlist>$ = new InstList($<instruc>1, ($<instruc>1)->getType());
+                }
+                else {
+                    $<instlist>$ = new InstList(NULL, new TypeError(""));
+                }
             }
          | error
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
             {
-                $<instruc>$ = $<instruc>1;
+                $<instlist>$ = $<instlist>3;
             }
         ;
 
-inst : asign
-        {
-            $<node>$ = $<node>1;
+inst : asign           { $<node>$ = $<node>1; }
+     | decl            { $<node>$ = $<node>1; }
+     | selec           { $<node>$ = $<node>1; }
+     | multselec       { $<node>$ = $<node>1; }
+     | indite          { $<node>$ = $<node>1; }
+     | detite          { $<node>$ = $<node>1; }
+     | ereturn         { $<node>$ = $<node>1; }
+     | callfunc        
+        { 
+            if ($<symType>1 != NULL) {
+                $<instruc>$ = new Instruc(type_void); 
+            }
+            else {
+                $<instruc>$ = new Instruc(new TypeError("error funcion")); 
+            }
         }
-     | decl
+     | LEER exp     
         {
-            $<node>$ = $<node>1;
+            if ($<exp>2->getType()->is("cadena")) {
+                $<instruc>$ = new Instruc(type_void);
+            }
+            else {
+                $<instruc>$ = new Instruc(new TypeError("leer no esta recibiendo una cadena de caracteres"));
+            }
         }
-     | selec        { $<node>$ = $<node>1; }
-     | multselec    { $<node>$ = $<node>1; }
-     | indite       { $<node>$ = $<node>1; }
-     | detite       { $<node>$ = $<node>1; }
-     | ereturn      { $<node>$ = $<node>1; }
-     | callfunc     { $<node>$ = $<node>1; }
-     | LEER exp     { $<node>$ = $<node>1; }
-     | ESCRIBIR exp { $<node>$ = $<node>1; }
+     | ESCRIBIR exp 
+        {
+            if ($<exp>2->getType()->is("cadena")) {
+                $<instruc>$ = new Instruc(type_void);
+            }
+            else {
+                $<instruc>$ = new Instruc(new TypeError("leer no esta recibiendo una cadena de caracteres"));
+            }
+        }
      ;
 
 checkid : ID
@@ -356,10 +396,10 @@ checkid : ID
 asign : asignid EQUAL exp
         {
             if ($<exp>1->getType() == $<exp>3->getType()) {
-                $<node>$ = new Asign($<exp>1, $<exp>3, type_void) ;
+                $<asign>$ = new Asign($<exp>1, $<exp>3, type_void) ;
             }
             else {
-                $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
+                $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
 
         }
@@ -369,10 +409,10 @@ asign : asignid EQUAL exp
             Type *rhs = $<exp>3->getType();
 
             if (lhs == rhs) {
-                $<node>$ = new Asign($<exp>1, $<exp>3, type_void);
+                $<asign>$ = new Asign($<exp>1, $<exp>3, type_void);
             } else {
                 std::cout << "EXPLOTO AQUI " << std::endl;
-                $<node>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
+                $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
         }
       ;
@@ -509,18 +549,33 @@ type : ENT     { $<type>$ = entero; }
      ;
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+        {
+            $<selec>$ = new Selec($<exp>3,  $<instlist>6, $<osi>8, $<sino>9);     
+        }
       ;
 
-oselect :  oselect OSI LPAR exp RPAR enterscope instbl leavescope
-        | /* lambda */
+oselect : OSI LPAR exp RPAR enterscope instbl leavescope oselect 
+            {
+                $<osi>$ = new Osi($<exp>3, $<instlist>6, $<osi>8);
+            }
+        | 
+            {
+                $<osi>$ = NULL;
+            } /* lambda */
         ;
 
 sinoselect :  SINO enterscope instbl leavescope
-           | /* lambda */
+               {
+                    $<sino>$ = $<instlist>3; 
+               }
+           |   { $<sino>$ = NULL; }  /* lambda */
            ;
 
-
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
+              {
+                  $<optlist>5->push_back($<lambda_opt>6);
+                  $<caso>$ = new Caso($<exp>2, $<optlist>5);
+              }
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
@@ -528,6 +583,9 @@ lastoption : sepaux BSLASH QUESTION ARROW instbl
 
 optionslist : optionslist sepaux option
             | option
+                {
+                    
+                }
             ;
 
 option: BSLASH leftsideopt ARROW instbl
@@ -537,14 +595,26 @@ leftsideopt : CONSTCAD
             | checkid
             ;
 
+
 indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
+            {
+                $<mientras>$ = new Mientras($<exp>3, $<instlist>6);
+            }
        ;
 
 detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
+            {
+                if ($<decl>4 != NULL) {
+                    $<para>$ = new Para($<decl>4, $<exp>6, $<exp>8, $<instlist>10);
+                }
+                else {
+                    $<para>$ = new Para(NULL, $<exp>6, $<exp>8, $<instlist>10);
+                }
+            }
        ;
 
-ereturn : RETORNA
-        | RETORNA exp
+ereturn : RETORNA     { $<retorna>$ = new Retorna(); }
+        | RETORNA exp { $<retorna>$ = new Retorna($<exp>2); }
         ;
 
 exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
@@ -990,12 +1060,12 @@ callfunc : ID funcargs
                         int i;
                         for (i = 0; i < tl->size(); i++) {
                             if ( (*$<typelist>2)[i]->typeString() == (*tl)[i]->typeString() ) {
-                                s = NULL;
+                                s = NULL;  //semantic errors
                                 break;
                             }
                         }
                     } else {
-                        s = NULL;
+                        s = NULL;  //semantic errors
                     }
                 }
 

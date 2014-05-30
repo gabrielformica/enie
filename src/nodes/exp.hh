@@ -19,7 +19,7 @@
 #include "node.hh"
 #include "../sound_type_system/base/type.hh"
 
-class Exp : public Node {
+class Exp: public Node {
     protected:
         std::string elem;
 

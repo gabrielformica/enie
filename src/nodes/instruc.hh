@@ -9,8 +9,6 @@
   * @section Description
   *
   * Class definitions for base instruction type
-  * Basicamente funciona como clase base para el diverso conjunto de
-  * instrucciones existentes.
   */
 
 
@@ -20,9 +18,10 @@
 
 #include "node.hh"
 
-class Instruc : public Node {
+class Instruc: public Node {
     public:
         typedef Node super;
+
         Instruc(Type *t) : super(t) { }
 };
 
