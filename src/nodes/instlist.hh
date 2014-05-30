@@ -24,13 +24,13 @@
 
 class InstList : public Instruc {
     private:
-        std::list<Instruc *>* list;
+        std::vector<Instruc *>* list;
 
     public:
         typedef Instruc super;
 
         InstList(Instruc *inst, Type *t) : super(t) {
-            this->list = new std::list<Instruc *>;
+            this->list = new std::vector<Instruc *>;
             this->list->push_back(inst);
         }
 
@@ -45,6 +45,14 @@ class InstList : public Instruc {
                 this->type = inst->getType();
             }
         }
+
+        std::string toString() {
+            std::string str = "";
+            for (int i = 0; i < this->list->size(); i++) {
+                str = str + (*this->list)[i]->toString() + "\n";
+            }
+            return str;
+        }     
 };
 
 #endif

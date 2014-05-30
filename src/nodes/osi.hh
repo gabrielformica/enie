@@ -57,6 +57,19 @@ class Osi: public Instruc {
             }
         }
 
+        std::string toString() {
+                std::string str = "";
+                str = "Bloque Osi:\n";
+                
+                str = str + "Condicion: " + this->cond->toString() + "\n";
+                str = str + "Bloque de instrucciones: " + this->block->toString();
+
+                if (this->osi != NULL) {
+                    str = str + "Bloque Osi" + this->osi->toString() + "\n";
+                }
+
+                return str;
+        }
 };
 
 #endif

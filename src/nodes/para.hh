@@ -68,6 +68,18 @@ class Para: public Instruc {
             }
             
         }
+
+        std::string toString() {
+            std::string str = "";
+
+            str = "Iteracion determinada:\n";
+            str = str + "Inicio: " + this->decl->toString() + "\n";
+            str = str + "Condicion: " + this->left->toString() + "\n";
+            str = str + "Cambio: " + this->right->toString() + "\n";
+            str = str + "Bloque de instrucciones: " + this->block->toString();
+
+            return str;
+        }
 };
 
 #endif

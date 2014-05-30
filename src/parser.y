@@ -79,6 +79,7 @@
     void yyerror(char const *);
     int yylex(void);
 
+    Program *enie;
 
     Type *entero = new Ent();
     Type *booleano = new Bool();
@@ -208,7 +209,7 @@
 
 enie    : begin enterscope funcl end leavescope
             {
-                $<program>$ = $<program>3;
+                enie = $<program>3;
             }
         ;
 
@@ -1164,7 +1165,9 @@ int main (int argc, char **argv) {
         return 1;
     }
 
-    symtable->printTable();
+    std::cout <<  enie->toString() << std::endl;
+
+//    symtable->printTable();
 
     return 0;
 }

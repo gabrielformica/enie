@@ -37,6 +37,17 @@ class Decl : public Instruc {
 
         Symbol* getLeft() { return this->lhs; }
         Exp* getRight() { return this->rhs; }
+
+        std::string Instruc::toString() {
+            std::string str = ""; 
+            str = "Declaracion: \n";  
+            str = str + this->lhs->getId() + "\n";
+            if (! (this->rhs == NULL)) {
+                str = str + "Variable : " + this->rhs->toString();
+            }
+
+            return str;
+        }
 };
 
 #endif

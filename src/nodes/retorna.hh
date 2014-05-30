@@ -31,6 +31,15 @@ class Retorna: public Instruc {
             this->exp = NULL;
         }
 
+        std::string toString() {
+            std::string str = "Instruccion Retorna ";
+            if (this->exp != NULL) {
+                str = str + this->exp->toString();
+            }
+
+            return str;
+        }
+
 };
 
 #endif

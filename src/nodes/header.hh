@@ -16,6 +16,7 @@
 #define HEADER_HH
 
 #include <string>
+#include <vector>
 
 class Header: public Node {
     private: 
@@ -26,6 +27,15 @@ class Header: public Node {
 
         Header(std::string id , Type *t) : super(t) {
             this->id = id;
+        }
+
+        std::string toString() {
+            std::string str = "";
+            //std::vector<Type *> *params = ((Function *) this->type)->getParams();
+
+            str =  "header : " + id;  
+
+            return str;
         }
 };
 

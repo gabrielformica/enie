@@ -57,6 +57,25 @@ class Selec: public Instruc {
             }
         };
 
+        std::string toString() {
+            std::string str = "";
+            str = "Selecion:\n";
+             
+            str = str + "Condicion: " + this->cond->toString() + "\n";
+            str = str + "Bloque de instrucciones: " + this->block->toString();
+
+            if (this->osi != NULL) {
+                str = str +  this->osi->toString() + "\n";
+            }
+
+            if (this->sino != NULL) {
+                str = str + "Bloque Sino" + this->sino->toString() + "\n";
+            }
+            
+
+            return str;
+        }
+
 };
 
 #endif

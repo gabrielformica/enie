@@ -41,6 +41,15 @@ class Mientras: public Instruc {
                 this->type = this->instlist->getType();
             }
         }
+
+        std::string toString() {
+            std::string str = "";
+            str = "Iteracion indeterminada:\n";
+            str = str + "Condicion: " + this->cond->toString();
+            str = str + "Bloque de instrucciones: " + this->instlist->toString();
+
+            return str;
+        }
 };
 
 #endif

@@ -39,6 +39,10 @@ class Exp: public Node {
 
         std::string getElem() { return this->elem; }
 
+        std::string toString() {
+            return "Expresion : " + this->elem;
+        }
+
 };
 
 #endif

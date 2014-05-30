@@ -42,6 +42,13 @@ class ExpBin: public Exp {
         Exp *getLeft() { return this->left; }
         Exp *getRight() { return this->right; }
         std::string getOperator() { return this->ope; }
+
+        std::string toString() {
+            std::string str = "Expresion Binaria: \n";
+            str = str + "Operando izquierdo: " + this->left->toString() + "\n";
+            str = str + "Operador: " + this->ope;
+            str = str + "Operando derecho: " + this->left->toString() + "\n";
+        }
 };
 
 #endif

@@ -33,6 +33,15 @@ class Asign: public Instruc {
 
         Exp* getLeft() { return this->lhs; }
         Exp* getRight() { return this->rhs; }
+
+        std::string toString() {
+            std::string str = "Asignacion: \n";
+            str = str + "lado izquierdo: " + this->lhs->toString() + "\n";
+            str = str + "lado izquierdo: " + this->rhs->toString() + "\n";
+
+            return str;
+        }
+
 };
 
 #endif

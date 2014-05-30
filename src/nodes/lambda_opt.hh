@@ -38,6 +38,14 @@ class LambdaOpt: public Node {
                 this->type = this->bloque->getType();
 
         }
+
+        std::string toString() {
+            std::string str = "";
+            str = "Opcion:  " + this->opt->toString() + "\n"; 
+            str = str + "Bloque opt: " + this->bloque->toString();
+
+            return str;
+        }
 };
 
 #endif

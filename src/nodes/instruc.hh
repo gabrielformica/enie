@@ -23,6 +23,8 @@ class Instruc: public Node {
         typedef Node super;
 
         Instruc(Type *t) : super(t) { }
+
+        std::string toString() { return "llamada a funcion\n"; }
 };
 
 #endif

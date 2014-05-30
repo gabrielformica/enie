@@ -51,6 +51,20 @@ class Caso: public Instruc {
             if (this->otherwise->getType()->is("error"))
                 this->otherwise; 
         }
+
+        std::string toString() {
+            std::string str = "";
+            str = "Caso:\n";
+            str = str + "Variable: " + this->var->toString() + "\n";
+            str = str + "Conjunto de opciones: \n";
+            for (int i = 0; i < this->optlist->size(); i++) {
+                    str = str + (*this->optlist)[i]->toString() + "\n";
+            }
+
+            str = str + "Caso por defecto: " + this->otherwise->toString();
+
+            return str;
+        }
 };
 
 #endif
