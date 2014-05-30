@@ -16,15 +16,17 @@
 #define HEADER_HH
 
 #include <string>
-#include "signa.hh"
 
-class Header {
+class Header: public Node {
     private: 
         std::string id; 
-        Signa *signa;
 
     public:
-        Header(std::string, Signa *);
+        typedef Node super;
+
+        Header(std::string id , Type *t) : super(t) {
+            this->id = id;
+        }
 };
 
 #endif

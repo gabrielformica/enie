@@ -22,7 +22,7 @@
 class Function: public Type {
     private:
         Type *ret;
-        std::vector<Type *>* params;
+        std::vector<Type *> *params;
 
     public:
         typedef Type super;

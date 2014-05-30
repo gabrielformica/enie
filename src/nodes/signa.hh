@@ -18,13 +18,15 @@
 #include <string>
 #include "arglist.hh"
 
-class Signa {
+class Signa: public Node {
     private: 
         ArgList *arglist;
         std::string return_type;
 
     public:
-        Signa(ArgList *, std::string);
+        typedef Node super;
+
+        Signa(ArgList *, std::string ret, Type *t) : super(t);
 };
 
 #endif

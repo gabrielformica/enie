@@ -40,6 +40,8 @@
     #include "nodes/retorna.hh"
     #include "nodes/caso.hh"
     #include "nodes/lambda_opt.hh"
+    #include "nodes/func_node.hh"
+    #include "nodes/program.hh"
     /*
     #include "symtable/func_symbol.hh"
     #include "types/exp.hh"
@@ -77,6 +79,7 @@
     void yyerror(char const *);
     int yylex(void);
 
+
     Type *entero = new Ent();
     Type *booleano = new Bool();
     Type *flot = new Flot();
@@ -109,6 +112,11 @@
     Caso *caso;
     Mientras *mientras;
     Retorna *retorna;
+
+    Program *program; 
+
+    Header *header;
+    FuncNode *func_node;
     std::vector<LambdaOpt *> *optlist;
     LambdaOpt *lambda_opt;
 }
@@ -199,6 +207,9 @@
 %%
 
 enie    : begin enterscope funcl end leavescope
+            {
+                $<program>$ = $<program>3;
+            }
         ;
 
 begin   : sepaux
@@ -213,21 +224,37 @@ sepaux  : sepaux SEP
         ;
 
 funcl   : funcl sepaux func leavescope
+            {
+                $<program>1->append($<func_node>3);
+                $<program>$ = $<program>1;
+            }
         | func leavescope
+            {
+                $<program>$ = new Program($<func_node>1);               
+            }
         | error SEP
         ;
 
 func    : header instbl
-        | header
+            {
+                $<func_node>$ = new FuncNode($<header>1, $<instlist>2);
+            }
+        | header 
+            { 
+                $<func_node>$ = new FuncNode($<header>1, NULL); 
+            }
         ;
 
 
 header  : idheader COLCOL enterscope signa
             {
                 $<symType>1->setType($<type>4);
-                std::cout << "TIPO DE FUNCION: " << $<symType>1->getType()->typeString() << std::endl;
+                $<header>$ = new Header($<symType>1->getId(), $<type>4);
             }
-        | ENIE COLCOL enterscope signa
+        | ENIE COLCOL enterscope signa 
+            {
+                $<header>$ = new Header("enie", $<type>4);
+            }
         ;
 
 idheader : ID    /* It will change to ID */
@@ -1056,7 +1083,7 @@ callfunc : ID funcargs
                     errors.push_back(str);
                 } else {
                     s = symtable->lookup(*$1);
-                    std::vector<Type *>* tl;
+                    std::vector<Type *> *tl;
                     tl =  ((Function *) s->getType())->getParams();
                     if ($<typelist>2->size() == tl->size() ) {
                         int i;
@@ -1095,12 +1122,12 @@ funcargs : LPAR explist RPAR
 
 explist : explist COMMA exp
             {
-                $<typelist>$ =  $<typelist>1;
+                $<typelist>$ = $<typelist>1;
                 $<typelist>$->push_back($<exp>3->getType());
             }
         | exp
             {
-                $<typelist>$ = new std::vector<Type*>;
+                $<typelist>$ = new std::vector<Type *>;
                 $<typelist>$->push_back($<exp>1->getType());
             }
         ;
