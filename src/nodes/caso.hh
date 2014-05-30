@@ -26,13 +26,16 @@ class Caso: public Instruc {
     private:
         Exp *var;
         std::vector<LambdaOpt *> *optlist;
+        LambdaOpt *otherwise;
 
     public:
         typedef Instruc super;
 
-        Caso(Exp *var, std::vector<LambdaOpt *> *optlist) : super(NULL) {
+        Caso(Exp *var, std::vector<LambdaOpt *> *optl, LambdaOpt *ow) : 
+            super(NULL) {
             this->var = var;
-            this->optlist = optlist;
+            this->optlist = optl;
+            this->otherwise = ow;
             this->setType();
         }
 
@@ -42,9 +45,11 @@ class Caso: public Instruc {
             int i;
             for (i = 0; i < this->optlist->size(); i++) {
                 if ((*this->optlist)[i]->getType()->is("error"))
-                    std::cout << "hola" << std::endl;
-               //     this->type = this->(*optlist[i])->getType();
+                    this->type = (*this->optlist)[i]->getType();
             }
+
+            if (this->otherwise->getType()->is("error"))
+                this->otherwise; 
         }
 };
 

@@ -23,11 +23,11 @@ class Retorna: public Instruc {
     public:
 
         typedef Instruc super;
-        Retorna(Exp *exp) : super(NULL) {
+        Retorna(Exp *exp, Type *t) : super(t) {
             this->exp = exp;
         }
 
-        Retorna() : super(NULL) {
+        Retorna(Type *t) : super(t) {
             this->exp = NULL;
         }
 

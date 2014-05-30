@@ -36,6 +36,7 @@ class InstList : public Instruc {
 
         void addInst(Instruc *inst) {
             if (inst == NULL) {
+                std::cout << "NOOOOOOOOOO"  << std::endl;
                 this->list->push_back(NULL);
                 this->type = new TypeError("");
             }

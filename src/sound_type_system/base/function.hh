@@ -55,6 +55,8 @@ class Function: public Type {
 
         bool is(std::string t) { return t == "function"; }
 
+        Type *getRetType() { return this->ret; }
+
         void setByte() { this->bytes = 0; }
 };
 

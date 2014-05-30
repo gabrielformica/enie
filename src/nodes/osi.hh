@@ -31,12 +31,10 @@ class Osi: public Instruc {
         typedef Instruc super;
 
         Osi(Exp *cond, InstList *il, Osi *osi) : super(NULL) {
-            std::cout << "BIEEEEN   --" << std::endl;
             this->cond = cond;
             this->block = il;
             this->osi = osi;
 
-            std::cout << "BIEEEEN   111" << std::endl;
 
             if (cond->getType()->is("error")) {
                 this->type = cond->getType();
@@ -49,12 +47,10 @@ class Osi: public Instruc {
             }
             this->type = il->getType();   //setting void or error
 
-            std::cout << "BIEEEEN   222" << std::endl;
            
             if (il->getType()->is("error")) 
                 return;
 
-            std::cout << "BIEEEEN" << std::endl;
             if ((osi != NULL) && (osi->getType()->is("error"))) {
                 this->type = osi->getType();
                 return;

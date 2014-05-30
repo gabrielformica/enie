@@ -111,27 +111,6 @@
     Retorna *retorna;
     std::vector<LambdaOpt *> *optlist;
     LambdaOpt *lambda_opt;
-    /*
-    Instruc *instType;
-    Instlist *instListType;
-    Exp *expType;
-    ArgList *argList;
-    Signa *signa;
-    Header *header;
-    Function *function;
-    Instbl *instblType;
-    FunctionList *functionlist;
-    Oseleclist *oslType;
-    Selec *selecType;
-    Retorno *returnType;
-    Leer *leerType;
-    Escribir *escribirType;
-    Indite *indiType;
-    Decl *declType;
-    Option *optType;
-    Optlist *optlistType;
-    Multselec *multselType;
-    */
 }
 
 /* Tokens de las palabras reservadas */
@@ -309,6 +288,7 @@ arglist : arglist COMMA declonly
 
 instlist : instlist sepaux inst
             {
+                if ($<instruc>3 == NULL) 
                 ($<instlist>1)->addInst($<instruc>3);
                 $<instlist>$ = $<instlist>1;
             }
@@ -336,15 +316,19 @@ inst : asign           { $<node>$ = $<node>1; }
      | multselec       { $<node>$ = $<node>1; }
      | indite          { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
-     | ereturn         { $<node>$ = $<node>1; }
+     | ereturn        
+        { 
+            $<node>$ = $<node>1; 
+        }
      | callfunc        
         { 
-            if ($<symType>1 != NULL) {
-                $<instruc>$ = new Instruc(type_void); 
+            if ($<exp>1->getType()->is("error")) {
+                $<instruc>$ = new Instruc(new TypeError("Error tipo de funcion"));
             }
             else {
-                $<instruc>$ = new Instruc(new TypeError("error funcion")); 
+                $<instruc>$ = new Instruc(type_void);
             }
+
         }
      | LEER exp     
         {
@@ -374,7 +358,7 @@ checkid : ID
                 Symbol *s = NULL;
 
                 if (! symtable->isActive(*$1)) {  //syntax error
-                    std::string id = s->getId();
+                    std::string id = *$1;
                     int line = @1.first_line;
                     int column = @1.first_column;
                     std::string str0 = "(linea "+ to_string(line)+ ", columna ";
@@ -411,7 +395,6 @@ asign : asignid EQUAL exp
             if (lhs == rhs) {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void);
             } else {
-                std::cout << "EXPLOTO AQUI " << std::endl;
                 $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
             }
         }
@@ -420,7 +403,7 @@ asign : asignid EQUAL exp
 asignid : idlist
             {
                 if ($<symType>1 == NULL) {
-                    $<exp>$ = new Exp($<symType>1->getId(), new TypeError(""));
+                    $<exp>$ = new Exp("", new TypeError(""));
                 } else {
                     $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
                 }
@@ -515,7 +498,6 @@ arrid : typeid arr
             $<symType>1->setType($<type>2);   //linking types
             $<symType>1->getType()->setBytes();
             $<symType>$ = $<symType>1;
-            std::cout << "-----> " <<  $<type>2->getBytes() << std::endl;
         }
       ;
 
@@ -574,25 +556,38 @@ sinoselect :  SINO enterscope instbl leavescope
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
                   $<optlist>5->push_back($<lambda_opt>6);
-                  $<caso>$ = new Caso($<exp>2, $<optlist>5);
+                  $<caso>$ = new Caso($<exp>2, $<optlist>5, $<lambda_opt>6);
               }
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
+                {
+                    $<lambda_opt>$ = new LambdaOpt(new Exp("?", new Car()), $<instlist>5);
+                }
            ;
 
 optionslist : optionslist sepaux option
+                {
+                   $<optlist>$ = $<optlist>1; 
+                   $<optlist>$->push_back($<lambda_opt>3);
+                }
             | option
                 {
-                    
+                   $<optlist>$ = new std::vector<LambdaOpt *>;  
+                   $<optlist>$->push_back($<lambda_opt>1);
                 }
             ;
 
 option: BSLASH leftsideopt ARROW instbl
+        {
+            $<lambda_opt>$ = new LambdaOpt($<exp>2, $<instlist>4);
+        }
       ;
 
-leftsideopt : CONSTCAD
-            | checkid
+leftsideopt : term
+                { 
+                    $<exp>$ = $<exp>1;
+                }
             ;
 
 
@@ -613,8 +608,14 @@ detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescop
             }
        ;
 
-ereturn : RETORNA     { $<retorna>$ = new Retorna(); }
-        | RETORNA exp { $<retorna>$ = new Retorna($<exp>2); }
+ereturn : RETORNA 
+            {
+                $<retorna>$ = new Retorna(type_void); 
+            }
+        | RETORNA exp 
+            {
+                $<retorna>$ = new Retorna($<exp>2, type_void);
+            }
         ;
 
 exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
@@ -878,7 +879,7 @@ term : idlist
      | FALSO    { $<exp>$ = new Exp("falso", booleano) ; }
      /* | checkid arr  ID arr */
      | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
-     | CONSTCAD   // {$<expType>$ = new Exp(); }
+     | CONSTCAD    { $<exp>$ = new Exp(*$1, new Car()); }
      | arrasign
      | error
      ;
@@ -1042,9 +1043,10 @@ callfunc : ID funcargs
                 int column = @1.first_column;
 
                 Symbol *s = NULL;
+                bool semantic_errors = false;
 
                 if (! symtable->isActive(*$1)) {  //syntax error
-                    std::string id = s->getId();
+                    std::string id = *$1;
                     int line = @1.first_line;
                     int column = @1.first_column;
                     std::string str0 = "(linea "+ to_string(line)+ ", columna ";
@@ -1060,18 +1062,21 @@ callfunc : ID funcargs
                         int i;
                         for (i = 0; i < tl->size(); i++) {
                             if ( (*$<typelist>2)[i]->typeString() == (*tl)[i]->typeString() ) {
-                                s = NULL;  //semantic errors
+                                semantic_errors = true;
                                 break;
                             }
                         }
                     } else {
-                        s = NULL;  //semantic errors
+                        semantic_errors = true;
                     }
                 }
 
-
-                $<symType>$ = s;
-
+                if (semantic_errors) {
+                    $<exp>$ = new Exp("", new TypeError(""));
+                }
+                else {
+                   $<exp>$ =  new Exp(*$1, ((Function *) s->getType())->getRetType());
+                }
             }
 
          ;
