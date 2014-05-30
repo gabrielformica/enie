@@ -1,6 +1,3 @@
-sumar :: ent a, ent b -> ent {
-}
-
 enie :: ~ {
-    sumar(1,5)
+    {
 }

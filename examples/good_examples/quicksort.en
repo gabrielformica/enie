@@ -1,10 +1,10 @@
-swap :: ent v[~], ent i, ent j -> nada {
+swap :: ent v[1..15], ent i, ent j -> nada {
     ent temp = v[i]
     v[i] = v[j]
     v[j] = temp
 }
 
-quicksort :: ent v[~], ent izq, ent der -> nada {
+quicksort :: ent v[1..15], ent izq, ent der -> nada {
     si (izq >= der) {
         retorna
     }
@@ -12,12 +12,12 @@ quicksort :: ent v[~], ent izq, ent der -> nada {
 
     ent pivotdest
 
-    // para (ent i = izq + 1; i <= der; i+1) {
-    //     si (v[i] < v[izq]) {
-    //         pivotdest = pivotdest + 1
-    //         swap(v, pivotdest, i)
-    //     }
-    // }
+    para (ent i = izq + 1; i <= der; i+1) {
+        si (v[i] < v[izq]) {
+            pivotdest = pivotdest + 1
+            swap(v, pivotdest, i)
+        }
+    }
 
     swap(v, izq, pivotdest)
     quicksort(v,izq,pivotdest -1)
@@ -25,6 +25,6 @@ quicksort :: ent v[~], ent izq, ent der -> nada {
 }
 
 enie :: ~ {
-    ent v[~] = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}
-    quicksort(v,0,15)
+    ent v[1..15]  
+    quicksort(v, 0, 15)
 }

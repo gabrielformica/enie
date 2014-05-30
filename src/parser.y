@@ -983,7 +983,16 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();
 
                 //linking types
+
                 type->setSymbolTable($<symboltable>5);
+
+                std::cout << "Tabla de Registro : " << $<symType>1->getId() << std::endl;
+
+                $<symboltable>5->printTable(); 
+
+                std::cout << "El tamanio es del constructor -> " <<  $<symType>1->getType()->getBytes()  << std::endl;
+                std::cout << "||||||||||||||||||||||||||" << std::endl;
+
 
                 $<symType>$ = $<symType>1;
             }
@@ -1165,9 +1174,9 @@ int main (int argc, char **argv) {
         return 1;
     }
 
-    std::cout <<  enie->toString() << std::endl;
+//    std::cout <<  enie->toString() << std::endl;
 
-//    symtable->printTable();
+    symtable->printTable();
 
     return 0;
 }
