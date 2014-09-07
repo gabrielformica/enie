@@ -24,7 +24,7 @@ class Instruc: public Node {
 
         Instruc(Type *t) : super(t) { }
 
-        std::string toString() { return "llamada a funcion\n"; }
+        virtual std::string toString() = 0;
 };
 
 #endif

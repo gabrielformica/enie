@@ -41,6 +41,7 @@
     #include "nodes/caso.hh"
     #include "nodes/lambda_opt.hh"
     #include "nodes/func_node.hh"
+    #include "nodes/funcapp.hh"
     #include "nodes/program.hh"
     /*
     #include "symtable/func_symbol.hh"
@@ -114,10 +115,11 @@
     Mientras *mientras;
     Retorna *retorna;
 
-    Program *program; 
+    Program *program;
 
     Header *header;
     FuncNode *func_node;
+    FuncApp *func_app_node;
     std::vector<LambdaOpt *> *optlist;
     LambdaOpt *lambda_opt;
 }
@@ -231,7 +233,7 @@ funcl   : funcl sepaux func leavescope
             }
         | func leavescope
             {
-                $<program>$ = new Program($<func_node>1);               
+                $<program>$ = new Program($<func_node>1);
             }
         | error SEP
         ;
@@ -240,9 +242,9 @@ func    : header instbl
             {
                 $<func_node>$ = new FuncNode($<header>1, $<instlist>2);
             }
-        | header 
-            { 
-                $<func_node>$ = new FuncNode($<header>1, NULL); 
+        | header
+            {
+                $<func_node>$ = new FuncNode($<header>1, NULL);
             }
         ;
 
@@ -252,7 +254,7 @@ header  : idheader COLCOL enterscope signa
                 $<symType>1->setType($<type>4);
                 $<header>$ = new Header($<symType>1->getId(), $<type>4);
             }
-        | ENIE COLCOL enterscope signa 
+        | ENIE COLCOL enterscope signa
             {
                 $<header>$ = new Header("enie", $<type>4);
             }
@@ -316,7 +318,7 @@ arglist : arglist COMMA declonly
 
 instlist : instlist sepaux inst
             {
-                if ($<instruc>3 == NULL) 
+                if ($<instruc>3 == NULL)
                 ($<instlist>1)->addInst($<instruc>3);
                 $<instlist>$ = $<instlist>1;
             }
@@ -344,36 +346,36 @@ inst : asign           { $<node>$ = $<node>1; }
      | multselec       { $<node>$ = $<node>1; }
      | indite          { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
-     | ereturn        
-        { 
-            $<node>$ = $<node>1; 
+     | ereturn
+        {
+            $<node>$ = $<node>1;
         }
-     | callfunc        
-        { 
+     | callfunc
+        {
             if ($<exp>1->getType()->is("error")) {
-                $<instruc>$ = new Instruc(new TypeError("Error tipo de funcion"));
+                $<instruc>$ = new FuncApp(new TypeError("Error tipo de funcion"));
             }
             else {
-                $<instruc>$ = new Instruc(type_void);
+                $<instruc>$ = new FuncApp(type_void);
             }
 
         }
-     | LEER exp     
+     | LEER exp
         {
             if ($<exp>2->getType()->is("cadena")) {
-                $<instruc>$ = new Instruc(type_void);
+                $<instruc>$ = new FuncApp(type_void);
             }
             else {
-                $<instruc>$ = new Instruc(new TypeError("leer no esta recibiendo una cadena de caracteres"));
+                $<instruc>$ = new FuncApp(new TypeError("leer no esta recibiendo una cadena de caracteres"));
             }
         }
-     | ESCRIBIR exp 
+     | ESCRIBIR exp
         {
             if ($<exp>2->getType()->is("cadena")) {
-                $<instruc>$ = new Instruc(type_void);
+                $<instruc>$ = new FuncApp(type_void);
             }
             else {
-                $<instruc>$ = new Instruc(new TypeError("leer no esta recibiendo una cadena de caracteres"));
+                $<instruc>$ = new FuncApp(new TypeError("leer no esta recibiendo una cadena de caracteres"));
             }
         }
      ;
@@ -560,15 +562,15 @@ type : ENT     { $<type>$ = entero; }
 
 selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
         {
-            $<selec>$ = new Selec($<exp>3,  $<instlist>6, $<osi>8, $<sino>9);     
+            $<selec>$ = new Selec($<exp>3,  $<instlist>6, $<osi>8, $<sino>9);
         }
       ;
 
-oselect : OSI LPAR exp RPAR enterscope instbl leavescope oselect 
+oselect : OSI LPAR exp RPAR enterscope instbl leavescope oselect
             {
                 $<osi>$ = new Osi($<exp>3, $<instlist>6, $<osi>8);
             }
-        | 
+        |
             {
                 $<osi>$ = NULL;
             } /* lambda */
@@ -576,7 +578,7 @@ oselect : OSI LPAR exp RPAR enterscope instbl leavescope oselect
 
 sinoselect :  SINO enterscope instbl leavescope
                {
-                    $<sino>$ = $<instlist>3; 
+                    $<sino>$ = $<instlist>3;
                }
            |   { $<sino>$ = NULL; }  /* lambda */
            ;
@@ -596,12 +598,12 @@ lastoption : sepaux BSLASH QUESTION ARROW instbl
 
 optionslist : optionslist sepaux option
                 {
-                   $<optlist>$ = $<optlist>1; 
+                   $<optlist>$ = $<optlist>1;
                    $<optlist>$->push_back($<lambda_opt>3);
                 }
             | option
                 {
-                   $<optlist>$ = new std::vector<LambdaOpt *>;  
+                   $<optlist>$ = new std::vector<LambdaOpt *>;
                    $<optlist>$->push_back($<lambda_opt>1);
                 }
             ;
@@ -613,7 +615,7 @@ option: BSLASH leftsideopt ARROW instbl
       ;
 
 leftsideopt : term
-                { 
+                {
                     $<exp>$ = $<exp>1;
                 }
             ;
@@ -636,11 +638,11 @@ detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescop
             }
        ;
 
-ereturn : RETORNA 
+ereturn : RETORNA
             {
-                $<retorna>$ = new Retorna(type_void); 
+                $<retorna>$ = new Retorna(type_void);
             }
-        | RETORNA exp 
+        | RETORNA exp
             {
                 $<retorna>$ = new Retorna($<exp>2, type_void);
             }
@@ -988,7 +990,7 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
 
                 std::cout << "Tabla de Registro : " << $<symType>1->getId() << std::endl;
 
-                $<symboltable>5->printTable(); 
+                $<symboltable>5->printTable();
 
                 std::cout << "El tamanio es del constructor -> " <<  $<symType>1->getType()->getBytes()  << std::endl;
                 std::cout << "||||||||||||||||||||||||||" << std::endl;
@@ -1174,7 +1176,7 @@ int main (int argc, char **argv) {
         return 1;
     }
 
-//    std::cout <<  enie->toString() << std::endl;
+    std::cout <<  enie->toString() << std::endl;
 
     symtable->printTable();
 

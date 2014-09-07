@@ -1,5 +1,5 @@
 GPPFLAGS= -std=c++11 -lfl
-GPP= g++
+GPP= clang++
 YACC= bison -v
 LEX= flex --yylineno
 OBJ= lex.yy.c  parser.tab.c parserhelper.cc $(SYMTABLE) sound_type_system/type_system_utils.cc #$(TYPES2) $(SYMTABLE) #$(TYPES)
