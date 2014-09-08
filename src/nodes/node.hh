@@ -28,7 +28,7 @@ class Node {
         Type *getType() { return type; }
 
         std::string getTypeStr() { return type->typeString(); }
-
+        virtual std::string toString() = 0;
 
 };
 

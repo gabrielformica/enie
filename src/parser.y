@@ -248,7 +248,6 @@ func    : header instbl
             }
         ;
 
-
 header  : idheader COLCOL enterscope signa
             {
                 $<symType>1->setType($<type>4);
@@ -1178,7 +1177,7 @@ int main (int argc, char **argv) {
 
     std::cout <<  enie->toString() << std::endl;
 
-    symtable->printTable();
+    // symtable->printTable();
 
     return 0;
 }
