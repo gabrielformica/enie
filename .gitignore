@@ -6,6 +6,6 @@
 *.o
 enie
 lex.yy.c
-parser.tab.c
-parser.tab.h
+parser.tab.cc
+parser.tab.hh
 parser.output

@@ -31,7 +31,7 @@ class Caso: public Instruc {
     public:
         typedef Instruc super;
 
-        Caso(Exp *var, std::vector<LambdaOpt *> *optl, LambdaOpt *ow) : 
+        Caso(Exp *var, std::vector<LambdaOpt *> *optl, LambdaOpt *ow) :
             super(NULL) {
             this->var = var;
             this->optlist = optl;
@@ -49,7 +49,7 @@ class Caso: public Instruc {
             }
 
             if (this->otherwise->getType()->is("error"))
-                this->otherwise; 
+                this->type = this->otherwise->getType();
         }
 
         std::string toString() {

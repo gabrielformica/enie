@@ -48,6 +48,7 @@ class ExpBin: public Exp {
             str = str + "Operando izquierdo: " + this->left->toString() + "\n";
             str = str + "Operador: " + this->ope;
             str = str + "Operando derecho: " + this->left->toString() + "\n";
+            return str;
         }
 };
 

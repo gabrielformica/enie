@@ -2,7 +2,7 @@
     #include <stdlib.h>
     #include <iostream>
     #include <string>
-    #include "parser.tab.h"
+    #include "parser.tab.hh"
     #define YY_USER_ACTION loc_track();
 
     extern YYLTYPE yylloc;

@@ -25,7 +25,7 @@ using namespace std;
 
 SymbolTable::SymbolTable() {
     this->scopeCounter = 0;
-    this->table;
+    // this->table;
     this->scopeStack.push_back(0);  // first scope is 0
 }
 
