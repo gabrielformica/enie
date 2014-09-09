@@ -15,7 +15,7 @@
 
 
 #ifndef REGISTRO_HH
-#define REGISTRO__HH
+#define REGISTRO_HH
 
 #include <string>
 #include <list>
