@@ -15,7 +15,7 @@
 
 
 #ifndef UNION_HH
-#define UNION__HH
+#define UNION_HH
 
 #include <string>
 #include <list>
