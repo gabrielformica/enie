@@ -7,6 +7,8 @@
 
     extern YYLTYPE yylloc;
     extern std::vector<std::string> errors;
+    
+    extern "C" { int yylex(void); }
 
     int yycolumn = 1;
     void loc_track() {

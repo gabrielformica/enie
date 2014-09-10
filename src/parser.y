@@ -72,13 +72,14 @@
     */
     extern FILE* yyin;
     extern std::vector<std::string> errors;
+
+    extern "C" { int yyparse(void); int yylex(void);} 
 }
 
 %code {
     SymbolTable *symtable = new SymbolTable();
     std::vector<std::string> errors;
     void yyerror(char const *);
-    int yylex(void);
 
     Program *enie;
 

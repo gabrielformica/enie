@@ -1,26 +1,21 @@
-GPPFLAGS= -std=c++11 -lfl
-GPP= clang++
-YACC= bison -v -o parser.tab.cc
+GPPFLAGS= -std=c++11 -lfl -Wno-deprecated-register
+GPP= clang++ 
+YACC= bison -v -yd -o parser.tab.cc
 LEX= flex --yylineno -o lex.yy.cc
-OBJ= lex.yy.cc  parser.tab.cc parserhelper.cc $(SYMTABLE) sound_type_system/type_system_utils.cc #$(TYPES2) $(SYMTABLE) #$(TYPES)
-NODES= nodes/{asign,decl,inslist,instruc}.hh
-#TYPES2= types/function.cc types/arglist.cc types/signa.cc types/header.cc
-#TYPES= $(wildcard types/*.cc)
+OBJ=  parser.tab.cc lex.yy.cc  parserhelper.cc sound_type_system/type_system_utils.cc $(SYMTABLE) 
 SYMTABLE= $(wildcard symtable/*.cc)
 
 enie: $(OBJ)
-	$(GPP) $(OBJ) $(GPPFLAGS)   -o enie
-
-lex.yy.cc: lexer.l
-	$(LEX) lexer.l
+	$(GPP) $(OBJ) $(GPPFLAGS)  -o enie
 
 parser.tab.cc: parser.y
 	$(YACC) parser.y
 
-parser.tab.h: parser.y
-	$(YACC) parser.y
+lex.yy.cc: lexer.l
+	$(LEX) lexer.l 
 
 install:
 	cp enie /usr/bin/
+
 clean:
-	rm -f  *.tab.c *.tab.h enie *.output lex.yy.c
+	rm -f  *.tab.c* *.tab.h* enie *.output lex.yy.c*

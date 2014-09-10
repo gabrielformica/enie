@@ -4,8 +4,9 @@
 !.gitignore
 *.out
 *.o
+*.gch
 enie
-lex.yy.c
-parser.tab.cc
-parser.tab.hh
+lex.yy.c*
+parser.tab.c*
+parser.tab.h*
 parser.output
