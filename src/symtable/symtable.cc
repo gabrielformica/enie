@@ -107,12 +107,13 @@ void SymbolTable::printStack() {
 }
 
 void SymbolTable::printTable() {
-    std::cout << "-----Tabla de simbolos-----" << std::endl;
-    std::cout << endl;
+    std::cout << "\n---------- Symbol Table ----------" << std::endl;
 
     for (MapTable::iterator it = table.begin(); it != table.end(); it++ ) {
         (*it).second->print();
     }
+
+    std::cout << "---------- Symbol Table ----------" << std::endl;
 }
 
 std::list<Symbol *> * SymbolTable::getAllSymbols() {

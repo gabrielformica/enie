@@ -7,8 +7,10 @@
     #include <string>
     #include <list>
     #include <vector>
+    #include <string.h>
     #include <stdlib.h>
     #include <stdio.h>
+    #include <getopt.h>
     #include "symtable/symbol.hh"
     #include "symtable/symtable.hh"
     #include "parserhelper.hh"
@@ -1161,24 +1163,76 @@ void yyerror(const char *s) {
 
 int main (int argc, char **argv) {
 
-    if (! (yyin = fopen(argv[1], "r"))) {
-        cerr << "Fallo en la apertura de archivo" << endl;
-        return 1;
-    }
+    static struct option long_options[] = {
+            {"help", no_argument, 0, 'h'},
+            {"file", required_argument, 0, 'f'},
+            {"symtable", no_argument, 0, 's'},
+            {"tree", no_argument, 0, 't'},
+            {0,0,0,0}
+    };
 
-    yyparse();
+    //Parser of CLI
+    int opt, option_index;
+    char file_name[100];  
+    bool f_flag = false; 
+    bool s_flag = false; 
+    bool t_flag = false;
 
-    if (! errors.empty()) {
-        for (vector<std::string>::iterator it = errors.begin();
-            it != errors.end(); ++it) {
-            cerr << *it << endl;
+    while (1) {
+        opt = getopt_long(argc, argv, "hf:st", long_options, &option_index);
+        if (opt == -1) 
+            break;
+
+        switch (opt) {
+        case 0: break;
+        case 'h': 
+            std::cout << std::endl;
+            std::cout << "-h\t\tprint this help, genius" << std::endl;
+            std::cout << "-s\t\tprint symbol table"  << std::endl;
+            std::cout << "-t\t\tprint abstract syntax tree" << std::endl;
+            exit(EXIT_SUCCESS);
+        case 's': 
+            s_flag = true;
+            break; 
+        case 't': 
+            t_flag = true;
+            break;
+        case 'f':
+            if (strlen(optarg) >= 100) {
+                cerr << "Nombre de archivo muy largo" << endl;
+                exit(1);
+            }
+            strcpy(file_name, optarg);
+            f_flag = true;
+            break;
+        case '?': 
+            printf("nop"); 
+            break;
         }
-        return 1;
     }
 
-    std::cout <<  enie->toString() << std::endl;
+    if (f_flag) {
+        if (! (yyin = fopen(file_name, "r"))) {
+            cerr << "Fallo en la apertura de archivo" << endl;
+            exit(1);
+        }
 
-    // symtable->printTable();
+        yyparse();
+
+        if (! errors.empty()) {
+            for (vector<std::string>::iterator it = errors.begin();
+                it != errors.end(); ++it) {
+                cerr << *it << endl;
+            }
+            exit(1);
+        }
+    }
+
+    if (s_flag)
+        symtable->printTable(); 
+
+    if (t_flag)
+        std::cout << enie->toString() << std::endl;
 
     return 0;
 }

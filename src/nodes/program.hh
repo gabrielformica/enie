@@ -46,11 +46,13 @@ class Program: public Node {
         }
 
         std::string toString() {
-            std::string str = "";
+            std::string str = "\n--------- AST ---------\n";
             for (int i = 0; i < this->func_list->size(); i++) {
                 FuncNode *func = (*this->func_list)[i];
                 str = str + func->toString(); 
             }
+
+            str += "--------- AST ----------";
 
             return str;
         }
