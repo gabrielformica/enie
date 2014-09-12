@@ -46,8 +46,8 @@ class ExpBin: public Exp {
         std::string toString() {
             std::string str = "Expresion Binaria: \n";
             str = str + "Operando izquierdo: " + this->left->toString() + "\n";
-            str = str + "Operador: " + this->ope;
-            str = str + "Operando derecho: " + this->left->toString() + "\n";
+            str = str + "Operador: " + this->ope + "\n";
+            str = str + "Operando derecho: " + this->right->toString() + "\n";
             return str;
         }
 };

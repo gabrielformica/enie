@@ -25,18 +25,17 @@ using namespace std;
 
 SymbolTable::SymbolTable() {
     this->scopeCounter = 0;
-    // this->table;
     this->scopeStack.push_back(0);  // first scope is 0
 }
 
-/* Add new scope*/
+/* Adds new scope*/
 
 void SymbolTable::enterScope() {
     int cs = ++this->scopeCounter;
     this->scopeStack.push_back(cs);
 }
 
-/* Leave scope*/
+/* Leaves scope*/
 
 void SymbolTable::leaveScope() {
     this->scopeStack.pop_back();
@@ -48,7 +47,7 @@ int SymbolTable::getCurrentScope() {
     return this->scopeStack.back();
 }
 
-/* Add symbol to symbol table*/
+/* Adds symbol to symbol table*/
 
 void SymbolTable::addSymbol(Symbol *s) {
     string id = s->getId();
@@ -57,9 +56,7 @@ void SymbolTable::addSymbol(Symbol *s) {
     }
 }
 
-
-
-/* Tell if a symbol declaration is active */
+/* Lookup of a the symbol table */
 
 Symbol *SymbolTable::lookup(std::string id) {
     for (list<int>::reverse_iterator it = this->scopeStack.rbegin();
@@ -73,11 +70,12 @@ Symbol *SymbolTable::lookup(std::string id) {
     return NULL;
 }
 
-/* Tell if id is already in scope */
+/* Tells if id is already in scope */
 bool SymbolTable::idIsInScope(string id, int scope) {
     return this->getSymbolInScope(id, scope) != NULL;
 }
 
+/* Tells if a symbol declaration is active */
 
 bool SymbolTable::isActive(std::string id) {
     return this->lookup(id) != NULL;

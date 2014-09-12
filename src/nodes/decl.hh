@@ -39,13 +39,11 @@ class Decl : public Instruc {
         Exp* getRight() { return this->rhs; }
 
         std::string toString() {
-            std::string str = ""; 
-            str = "Declaracion: \n";  
+            std::string str = "Declaracion: \n";  
             str = str + this->lhs->getId() + "\n";
             if (! (this->rhs == NULL)) {
-                str = str + "Variable : " + this->rhs->toString();
+                str = str +  "Variable : " + this->rhs->toString();
             }
-
             return str;
         }
 };

@@ -74,7 +74,6 @@
     */
     extern FILE* yyin;
     extern std::vector<std::string> errors;
-
     extern "C" { int yyparse(void); int yylex(void);} 
 }
 
@@ -320,18 +319,12 @@ arglist : arglist COMMA declonly
 
 instlist : instlist sepaux inst
             {
-                if ($<instruc>3 == NULL)
                 ($<instlist>1)->addInst($<instruc>3);
                 $<instlist>$ = $<instlist>1;
             }
          | inst
             {
-                if (($<instruc>1) != NULL)  {
                     $<instlist>$ = new InstList($<instruc>1, ($<instruc>1)->getType());
-                }
-                else {
-                    $<instlist>$ = new InstList(NULL, new TypeError(""));
-                }
             }
          | error
          ;
@@ -902,7 +895,7 @@ term : idlist
             if ($<symType>1 == NULL) {
                 $<exp>$ = new Exp("", new TypeError(""));
             } else {
-                $<exp>$ = new Exp("", $<symType>1->getType());
+                $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
             }
         }
      | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; }
@@ -1228,10 +1221,10 @@ int main (int argc, char **argv) {
         }
     }
 
-    if (s_flag)
+    if ((f_flag) && (s_flag))
         symtable->printTable(); 
 
-    if (t_flag)
+    if ((f_flag) && (t_flag))  
         std::cout << enie->toString() << std::endl;
 
     return 0;

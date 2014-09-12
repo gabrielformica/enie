@@ -19,6 +19,7 @@
 #include "node.hh"
 #include "../sound_type_system/base/type.hh"
 
+
 class Exp: public Node {
     protected:
         std::string elem;
@@ -40,7 +41,7 @@ class Exp: public Node {
         std::string getElem() { return this->elem; }
 
         std::string toString() {
-            return "Expresion : " + this->elem;
+            return "Expresion : \n" + this->elem;
         }
 
 };
