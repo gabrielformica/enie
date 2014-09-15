@@ -30,6 +30,7 @@
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
+    #include "nodes/expsimple.hh"
     #include "nodes/expbin.hh"
     #include "nodes/asign.hh"
     #include "nodes/decl.hh"
@@ -121,7 +122,6 @@
 
     Header *header;
     FuncNode *func_node;
-    FuncApp *func_app_node;
     std::vector<LambdaOpt *> *optlist;
     LambdaOpt *lambda_opt;
 }
@@ -341,36 +341,39 @@ inst : asign           { $<node>$ = $<node>1; }
      | multselec       { $<node>$ = $<node>1; }
      | indite          { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
-     | ereturn
-        {
-            $<node>$ = $<node>1;
-        }
-     | callfunc
+     | ereturn         { $<node>$ = $<node>1; }
+     | callfunc        { $<node>$ = $<node>1; }
+     /*
         {
             if ($<exp>1->getType()->is("error")) {
-                $<instruc>$ = new FuncApp(new TypeError("Error tipo de funcion"));
+                $<node>$ = new FuncApp(new TypeError("Error tipo de funcion"));
             }
             else {
-                $<instruc>$ = new FuncApp(type_void);
+                $<node>$ = new FuncApp(type_void);
             }
 
         }
-     | LEER exp
+        */
+     | LEER exp 
         {
             if ($<exp>2->getType()->is("cadena")) {
-                $<instruc>$ = new FuncApp(type_void);
+                std::vector<Exp *> *params = new std::vector<Exp *>;
+                params->push_back($<exp>2);
+                $<node>$ = new FuncApp("leer", params, type_void);
             }
             else {
-                $<instruc>$ = new FuncApp(new TypeError("leer no esta recibiendo una cadena de caracteres"));
+                $<node>$ = new FuncApp("leer", NULL, new TypeError("leer no esta recibiendo una cadena de caracteres"));
             }
         }
      | ESCRIBIR exp
         {
             if ($<exp>2->getType()->is("cadena")) {
-                $<instruc>$ = new FuncApp(type_void);
+                std::vector<Exp *> *params = new std::vector<Exp *>;
+                params->push_back($<exp>2);
+                $<node>$ = new FuncApp("escribir", params, type_void);
             }
             else {
-                $<instruc>$ = new FuncApp(new TypeError("leer no esta recibiendo una cadena de caracteres"));
+                $<node>$ = new FuncApp("escribir", NULL, new TypeError("leer no esta recibiendo una cadena de caracteres"));
             }
         }
      ;
@@ -428,9 +431,9 @@ asign : asignid EQUAL exp
 asignid : idlist
             {
                 if ($<symType>1 == NULL) {
-                    $<exp>$ = new Exp("", new TypeError(""));
+                    $<exp>$ = new ExpSimple("", new TypeError(""));
                 } else {
-                    $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
+                    $<exp>$ = new ExpSimple($<symType>1->getId(), $<symType>1->getType());
                 }
             }
         ;
@@ -443,7 +446,7 @@ arrasign : checkid arrasignaux
                 bool badarray = false;
                 int i;
                 for (i = 0; i < $<explist>2->size(); i++) {
-                    str = str + "[" +  ((Exp *) (*$<explist>2)[i])->getElem() + "]";
+                    //str = str + "[" +  ((Exp *) (*$<explist>2)[i])->getElem() + "]";
                     if (! (((Exp *) (*$<explist>2)[i])->getType()->is("ent")))
                         badarray = true;
                 }
@@ -458,7 +461,7 @@ arrasign : checkid arrasignaux
                 else
                     new_type = new TypeError("");
 
-                $<exp>$ = new Exp(str, new_type);
+                $<exp>$ = new ExpSimple(str, new_type);
             }
         ;
 
@@ -587,7 +590,7 @@ multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
                 {
-                    $<lambda_opt>$ = new LambdaOpt(new Exp("?", new Car()), $<instlist>5);
+                    $<lambda_opt>$ = new LambdaOpt(new ExpSimple("?", new Car()), $<instlist>5);
                 }
            ;
 
@@ -893,18 +896,18 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
 term : idlist
         {
             if ($<symType>1 == NULL) {
-                $<exp>$ = new Exp("", new TypeError(""));
+                $<exp>$ = new ExpSimple("", new TypeError(""));
             } else {
-                $<exp>$ = new Exp($<symType>1->getId(), $<symType>1->getType());
+                $<exp>$ = new ExpSimple($<symType>1->getId(), $<symType>1->getType());
             }
         }
-     | NUMENT   { $<exp>$ = new Exp(to_string($1), entero) ; }
-     | NUMFLOT  { $<exp>$ = new Exp(to_string($1), flot) ; }
-     | CIERTO   { $<exp>$ = new Exp("cierto", booleano) ; }
-     | FALSO    { $<exp>$ = new Exp("falso", booleano) ; }
+     | NUMENT   { $<exp>$ = new ExpSimple(to_string($1), entero) ; }
+     | NUMFLOT  { $<exp>$ = new ExpSimple(to_string($1), flot) ; }
+     | CIERTO   { $<exp>$ = new ExpSimple("cierto", booleano) ; }
+     | FALSO    { $<exp>$ = new ExpSimple("falso", booleano) ; }
      /* | checkid arr  ID arr */
-     | callfunc    { $<exp>$ = new Exp("", new TypeError("")); }  //this will going to be change
-     | CONSTCAD    { $<exp>$ = new Exp(*$1, new Car()); }
+     | callfunc    { $<exp>$ = $<exp>1; }  //this will going to be change
+     | CONSTCAD    { $<exp>$ = new ExpSimple(*$1, new Car()); }
      | arrasign
      | error
      ;
@@ -933,8 +936,8 @@ arr : OBRACK exp CBRACK arr
                 $<type>$ = $<type>4;
             }
             else {
-                Exp *left = ((ExpBin *) $<exp>2)->getLeft();
-                Exp *right = ((ExpBin *) $<exp>2)->getRight();
+                ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
+                ExpSimple *right = (ExpSimple *) ((ExpBin *) $<exp>2)->getRight();
                 std::string ope = ((ExpBin *) $<exp>2)->getOperator();
 
                 if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
@@ -954,8 +957,8 @@ arr : OBRACK exp CBRACK arr
         }
     | OBRACK exp CBRACK
         {
-            Exp *left = ((ExpBin *) $<exp>2)->getLeft();
-            Exp *right = ((ExpBin *) $<exp>2)->getRight();
+            ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
+            ExpSimple *right = (ExpSimple *)  ((ExpBin *) $<exp>2)->getRight();
             std::string ope = ((ExpBin *) $<exp>2)->getOperator();
 
             if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
@@ -1090,12 +1093,14 @@ callfunc : ID funcargs
                     errors.push_back(str);
                 } else {
                     s = symtable->lookup(*$1);
-                    std::vector<Type *> *tl;
-                    tl =  ((Function *) s->getType())->getParams();
-                    if ($<typelist>2->size() == tl->size() ) {
+                    std::vector<Type *> *passed_types = getTypesFromExps($<explist>2);
+                    std::vector<Type *> *formal_types;
+
+                    formal_types = ((Function *) s->getType())->getParams();
+                    if (formal_types->size() == passed_types->size() ) {
                         int i;
-                        for (i = 0; i < tl->size(); i++) {
-                            if ( (*$<typelist>2)[i]->typeString() == (*tl)[i]->typeString() ) {
+                        for (i = 0; i < formal_types->size(); i++) {
+                            if ( (*formal_types)[i]->typeString() == (*passed_types)[i]->typeString() ) {
                                 semantic_errors = true;
                                 break;
                             }
@@ -1106,36 +1111,33 @@ callfunc : ID funcargs
                 }
 
                 if (semantic_errors) {
-                    $<exp>$ = new Exp("", new TypeError(""));
+                    $<exp>$ = new FuncApp(*$1, $<explist>2, new TypeError(""));
                 }
                 else {
-                   $<exp>$ =  new Exp(*$1, ((Function *) s->getType())->getRetType());
+                   $<exp>$ =  new FuncApp(*$1, $<explist>2, ((Function *) s->getType())->getRetType());
                 }
             }
 
          ;
 
-funcargs : LPAR explist RPAR
-            {
-                $<typelist>$ = $<typelist>1;
-            }
+funcargs : LPAR explist RPAR { $<explist>$ = $<explist>2; }
          | LPAR RPAR
             {
-                std::vector<Type *> *tl = new std::vector<Type *>;
-                tl->push_back(new Nada());
-                $<typelist>$ = $<typelist>1;
+                std::vector<Exp *> *exps = new std::vector<Exp *>;
+                exps->push_back(new ExpSimple("", new Nada()));
+                $<explist>$ = exps;
             }
          ;
 
 explist : explist COMMA exp
             {
-                $<typelist>$ = $<typelist>1;
-                $<typelist>$->push_back($<exp>3->getType());
+                $<explist>$ = $<explist>1;
+                $<explist>$->push_back($<exp>3);
             }
         | exp
             {
-                $<typelist>$ = new std::vector<Type *>;
-                $<typelist>$->push_back($<exp>1->getType());
+                $<explist>$ = new std::vector<Exp *>;
+                $<explist>$->push_back($<exp>1);
             }
         ;
 

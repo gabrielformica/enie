@@ -4,6 +4,7 @@
 #include "parserhelper.hh"
 #include "symtable/symtable.hh"
 #include "symtable/symbol.hh"
+#include "nodes/exp.hh"
 
 using namespace std;
 
@@ -24,3 +25,12 @@ void tryAddSymbol(SymbolTable *symtable, vector<string> *errors, Symbol *s) {
     }
 }
 
+std::vector<Type *> *getTypesFromExps(std::vector<Exp *> *exps) {
+    std::vector<Type *> *types = new std::vector<Type *>;
+
+    for (int i = 0; i < exps->size(); i++) {
+        types->push_back((*exps)[i]->getType());
+    }
+
+    return types;
+}
