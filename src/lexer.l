@@ -56,6 +56,14 @@ nada                        return NADA;
 leer                        return LEER;
 escribir                    return ESCRIBIR;
 caso                        return CASO;
+\".\"                       {
+                                yylval.str = new std::string(yytext);
+                                return CONSTCAR;
+                            }
+\'.\'                       {
+                                yylval.str = new std::string(yytext);
+                                return CONSTCAR;
+                            }
 \"(\\.|[^\\"])*\"           {
                                 yylval.str = new std::string(yytext);
                                 return CONSTCAD;

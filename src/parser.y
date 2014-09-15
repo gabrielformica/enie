@@ -46,33 +46,6 @@
     #include "nodes/func_node.hh"
     #include "nodes/funcapp.hh"
     #include "nodes/program.hh"
-    /*
-    #include "symtable/func_symbol.hh"
-    #include "types/exp.hh"
-    #include "types/expbin.hh"
-    #include "types/ent.hh"
-    #include "types/flot.hh"
-    #include "types/bool.hh"
-    #include "types/car.hh"
-    #include "types/nada.hh"
-    #include "types/cadena.hh"
-    #include "types/type_error.hh"
-    #include "types/type_system_utils.hh"
-    */
-    /*primitivos*/
-    /*
-    #include "types/arglist.hh"
-    #include "types/signa.hh"
-    #include "types/header.hh"
-    #include "types/function.hh"
-    #include "types/instruc.hh"
-    #include "types/indite.hh"
-    #include "types/detite.hh"
-    #include "types/asign.hh"
-    #include "types/instlist.hh"
-    #include "types/function.hh"
-    #include "types/function_list.hh"
-    */
     extern FILE* yyin;
     extern std::vector<std::string> errors;
     extern "C" { int yyparse(void); int yylex(void);} 
@@ -132,6 +105,7 @@
 %token <intval> NUMENT
 %token <floatval> NUMFLOT
 %token <str> CONSTCAD
+%token <str> CONSTCAR
 %token <str> ID
 %token SI
 %token OSI
@@ -344,17 +318,6 @@ inst : asign           { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
      | ereturn         { $<node>$ = $<node>1; }
      | callfunc        { $<node>$ = $<node>1; }
-     /*
-        {
-            if ($<exp>1->getType()->is("error")) {
-                $<node>$ = new FuncApp(new TypeError("Error tipo de funcion"));
-            }
-            else {
-                $<node>$ = new FuncApp(type_void);
-            }
-
-        }
-        */
      | LEER exp 
         {
             if ($<exp>2->getType()->is("cadena")) {
@@ -584,7 +547,6 @@ sinoselect :  SINO enterscope instbl leavescope
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
-                  $<optlist>5->push_back($<lambda_opt>6);
                   ExpSimple *var = new ExpSimple($<symType>2->getId(), $<symType>2->getType());
                   $<caso>$ = new Caso(var, $<optlist>5, $<lambda_opt>6);
               }
@@ -908,8 +870,9 @@ term : idlist
      | CIERTO   { $<exp>$ = new ExpSimple("cierto", booleano) ; }
      | FALSO    { $<exp>$ = new ExpSimple("falso", booleano) ; }
      /* | checkid arr  ID arr */
-     | callfunc    { $<exp>$ = $<exp>1; }  //this will going to be change
-     | CONSTCAD    { $<exp>$ = new ExpSimple(*$1, new Car()); }
+     | callfunc    { $<exp>$ = $<exp>1; }  
+     | CONSTCAD    { $<exp>$ = new ExpSimple(*$1, new Cadena()); }
+     | CONSTCAR    { $<exp>$ = new ExpSimple(*$1, new Car()); }
      | arrasign
      | error
      ;

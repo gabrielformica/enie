@@ -61,7 +61,7 @@ class Caso: public Instruc {
                     str = str + (*this->optlist)[i]->toString() + "\n";
             }
 
-            str = str + "Caso por defecto: " + this->otherwise->toString();
+            str = str + "Caso por defecto: (?) " + this->otherwise->toString();
 
             return str;
         }
