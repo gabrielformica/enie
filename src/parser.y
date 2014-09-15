@@ -880,6 +880,9 @@ term : idlist
      | CONSTCAR    { $<exp>$ = new ExpSimple(*$1, new Car()); }
      | arrasign
      | error
+        {
+            $<node>$ = syntax_error;
+        }
      ;
 
 idlist : idlist ONEDOT ID
