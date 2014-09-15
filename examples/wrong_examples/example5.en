@@ -1,0 +1,7 @@
+enie :: ~ {
+    ent a
+    ent b
+
+    a = a +
+    b = a + b +
+}

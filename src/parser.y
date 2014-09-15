@@ -35,6 +35,7 @@
     #include "nodes/asign.hh"
     #include "nodes/decl.hh"
     #include "nodes/instlist.hh"
+    #include "nodes/error.hh"
     #include "nodes/instruc.hh"
     #include "nodes/selec.hh"
     #include "nodes/osi.hh"
@@ -48,7 +49,7 @@
     #include "nodes/program.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
-    extern "C" { int yyparse(void); int yylex(void);} 
+    extern "C" { int yyparse(void); int yylex(void);}
 }
 
 %code {
@@ -66,6 +67,7 @@
     Type *cadena = new Cadena();
     Type *car = new Car();
     Type *type_void = new Void();
+    Node *syntax_error = new Error(new TypeError("Error sintactico"));
 
     using namespace std;
 }
@@ -212,7 +214,7 @@ funcl   : funcl sepaux func leavescope
             {
                 $<program>$ = new Program($<func_node>1);
             }
-        | error SEP
+        | error
         ;
 
 func    : header instbl
@@ -301,7 +303,6 @@ instlist : instlist sepaux inst
             {
                     $<instlist>$ = new InstList($<instruc>1, ($<instruc>1)->getType());
             }
-         | error
          ;
 
 instbl : OBRACE sepaux instlist sepaux CBRACE
@@ -318,7 +319,7 @@ inst : asign           { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
      | ereturn         { $<node>$ = $<node>1; }
      | callfunc        { $<node>$ = $<node>1; }
-     | LEER exp 
+     | LEER exp
         {
             if ($<exp>2->getType()->is("cadena")) {
                 std::vector<Exp *> *params = new std::vector<Exp *>;
@@ -339,6 +340,10 @@ inst : asign           { $<node>$ = $<node>1; }
             else {
                 $<node>$ = new FuncApp("escribir", NULL, new TypeError("leer no esta recibiendo una cadena de caracteres"));
             }
+        }
+     | error
+        {
+            $<node>$ = syntax_error;
         }
      ;
 
@@ -870,7 +875,7 @@ term : idlist
      | CIERTO   { $<exp>$ = new ExpSimple("cierto", booleano) ; }
      | FALSO    { $<exp>$ = new ExpSimple("falso", booleano) ; }
      /* | checkid arr  ID arr */
-     | callfunc    { $<exp>$ = $<exp>1; }  
+     | callfunc    { $<exp>$ = $<exp>1; }
      | CONSTCAD    { $<exp>$ = new ExpSimple(*$1, new Cadena()); }
      | CONSTCAR    { $<exp>$ = new ExpSimple(*$1, new Car()); }
      | arrasign
@@ -950,15 +955,6 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
                 //linking types
 
                 type->setSymbolTable($<symboltable>5);
-
-                std::cout << "Tabla de Registro : " << $<symType>1->getId() << std::endl;
-
-                $<symboltable>5->printTable();
-
-                std::cout << "El tamanio es del constructor -> " <<  $<symType>1->getType()->getBytes()  << std::endl;
-                std::cout << "||||||||||||||||||||||||||" << std::endl;
-
-
                 $<symType>$ = $<symType>1;
             }
         ;
@@ -1133,28 +1129,28 @@ int main (int argc, char **argv) {
 
     //Parser of CLI
     int opt, option_index;
-    char file_name[100];  
-    bool f_flag = false; 
-    bool s_flag = false; 
+    char file_name[100];
+    bool f_flag = false;
+    bool s_flag = false;
     bool t_flag = false;
 
     while (1) {
         opt = getopt_long(argc, argv, "hf:st", long_options, &option_index);
-        if (opt == -1) 
+        if (opt == -1)
             break;
 
         switch (opt) {
         case 0: break;
-        case 'h': 
+        case 'h':
             std::cout << std::endl;
             std::cout << "-h\t\tprint this help, genius" << std::endl;
             std::cout << "-s\t\tprint symbol table"  << std::endl;
             std::cout << "-t\t\tprint abstract syntax tree" << std::endl;
             exit(EXIT_SUCCESS);
-        case 's': 
+        case 's':
             s_flag = true;
-            break; 
-        case 't': 
+            break;
+        case 't':
             t_flag = true;
             break;
         case 'f':
@@ -1165,8 +1161,8 @@ int main (int argc, char **argv) {
             strcpy(file_name, optarg);
             f_flag = true;
             break;
-        case '?': 
-            printf("nop"); 
+        case '?':
+            printf("nop");
             break;
         }
     }
@@ -1189,9 +1185,9 @@ int main (int argc, char **argv) {
     }
 
     if ((f_flag) && (s_flag))
-        symtable->printTable(); 
+        symtable->printTable();
 
-    if ((f_flag) && (t_flag))  
+    if ((f_flag) && (t_flag))
         std::cout << enie->toString() << std::endl;
 
     return 0;
