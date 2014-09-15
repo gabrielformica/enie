@@ -85,6 +85,7 @@
 
     Program *enie;
 
+
     Type *entero = new Ent();
     Type *booleano = new Bool();
     Type *flot = new Flot();
@@ -584,7 +585,8 @@ sinoselect :  SINO enterscope instbl leavescope
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
                   $<optlist>5->push_back($<lambda_opt>6);
-                  $<caso>$ = new Caso($<exp>2, $<optlist>5, $<lambda_opt>6);
+                  ExpSimple *var = new ExpSimple($<symType>2->getId(), $<symType>2->getType());
+                  $<caso>$ = new Caso(var, $<optlist>5, $<lambda_opt>6);
               }
           ;
 
@@ -901,8 +903,8 @@ term : idlist
                 $<exp>$ = new ExpSimple($<symType>1->getId(), $<symType>1->getType());
             }
         }
-     | NUMENT   { $<exp>$ = new ExpSimple(to_string($1), entero) ; }
-     | NUMFLOT  { $<exp>$ = new ExpSimple(to_string($1), flot) ; }
+     | NUMENT   { $<exp>$ = new ExpSimple(to_string($1), entero); }
+     | NUMFLOT  { $<exp>$ = new ExpSimple(to_string($1), flot); }
      | CIERTO   { $<exp>$ = new ExpSimple("cierto", booleano) ; }
      | FALSO    { $<exp>$ = new ExpSimple("falso", booleano) ; }
      /* | checkid arr  ID arr */

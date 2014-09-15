@@ -1,0 +1,28 @@
+sumar :: ent a, ent b -> ent {
+    retorna (a + b)
+}
+
+enie :: ~ {
+    car jota = "j"
+    car zeta = "z"
+    car a = "a"
+    car g = "g"
+
+    caso zeta { 
+        \a    ->  { 
+                    sumar(1,3)
+                 }
+        \"a"   -> {
+                    sumar(1,7)
+                  }
+        \g    ->  {
+                    sumar(5,3)
+                  }
+        \jota ->  { 
+                    sumar(2,1)
+                 }
+        \?    ->  {
+                    sumar(1,0)
+                 }
+    } 
+}

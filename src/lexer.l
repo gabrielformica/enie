@@ -34,7 +34,7 @@
 \n                          { yycolumn = 1; return SEP; }
 [0-9]+                      { yylval.intval = atoi(yytext); return NUMENT; }
 
-[0-9]+.[0-9]+               {
+[0-9]+\.[0-9]+              {
                                 std::string *str0 = new std::string(yytext);
                                 yylval.floatval = atof(str0->c_str());
                                 free(str0);

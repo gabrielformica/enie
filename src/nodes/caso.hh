@@ -24,14 +24,14 @@
 
 class Caso: public Instruc {
     private:
-        Exp *var;
+        ExpSimple *var;
         std::vector<LambdaOpt *> *optlist;
         LambdaOpt *otherwise;
 
     public:
         typedef Instruc super;
 
-        Caso(Exp *var, std::vector<LambdaOpt *> *optl, LambdaOpt *ow) :
+        Caso(ExpSimple *var, std::vector<LambdaOpt *> *optl, LambdaOpt *ow) :
             super(NULL) {
             this->var = var;
             this->optlist = optl;
@@ -55,7 +55,7 @@ class Caso: public Instruc {
         std::string toString() {
             std::string str = "";
             str = "Caso:\n";
-            str = str + "Variable: " + this->var->toString() + "\n";
+            str = str + "Variable: " + this->var->getElem() + "\n";
             str = str + "Conjunto de opciones: \n";
             for (int i = 0; i < this->optlist->size(); i++) {
                     str = str + (*this->optlist)[i]->toString() + "\n";
