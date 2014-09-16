@@ -645,6 +645,8 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
         Exp *exp = NULL;
         exp = get_expbin($<exp>1, $<exp>3, "+");
 
+
+
          //constructing binary expression with type error
         if (exp == NULL) {
             int l = @1.first_line;    //line of the binary expression
@@ -1088,7 +1090,7 @@ callfunc : ID funcargs
                     if (formal_types->size() == passed_types->size() ) {
                         int i;
                         for (i = 0; i < formal_types->size(); i++) {
-                            if ( (*formal_types)[i]->typeString() == (*passed_types)[i]->typeString() ) {
+                            if ( (*formal_types)[i]->typeString() != (*passed_types)[i]->typeString() ) {
                                 semantic_errors = true;
                                 break;
                             }
@@ -1102,7 +1104,7 @@ callfunc : ID funcargs
                     $<exp>$ = new FuncApp(*$1, $<explist>2, new TypeError(""));
                 }
                 else {
-                   $<exp>$ =  new FuncApp(*$1, $<explist>2, ((Function *) s->getType())->getRetType());
+                    $<exp>$ =  new FuncApp(*$1, $<explist>2, ((Function *) s->getType())->getRetType());
                 }
             }
 
