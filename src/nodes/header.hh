@@ -33,7 +33,7 @@ class Header: public Node {
             std::string str = "";
             //std::vector<Type *> *params = ((Function *) this->type)->getParams();
 
-            str =  "header : " + id;  
+            str =  "nombre: " + id + "\n";  
 
             return str;
         }

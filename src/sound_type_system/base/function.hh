@@ -23,6 +23,7 @@ class Function: public Type {
     private:
         Type *ret;
         std::vector<Type *> *params;
+        bool forward = true;         //True by default
 
     public:
         typedef Type super;
@@ -30,12 +31,25 @@ class Function: public Type {
         Function(std::vector<Type *>* tl, Type * ty) : super(0) {
             this->params = tl;
             this->ret = ty;
+            this->forward = true;     //True by default
         }
 
-        void setRetorno(Type *t) { this->ret = t; }
+        Function(std::vector<Type *>* tl, Type * ty, bool p) : super(0) {
+            this->params = tl;
+            this->ret = ty;
+            this->forward = p;
+        }
+
+        void setRet(Type *t) { this->ret = t; }
+        Type *getRetType() { return this->ret; }
+
+        bool getForward() { return this->forward; } 
+        void unsetForward() { this->forward = false; }     
+
         void addParam(Type *t) { this->params->push_back(t); }
-        Type *getRetorno() { return this->ret; }
         std::vector<Type *>* getParams() { return this->params; }
+
+        bool is(std::string t) { return t == "function"; }
 
         std::string typeString() {
 
@@ -53,11 +67,8 @@ class Function: public Type {
             return str;
         }
 
-        bool is(std::string t) { return t == "function"; }
-
-        Type *getRetType() { return this->ret; }
-
         void setByte() { this->bytes = 0; }
+
 };
 
 #endif

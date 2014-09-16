@@ -45,8 +45,14 @@ class FuncNode: public Node  {
         std::string toString() {
             std::string str = "Funcion\n"; 
             str = str + this->header->toString();
-            str = "Bloque de instrucciones:\n"; 
-            str = str + this->block->toString();
+
+            if (this->block == NULL) {     //It's a forward declaration
+                str += "FORWARD DECLARATION\n";
+            }
+            else {
+                str += "Bloque de instrucciones:\n"; 
+                str +=  this->block->toString();
+            }
 
             return str;
         }

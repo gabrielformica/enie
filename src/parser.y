@@ -60,10 +60,10 @@
     Program *enie;
 
 
+    Type *nada = new Nada();
     Type *entero = new Ent();
     Type *booleano = new Bool();
     Type *flot = new Flot();
-    Type *nada = new Nada();
     Type *cadena = new Cadena();
     Type *car = new Car();
     Type *type_void = new Void();
@@ -219,6 +219,7 @@ funcl   : funcl sepaux func leavescope
 
 func    : header instbl
             {
+                ((Function *) $<header>1->getType())->unsetForward();      //This set -forward- to false forever!
                 $<func_node>$ = new FuncNode($<header>1, $<instlist>2);
             }
         | header
@@ -238,13 +239,36 @@ header  : idheader COLCOL enterscope signa
             }
         ;
 
-idheader : ID    /* It will change to ID */
+idheader : ID   
             {
                 int currentScope = symtable->getCurrentScope();
                 int line = @1.first_line;
                 int column = @1.first_column;
+                std::string id = *$1;
+                Symbol *aux = symtable->getSymbolInScope(*$1, currentScope);
                 Symbol *s = new Symbol(*$1, NULL, currentScope, line, column);
-                tryAddSymbol(symtable, &errors, s);
+
+                if (aux != NULL) {          //Symbol is in this scope
+                    if (! aux->getType()->is("function")) {    //In this scope, but not a function!
+                        std::string str0 = "(linea "+ to_string(line)+ ", columna ";
+                        str0 += to_string(column) + "): ";
+                        std::string str = "error "+ str0 + "la funcion '"+ id +"'";
+                        str += ", toma el nombre una variable previamente declara ";
+                        str += "en la linea " + to_string(aux->getLine());
+                        errors.push_back(str);
+                    }
+                    else if (! ((Function *) aux->getType())->getForward()) {   //A function, but already defined
+                        std::string str0 = "(linea "+ to_string(line)+ ", columna ";
+                        str0 += to_string(column) + "): ";
+                        std::string str = "error "+ str0 + "la funcion '"+ id +"'";
+                        str += " ya ha sido definida";
+                        errors.push_back(str);
+                    }
+                }
+                else {
+                    tryAddSymbol(symtable, &errors, s);          //It will add the symbol always
+                }
+                
                 $<symType>$ = s;
             }
         ;
@@ -256,19 +280,19 @@ signa   : arglist ARROW type
             }
         | arglist
             {
-                $<type>$ = new Function($<typelist>1, new Nada());
+                $<type>$ = new Function($<typelist>1, nada);
             }
         | TILDE
             {
                 std::vector<Type*> *tl = new std::vector<Type*>;
-                tl->push_back(new Nada());
-                $<type>$ = new Function(tl, new Nada());
+                tl->push_back(nada);
+                $<type>$ = new Function(tl, nada);
             }
         | TILDE ARROW type
             {
                 std::vector<Type*> *tl = new std::vector<Type*>;
-                tl->push_back(new Nada());
-                $<type>$ = new Function(tl, new Nada());
+                tl->push_back(nada);
+                $<type>$ = new Function(tl, nada);
             }
         ;
 
@@ -1088,7 +1112,7 @@ funcargs : LPAR explist RPAR { $<explist>$ = $<explist>2; }
          | LPAR RPAR
             {
                 std::vector<Exp *> *exps = new std::vector<Exp *>;
-                exps->push_back(new ExpSimple("", new Nada()));
+                exps->push_back(new ExpSimple("", nada));
                 $<explist>$ = exps;
             }
          ;
