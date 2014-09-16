@@ -21,25 +21,25 @@
 
 class Program: public Node {
     private:
-        std::vector<FuncNode *> *func_list;
+        std::vector<Node *> *node_list;
 
     public:
         typedef Node super;
 
-        Program(FuncNode *fn) : super(NULL) {
-            this->func_list = new std::vector<FuncNode *>;
-            this->append(fn);
+        Program(Node *node) : super(NULL) {
+            this->node_list = new std::vector<Node *>;
+            this->append(node);
         }
         
-        void append(FuncNode *fn) {
-            this->func_list->push_back(fn);
+        void append(Node *node) {
+            this->node_list->push_back(node);
             //this->setType();
         }
 
         void setType() {
-            for (int i = 0; i < this->func_list->size(); i++) {
-                if ( (*this->func_list)[i]->getType()->is("error") ) {
-                    this->type = (*this->func_list)[i]->getType();
+            for (int i = 0; i < this->node_list->size(); i++) {
+                if ( (*this->node_list)[i]->getType()->is("error") ) {
+                    this->type = (*this->node_list)[i]->getType();
                     break;
                 }
             }
@@ -47,9 +47,9 @@ class Program: public Node {
 
         std::string toString() {
             std::string str = "\n--------- AST ---------\n";
-            for (int i = 0; i < this->func_list->size(); i++) {
-                FuncNode *func = (*this->func_list)[i];
-                str = str + func->toString(); 
+            for (int i = 0; i < this->node_list->size(); i++) {
+                Node *node = (*this->node_list)[i];
+                str = str + node->toString(); 
             }
 
             str += "--------- AST ----------";

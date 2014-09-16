@@ -188,7 +188,7 @@
  /* Gramatica empieza aqui */
 %%
 
-enie    : begin enterscope funcl end leavescope
+enie    : begin enterscope globals end leavescope
             {
                 enie = $<program>3;
             }
@@ -205,28 +205,33 @@ sepaux  : sepaux SEP
         | SEP
         ;
 
-funcl   : funcl sepaux func leavescope
+globals : globals sepaux global
             {
-                $<program>1->append($<func_node>3);
+                $<program>1->append($<node>3);
                 $<program>$ = $<program>1;
             }
-        | func leavescope
+        | global
             {
-                $<program>$ = new Program($<func_node>1);
+                $<program>$ = new Program($<node>1);
             }
-        | error
-        ;
+        ; 
 
-func    : header instbl
-            {
-                ((Function *) $<header>1->getType())->unsetForward();      //This set -forward- to false forever!
-                $<func_node>$ = new FuncNode($<header>1, $<instlist>2);
-            }
-        | header
-            {
-                $<func_node>$ = new FuncNode($<header>1, NULL);
-            }
-        ;
+global : func leavescope { $<node>$ = $<node>1; }
+       | decl { $<node>$ = $<node>1; }
+       | declbox { $<node>$ = new Decl($<symType>1, NULL, $<symType>1->getType()); }
+       | error { $<node>$ = syntax_error; }
+       ;
+
+func : header instbl
+        {
+            ((Function *) $<header>1->getType())->unsetForward();      //This set -forward- to false forever!
+            $<func_node>$ = new FuncNode($<header>1, $<instlist>2);
+        }
+     | header
+        {
+            $<func_node>$ = new FuncNode($<header>1, NULL);
+        }
+     ;
 
 header  : idheader COLCOL enterscope signa
             {
@@ -502,11 +507,10 @@ decl : typeid EQUAL exp
         {
             $<node>$ = new Decl($<symType>1, NULL, new TypeError(""));
         }
-     | declbox
-        {
-            $<node>$ = new Decl($<symType>1, NULL, new TypeError(""));
-        }
-     ;
+        ;
+
+
+
 
 
 declonly : typeid  { $<symType>$ = $<symType>1; }

@@ -1,0 +1,26 @@
+registro Persona {
+    ent edad
+    ent ci
+    cadena nombre
+    cadena apellido
+}
+
+mayor :: Persona a, Persona b -> bool {
+    retorna a.edad > b.edad
+}
+
+enie :: ~ {
+    Persona gabriel 
+    gabriel.nombre = "Gabriel"
+    gabriel.apellido = "Formica"
+    gabriel.edad = 20
+
+    Persona melecio
+    melecio.nombre = "Melecio"
+    melecio.apellido = "Ponte"
+    melecio.edad = 100
+
+    si (mayor(melecio, gabriel)) {
+        escribir "Melecio es mayor"
+    }
+}
