@@ -348,16 +348,12 @@ inst : asign           { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
      | ereturn         { $<node>$ = $<node>1; }
      | callfunc        { $<node>$ = $<node>1; }
-     | LEER exp
+     | LEER checkid 
         {
-            if ($<exp>2->getType()->is("cadena")) {
-                std::vector<Exp *> *params = new std::vector<Exp *>;
-                params->push_back($<exp>2);
-                $<node>$ = new FuncApp("leer", params, type_void);
-            }
-            else {
-                $<node>$ = new FuncApp("leer", NULL, new TypeError("leer no esta recibiendo una cadena de caracteres"));
-            }
+            Exp *exp = new ExpSimple($<symType>2->getId(), $<symType>2->getType());
+            std::vector<Exp *> *params = new std::vector<Exp *>;
+            params->push_back(exp);
+            $<node>$ = new FuncApp("leer", params, type_void);
         }
      | ESCRIBIR exp
         {
