@@ -36,20 +36,20 @@ class Registro: public ConstructorType {
 
         bool is(std::string t) { return (t == "registro" || t == "constructor");}
 
-        void setBytes() {
+        void setWidth() {
             int sum = 0;
             std::list<Symbol *> *list = this->table->getAllSymbols();
 
             for (std::list<Symbol *>::iterator it = list->begin();
                                      it != list->end(); ++it) {
 
-                if ( (*it)->getType()->getBytes() == 0 )
-                    (*it)->getType()->setBytes();
+                if ( (*it)->getType()->getWidth() == 0 )
+                    (*it)->getType()->setWidth();
 
-                sum = sum + (*it)->getType()->getBytes();
+                sum = sum + (*it)->getType()->getWidth();
             }
 
-            this->bytes = sum;
+            this->width = sum;
         }
 };
 

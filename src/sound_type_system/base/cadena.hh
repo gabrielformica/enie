@@ -31,7 +31,7 @@ class Cadena: public Type {
 
         std::string typeString() { return "cadena"; }
         bool is(std::string t) { return t == "cadena"; }
-        void setBytes() { this->bytes = str.size(); }
+        void setWidth() { this->width = str.size(); }
 };
 
 #endif

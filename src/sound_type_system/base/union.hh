@@ -36,21 +36,21 @@ class Union: public ConstructorType {
 
         bool is(std::string t) { return (t == "union" || t == "constructor"); }
 
-        void setBytes() {
+        void setWidth() {
             int max = 0;
             std::list<Symbol *> *list = this->table->getAllSymbols();
 
             for (std::list<Symbol *>::iterator it = list->begin();
                                      it != list->end(); ++it) {
 
-                if ( (*it)->getType()->getBytes() == 0 )
-                    (*it)->getType()->setBytes();
+                if ( (*it)->getType()->getWidth() == 0 )
+                    (*it)->getType()->setWidth();
 
-                int temp = (*it)->getType()->getBytes();
+                int temp = (*it)->getType()->getWidth();
                 max = max > temp ? max : temp;
             }
 
-            this->bytes = max;
+            this->width = max;
         }
 
 };

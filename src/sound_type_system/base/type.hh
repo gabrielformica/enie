@@ -17,15 +17,15 @@
 
 class Type {
     protected:
-        int bytes;   //Number of bytes of the type
+        int width;   //Number of bytes of the type
 
     public:
-        Type(int b) : bytes(b) { }
+        Type(int b) : width(b) { }
 
         virtual std::string typeString() = 0 ;
         virtual bool  is(std::string) = 0;
-        virtual void setBytes() { }
-        int getBytes() { return this->bytes; }
+        virtual void setWidth() { }
+        int getWidth() { return this->width; }
 };
 
 #endif

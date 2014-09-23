@@ -1,14 +1,15 @@
-enie :: ~ {
-     registro Tipo1 {
-        ent a
-        ent b
-    }
+ registro Tipo1 {
+    ent a
+    ent b
+}
 
-    registro Tipo2 {
-        ent x
-        ent y
-        Tipo1 soyunreg
-    }
+registro Tipo2 {
+    ent x
+    ent y
+    Tipo1 soyunreg
+}
+
+enie :: ~ {
 
     Tipo2 a
 

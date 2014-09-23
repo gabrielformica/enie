@@ -29,7 +29,7 @@ class Flot: public Type {
 
         std::string typeString() { return "flot"; }
         bool is(std::string t) { return t == "flot"; }
-        void setBytes() { this->bytes = 8; }
+        void setWidth() { this->width = 8; }
 };
 
 #endif

@@ -22,12 +22,12 @@ class Void: public Type {
     public:
         typedef Type super;
 
-        /** Class constructor */    
+        /** Class constructor */
         Void() : super(0) { }
 
         std::string typeString() { return "void"; }
         bool is(std::string t) { return t == "void"; }
-        void setBytes() { this->bytes = 0; }
+        void setWidth() { this->width = 0; }
 };
 
 #endif

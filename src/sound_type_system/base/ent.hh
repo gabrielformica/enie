@@ -29,7 +29,7 @@ class Ent: public Type {
 
         std::string typeString() { return "ent"; }
         bool is(std::string t) { return t == "ent"; }
-        void setBytes() { this->bytes = 4; }
+        void setWidth() { this->width = 4; }
 };
 
 #endif

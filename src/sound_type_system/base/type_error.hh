@@ -32,7 +32,7 @@ class TypeError: public Type {
         std::string typeString() { return "error"; }
         bool is(std::string t) { return t == "error"; }
 
-        void setBytes() { this->bytes = 0; }
+        void setWidth() { this->width = 0; }
 };
 
 #endif

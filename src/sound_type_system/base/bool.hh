@@ -29,7 +29,7 @@ class Bool: public Type {
 
         std::string typeString() { return "bool"; }
         bool is(std::string t) { return t == "bool"; }
-        void setBytes() { this->bytes = 1; }
+        void setWidth() { this->width = 1; }
 };
 
 #endif

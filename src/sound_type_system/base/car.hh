@@ -31,7 +31,7 @@ class Car: public Type {
 
         std::string typeString() { return "car"; }
         bool is(std::string t) { return t == "car"; }
-        void setBytes() { this->bytes = 1; }
+        void setWidth() { this->width = 1; }
 };
 
 #endif

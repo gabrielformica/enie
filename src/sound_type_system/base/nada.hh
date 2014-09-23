@@ -29,7 +29,7 @@ class Nada: public Type {
 
         std::string typeString() { return "nada"; }
         bool is(std::string t) { return t == "nada"; }
-        void setBytes() { this->bytes = 0; }
+        void setWidth() { this->width = 0; }
 };
 
 #endif

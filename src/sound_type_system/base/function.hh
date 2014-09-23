@@ -43,8 +43,8 @@ class Function: public Type {
         void setRet(Type *t) { this->ret = t; }
         Type *getRetType() { return this->ret; }
 
-        bool getForward() { return this->forward; } 
-        void unsetForward() { this->forward = false; }     
+        bool getForward() { return this->forward; }
+        void unsetForward() { this->forward = false; }
 
         void addParam(Type *t) { this->params->push_back(t); }
         std::vector<Type *>* getParams() { return this->params; }
@@ -67,7 +67,7 @@ class Function: public Type {
             return str;
         }
 
-        void setByte() { this->bytes = 0; }
+        void setByte() { this->width = 0; }
 
 };
 

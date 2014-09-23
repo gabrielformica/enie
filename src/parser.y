@@ -214,7 +214,7 @@ globals : globals sepaux global
             {
                 $<program>$ = new Program($<node>1);
             }
-        ; 
+        ;
 
 global : func leavescope { $<node>$ = $<node>1; }
        | decl { $<node>$ = $<node>1; }
@@ -244,7 +244,7 @@ header  : idheader COLCOL enterscope signa
             }
         ;
 
-idheader : ID   
+idheader : ID
             {
                 int currentScope = symtable->getCurrentScope();
                 int line = @1.first_line;
@@ -273,7 +273,7 @@ idheader : ID
                 else {
                     tryAddSymbol(symtable, &errors, s);          //It will add the symbol always
                 }
-                
+
                 $<symType>$ = s;
             }
         ;
@@ -348,7 +348,7 @@ inst : asign           { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
      | ereturn         { $<node>$ = $<node>1; }
      | callfunc        { $<node>$ = $<node>1; }
-     | LEER checkid 
+     | LEER checkid
         {
             Exp *exp = new ExpSimple($<symType>2->getId(), $<symType>2->getType());
             std::vector<Exp *> *params = new std::vector<Exp *>;
@@ -517,7 +517,7 @@ arrid : typeid arr
         {
             ((Arreglo *) $<type>2)->setRootTypeElem($<symType>1->getType());
             $<symType>1->setType($<type>2);   //linking types
-            $<symType>1->getType()->setBytes();
+            $<symType>1->getType()->setWidth();
             $<symType>$ = $<symType>1;
         }
       ;

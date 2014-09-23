@@ -67,17 +67,17 @@ class Arreglo: public Type {
 
         bool is(std::string t) { return t == "arreglo"; }
 
-        void setBytes() {
+        void setWidth() {
             Type *t = this->type_elem;
 
-            if (t->getBytes() == 0)
-                t->setBytes();
+            if (t->getWidth() == 0)
+                t->setWidth();
 
-            this->bytes = (1 + last_index - first_index) * t->getBytes();
+            this->width = (1 + last_index - first_index) * t->getWidth();
         }
 
         int getDimensions() {
-            if (! this->type_elem->is("arreglo")) 
+            if (! this->type_elem->is("arreglo"))
                 return 1;
 
 
