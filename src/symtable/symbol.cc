@@ -40,6 +40,16 @@ Symbol::Symbol(std::string id, int s, int l, int c) {
     this->column = c;
 }
 
+/** Class constructor with offset */
+
+Symbol::Symbol(std::string id, Type *t, int s, int l, int c, int o) {
+    this->id = id;
+    this->scope = s;
+    this->line = l;
+    this->column = c;
+    this->offset = o;
+}
+
 /* Return id of the symbol */
 
 string Symbol::getId() {
@@ -91,11 +101,20 @@ void Symbol::setType(Type *type) {
     this->type = type;
 }
 
+int Symbol::getOffset() {
+    return this->offset;
+}
+
+void Symbol::setOffset(int o) {
+    this->offset = o;
+}
+
 /* Prints a symbol */
 void Symbol::print() {
     std::cout << "Nombre:   " << id << "   ";
     std::cout << "Línea:   " <<  line << "   Columna:   " << column;
-    std::cout << " Alcance:   " << scope << std::endl;
+    std::cout << " Alcance:   " << scope;
+    std::cout << " Offset:   " << offset << std::endl;
 }
 
 

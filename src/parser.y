@@ -54,6 +54,9 @@
 
 %code {
     SymbolTable *symtable = new SymbolTable();
+    int offset = 0;                 // Keeps global count of offset
+    std::list<int> *offsetStack = new std::list<int>;     // Tracks current offset for nested blocks
+
     std::vector<std::string> errors;
     void yyerror(char const *);
 
@@ -483,6 +486,8 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 decl : typeid EQUAL exp
         {
             if ($<symType>1->getType() == $<exp>3->getType()) {
+                $<symType>1->setOffset(offset);     // Setting offset
+                offset += $<symType>1->getType()->getWidth();
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
@@ -492,6 +497,8 @@ decl : typeid EQUAL exp
      | arrid EQUAL arrvalues
         {
             if ($<symType>1->getType() == $<exp>3->getType()) {
+                $<symType>1->setOffset(offset);     // Setting offset
+                offset += $<symType>1->getType()->getWidth();
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
@@ -501,6 +508,8 @@ decl : typeid EQUAL exp
         }
      | declonly
         {
+            $<symType>1->setOffset(offset);     // Setting offset
+            offset += $<symType>1->getType()->getWidth();
             $<node>$ = new Decl($<symType>1, NULL, new TypeError(""));
         }
         ;
@@ -551,13 +560,14 @@ type : ENT     { $<type>$ = entero; }
         }
      ;
 
-selec : SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect
+selec : pushoffset SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect popoffset
         {
+
             $<selec>$ = new Selec($<exp>3,  $<instlist>6, $<osi>8, $<sino>9);
         }
       ;
 
-oselect : OSI LPAR exp RPAR enterscope instbl leavescope oselect
+oselect : pushoffset OSI LPAR exp RPAR enterscope instbl leavescope oselect popoffset
             {
                 $<osi>$ = new Osi($<exp>3, $<instlist>6, $<osi>8);
             }
@@ -567,7 +577,7 @@ oselect : OSI LPAR exp RPAR enterscope instbl leavescope oselect
             } /* lambda */
         ;
 
-sinoselect :  SINO enterscope instbl leavescope
+sinoselect : pushoffset  SINO enterscope instbl leavescope popoffset
                {
                     $<sino>$ = $<instlist>3;
                }
@@ -612,13 +622,13 @@ leftsideopt : term
             ;
 
 
-indite : MIENTRAS LPAR exp RPAR enterscope instbl leavescope
+indite : pushoffset MIENTRAS LPAR exp RPAR enterscope instbl leavescope popoffset
             {
                 $<mientras>$ = new Mientras($<exp>3, $<instlist>6);
             }
        ;
 
-detite : PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope
+detite : pushoffset PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope popoffset
             {
                 if ($<decl>4 != NULL) {
                     $<para>$ = new Para($<decl>4, $<exp>6, $<exp>8, $<instlist>10);
@@ -1133,6 +1143,12 @@ explist : explist COMMA exp
 
 enterscope : {symtable->enterScope(); }
 leavescope : {symtable->leaveScope(); }
+
+pushoffset : { offsetStack->push_back(offset); }
+popoffset  : {
+                offset = offsetStack->back();
+                offsetStack->pop_back();
+             }
 
 %%
 

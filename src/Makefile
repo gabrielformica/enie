@@ -1,8 +1,8 @@
 GPPFLAGS= -std=c++11 -lfl -Wno-deprecated-register
-GPP= clang++ 
+GPP= g++
 YACC= bison -v -yd -o parser.tab.cc
 LEX= flex --yylineno -o lex.yy.cc
-OBJ=  parser.tab.cc lex.yy.cc  parserhelper.cc sound_type_system/type_system_utils.cc $(SYMTABLE) 
+OBJ=  parser.tab.cc lex.yy.cc  parserhelper.cc sound_type_system/type_system_utils.cc $(SYMTABLE)
 SYMTABLE= $(wildcard symtable/*.cc)
 
 enie: $(OBJ)
@@ -12,7 +12,7 @@ parser.tab.cc: parser.y
 	$(YACC) parser.y
 
 lex.yy.cc: lexer.l
-	$(LEX) lexer.l 
+	$(LEX) lexer.l
 
 install:
 	cp enie /usr/bin/

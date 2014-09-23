@@ -28,10 +28,12 @@ class Symbol {
         int scope;
         int line;
         int column;
+        int offset = 0;
 
     public:
         Symbol(std::string id, Type *t, int s, int l, int c);
         Symbol(std::string, int, int, int);
+        Symbol(std::string id, Type *t, int s, int l, int c, int o);
 
 
         std::string getId();
@@ -43,6 +45,8 @@ class Symbol {
         void setLine(int);
         void setColumn(int);
         void setType(Type*);
+        int getOffset();
+        void setOffset(int);
         void print();
 };
 
