@@ -1,5 +1,5 @@
-GPPFLAGS= -std=c++11 -lfl -Wno-deprecated-register
-GPP= g++
+GPPFLAGS= -g -std=c++11 -lfl -Wno-deprecated-register
+GPP= clang++
 YACC= bison -v -yd -o parser.tab.cc
 LEX= flex --yylineno -o lex.yy.cc
 OBJ=  parser.tab.cc lex.yy.cc  parserhelper.cc sound_type_system/type_system_utils.cc $(SYMTABLE)

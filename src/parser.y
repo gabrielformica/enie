@@ -563,23 +563,23 @@ type : ENT     { $<type>$ = entero; }
 selec : pushoffset SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect popoffset
         {
 
-            $<selec>$ = new Selec($<exp>3,  $<instlist>6, $<osi>8, $<sino>9);
+            $<selec>$ = new Selec($<exp>4,  $<instlist>7, $<osi>9, $<sino>10);
         }
       ;
 
 oselect : pushoffset OSI LPAR exp RPAR enterscope instbl leavescope oselect popoffset
             {
-                $<osi>$ = new Osi($<exp>3, $<instlist>6, $<osi>8);
+                $<osi>$ = new Osi($<exp>4, $<instlist>7, $<osi>9);
             }
-        |
+        | /* lambda */
             {
                 $<osi>$ = NULL;
-            } /* lambda */
+            } 
         ;
 
-sinoselect : pushoffset  SINO enterscope instbl leavescope popoffset
+sinoselect : pushoffset SINO enterscope instbl leavescope popoffset
                {
-                    $<sino>$ = $<instlist>3;
+                    $<sino>$ = $<instlist>4;
                }
            |   { $<sino>$ = NULL; }  /* lambda */
            ;
@@ -624,17 +624,17 @@ leftsideopt : term
 
 indite : pushoffset MIENTRAS LPAR exp RPAR enterscope instbl leavescope popoffset
             {
-                $<mientras>$ = new Mientras($<exp>3, $<instlist>6);
+                $<mientras>$ = new Mientras($<exp>4, $<instlist>7);
             }
        ;
 
 detite : pushoffset PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope popoffset
             {
                 if ($<decl>4 != NULL) {
-                    $<para>$ = new Para($<decl>4, $<exp>6, $<exp>8, $<instlist>10);
+                    $<para>$ = new Para($<decl>5, $<exp>7, $<exp>9, $<instlist>11);
                 }
                 else {
-                    $<para>$ = new Para(NULL, $<exp>6, $<exp>8, $<instlist>10);
+                    $<para>$ = new Para(NULL, $<exp>7, $<exp>9, $<instlist>11);
                 }
             }
        ;
