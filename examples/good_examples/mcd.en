@@ -1,0 +1,43 @@
+/*
+ * Calculo del maximo comun divisor por el algoritmo de euclides
+ *
+ */
+
+max :: ent a, ent b -> ent {
+    si (a > b) {
+        retorna a
+    }
+    retorna b
+}
+
+min :: ent a, ent b -> ent {
+    si (a < b) {
+        retorna a
+    }
+    retorna b
+}
+
+mcd :: ent a, ent b -> ent 
+
+enie :: ~ {
+    ent a
+    ent b
+    escribir "Este programa calcula el maximo comun divisor de dos numeros"
+
+    leer a 
+    leer b 
+
+    mcd(a, b)
+}
+
+mcd :: ent a, ent b -> ent {
+    ent mayor = max(a, b)
+    ent menor = min(a, b)
+    ent mod = mayor % menor
+
+    si (mod == 0) {
+        retorna menor 
+    }
+
+    mcd(menor, mod)
+}
