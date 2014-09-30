@@ -47,6 +47,8 @@
     #include "nodes/func_node.hh"
     #include "nodes/funcapp.hh"
     #include "nodes/program.hh"
+    #include "interm_code/quad.hh"
+    #include "interm_code/quad_asign.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
     extern "C" { int yyparse(void); int yylex(void);}
