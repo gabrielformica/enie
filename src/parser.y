@@ -199,8 +199,7 @@ enie    : begin enterscope globals end leavescope
 
                 //Check if every forward declaration was defined
                 std::string str = not_implemented(symtable);
-                std::cout << str << std::endl;
-                
+                errors.push_back(str); 
             }
         ;
 
@@ -268,7 +267,7 @@ idheader : ID
                         std::string str0 = "(linea "+ to_string(line)+ ", columna ";
                         str0 += to_string(column) + "): ";
                         std::string str = "error "+ str0 + "la funcion '"+ id +"'";
-                        str += ", toma el nombre una variable previamente declara ";
+                        str += ", toma el nombre de una variable previamente declara ";
                         str += "en la linea " + to_string(aux->getLine());
                         errors.push_back(str);
                     }
@@ -278,6 +277,9 @@ idheader : ID
                         std::string str = "error "+ str0 + "la funcion '"+ id +"'";
                         str += " ya ha sido definida";
                         errors.push_back(str);
+                    }
+                    else {                                                      //A function, but not implemented yet
+                        s = aux;                         
                     }
                 }
                 else {

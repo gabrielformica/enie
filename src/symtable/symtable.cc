@@ -136,7 +136,6 @@ std::list<Symbol *> *SymbolTable::getStillForwards() {
         Symbol *s = (*it).second;
         if (s->getType()->is("function")) {
             if (((Function *) s->getType())->getForward()) {
-                std::cout << "-----> " << s->getId() << std::endl;
                 list->push_back((*it).second);
             }
         }

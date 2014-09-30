@@ -50,8 +50,8 @@ std::string not_implemented(SymbolTable *symtable) {
 
         str += "error ";
         str += "(linea " + to_string(symbol->getLine());
-        str += " columna " + to_string(symbol->getColumn()) + ") : ";
-        str += "Funcion '" + symbol->getId() + "'";
+        str += ", columna " + to_string(symbol->getColumn()) + "): ";
+        str += "funcion '" + symbol->getId() + "'";
         str += " fue declarada pero nunca implementada\n";
     }
     
