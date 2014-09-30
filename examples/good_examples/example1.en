@@ -3,8 +3,9 @@ enie :: ~ {
     ent a = 5
     para (ent i = 7; i < a; i+1) {
         ent b = 5
-        ent c = 6 + cierto
+        ent c = 6 
     }
+    ent c = 8 + a
     /*
 
     si (a == 5) {

@@ -487,7 +487,7 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 
 decl : typeid EQUAL exp
         {
-            if ($<symType>1->getType() == $<exp>3->getType()) {
+            if ($<symType>1->getType()->typeString() == $<exp>3->getType()->typeString()) {
                 $<symType>1->setOffset(offset);     // Setting offset
                 offset += $<symType>1->getType()->getWidth();
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
@@ -990,13 +990,16 @@ arr : OBRACK exp CBRACK arr
 
 declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescope
             {
-                //constructor object
+                //Constructor object
                 ConstructorType *type = (ConstructorType *) $<symType>1->getType();
 
-                //linking types
-
+                //Linking types
                 type->setSymbolTable($<symboltable>5);
                 $<symType>$ = $<symType>1;
+
+                //Setting width
+                type->setWidth();
+
             }
         ;
 

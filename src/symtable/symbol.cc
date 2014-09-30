@@ -114,7 +114,8 @@ void Symbol::print() {
     std::cout << "Nombre:   " << id << "   ";
     std::cout << "Línea:   " <<  line << "   Columna:   " << column;
     std::cout << " Alcance:   " << scope;
-    std::cout << " Offset:   " << offset << std::endl;
+    std::cout << " Offset:   " << offset;
+    std::cout << " Width:   " << type->getWidth() << std::endl;
 }
 
 
