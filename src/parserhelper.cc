@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <vector>
 #include "parserhelper.hh"
 #include "symtable/symtable.hh"
@@ -33,4 +34,26 @@ std::vector<Type *> *getTypesFromExps(std::vector<Exp *> *exps) {
     }
 
     return types;
+}
+
+/**
+  * Returns the errors given by declared functions that were not implemented
+  */ 
+
+std::string not_implemented(SymbolTable *symtable) {
+    std::list<Symbol *> *functions = symtable->getStillForwards(); 
+    std::string str = "";
+    for (std::list<Symbol *>::iterator it = functions->begin();
+                             it != functions->end(); ++it) {
+
+        Symbol *symbol = *(it);
+
+        str += "error ";
+        str += "(linea " + to_string(symbol->getLine());
+        str += " columna " + to_string(symbol->getColumn()) + ") : ";
+        str += "Funcion '" + symbol->getId() + "'";
+        str += " fue declarada pero nunca implementada\n";
+    }
+    
+    return str;
 }

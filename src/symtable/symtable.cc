@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include "symtable.hh"
 #include "symbol.hh"
+#include "../sound_type_system/base/function.hh"
 
 using namespace std;
 
@@ -119,6 +120,26 @@ std::list<Symbol *> * SymbolTable::getAllSymbols() {
 
     for (MapTable::iterator it = table.begin(); it != table.end(); it++ ) {
         list->push_back((*it).second);
+    }
+
+    return list;
+}
+
+/**
+  * Returns the symbols (function) that still are forward declarations
+  */
+
+std::list<Symbol *> *SymbolTable::getStillForwards() {
+    std::list<Symbol *> *list = new std::list<Symbol *>;
+
+    for (MapTable::iterator it = table.begin(); it != table.end(); it++ ) {
+        Symbol *s = (*it).second;
+        if (s->getType()->is("function")) {
+            if (((Function *) s->getType())->getForward()) {
+                std::cout << "-----> " << s->getId() << std::endl;
+                list->push_back((*it).second);
+            }
+        }
     }
 
     return list;

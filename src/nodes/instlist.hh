@@ -19,6 +19,7 @@
 
 #include <list>
 #include "instruc.hh"
+#include "../sound_type_system/base/type_error.hh"
 #include "../sound_type_system/base/type.hh"
 
 

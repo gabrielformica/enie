@@ -28,7 +28,7 @@ class Symbol {
         int scope;
         int line;
         int column;
-        int offset = 0;
+        int offset;
 
     public:
         Symbol(std::string id, Type *t, int s, int l, int c);

@@ -196,6 +196,11 @@
 enie    : begin enterscope globals end leavescope
             {
                 enie = $<program>3;
+
+                //Check if every forward declaration was defined
+                std::string str = not_implemented(symtable);
+                std::cout << str << std::endl;
+                
             }
         ;
 

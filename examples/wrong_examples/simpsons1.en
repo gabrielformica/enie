@@ -1,0 +1,15 @@
+bart :: ent a, bool b -> nada  
+lisa :: ~
+
+enie :: ~ {
+    bart(5, cierto)
+    lisa(5, falso)
+}
+
+bart :: ent a, bool b -> nada {
+    si (b) {
+        para (ent i = 0; i < a; i + 1) {
+            escribir "No voy a dormirme en clases de..."  
+        }
+    }
+}

@@ -41,7 +41,8 @@ class SymbolTable {
         bool isActive(std::string);
         void printStack();
         void printTable();
-        std::list<Symbol *> * getAllSymbols();
+        std::list<Symbol *> *getAllSymbols();
+        std::list<Symbol *> *getStillForwards();
 
 };
 

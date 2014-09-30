@@ -23,7 +23,7 @@ class Function: public Type {
     private:
         Type *ret;
         std::vector<Type *> *params;
-        bool forward = true;         //True by default
+        bool forward;         //True by default
 
     public:
         typedef Type super;
@@ -67,7 +67,7 @@ class Function: public Type {
             return str;
         }
 
-        void setByte() { this->width = 0; }
+        void setWidth() { this->width = 0; }
 
 };
 
