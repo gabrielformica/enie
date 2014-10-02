@@ -25,6 +25,7 @@ class ExpSimple: public Exp {
         /** Class constructor */
         ExpSimple(std::string elem, Type *t) : super(t) {
             this->elem = elem;
+            this->op = NULL;
         }
 
         ExpSimple(Type *t) : super(t) {
@@ -34,7 +35,7 @@ class ExpSimple: public Exp {
         std::string getElem() { return this->elem; }
 
         std::string toString() {
-            return "Expresion : \n" + this->elem;
+            return "Expresion : \n" + this->opToString() + this->elem;
         }
 
 

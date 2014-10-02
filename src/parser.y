@@ -55,6 +55,9 @@
 }
 
 %code {
+    char *minus_op = "-";
+    char *plus_op = "+";
+    char *negation_op = "!";
     SymbolTable *symtable = new SymbolTable();
     int offset = 0;                 // Keeps global count of offset
     std::list<int> *offsetStack = new std::list<int>;     // Tracks current offset for nested blocks
@@ -199,7 +202,7 @@ enie    : begin enterscope globals end leavescope
 
                 //Check if every forward declaration was defined
                 std::string str = not_implemented(symtable);
-                errors.push_back(str); 
+                //errors.push_back(str); 
             }
         ;
 
@@ -901,8 +904,16 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
            //     $<exp>$ = exp;
            // }
         }
-    | NEGATION exp  { $<exp>$ = $<exp>2; }
-    | MINUS exp  %prec NEG { $<exp>$ = $<exp>2; }
+    | NEGATION exp  
+        { 
+            $<exp>2->setUnaryOperator(negation_op);
+            $<exp>$ = $<exp>2; 
+        }
+    | MINUS exp  %prec NEG 
+        { 
+            $<exp>2->setUnaryOperator(minus_op); 
+            $<exp>$ = $<exp>2; 
+        }
     | LPAR exp RPAR  { $<exp>$ = $<exp>2; }
     ;
 

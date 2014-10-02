@@ -1,0 +1,17 @@
+enie :: ~ {
+    ent z = -6
+    ent a = -(5 + 3)
+    para (ent i = 7; i < a; i+1) {
+        ent b = -5
+        ent c = -6 
+    }
+    ent c = -8 + a
+    /*
+
+    si (a == 5) {
+        ent c = 4
+        c = 3
+    }
+    */
+
+}

@@ -19,8 +19,10 @@
 #include "node.hh"
 #include "../sound_type_system/base/type.hh"
 
-
 class Exp: public Node {
+    protected:
+        char *op;  // +, -, !
+
     public:
         typedef Node super;
 
@@ -30,6 +32,17 @@ class Exp: public Node {
         std::string getTypeStr() { return this->type->typeString(); }
 
         virtual std::string toString() = 0;
+
+        void setUnaryOperator(char *op) { this->op = op; }
+
+        char *getUnaryOperator() { return this->op; }
+
+        std::string opToString() {
+            if (this->op == NULL) 
+                return "";  
+
+            return this->op;
+        }
 
 };
 
