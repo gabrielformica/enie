@@ -23,22 +23,23 @@ class ExpSimple: public Exp {
         typedef Exp super;
 
         /** Class constructor */
+        ExpSimple(Type *t) : super(t) {
+            this->elem = "";
+        }
+
+        /** Class constructor */
         ExpSimple(std::string elem, Type *t) : super(t) {
             this->elem = elem;
             this->op = "";
         }
 
-        ExpSimple(Type *t) : super(t) {
-            this->elem = "";
-        }
+        virtual bool is(std::string str) = 0;
 
         std::string getElem() { return this->elem; }
 
         std::string toString() {
             return "Expresion : \n" + this->getUnaryOperator() + this->elem;
         }
-
-
 };
 
 #endif

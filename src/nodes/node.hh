@@ -29,6 +29,7 @@ class Node {
 
         std::string getTypeStr() { return type->typeString(); }
         virtual std::string toString() = 0;
+
 };
 
 #endif

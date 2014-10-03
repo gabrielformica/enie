@@ -31,6 +31,9 @@
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
     #include "nodes/expsimple.hh"
+    #include "nodes/exp_var.hh"
+    #include "nodes/exp_const.hh"
+    #include "nodes/exp_index.hh"
     #include "nodes/expbin.hh"
     #include "nodes/asign.hh"
     #include "nodes/decl.hh"
@@ -367,7 +370,7 @@ inst : asign           { $<node>$ = $<node>1; }
      | callfunc        { $<node>$ = $<node>1; }
      | LEER checkid
         {
-            Exp *exp = new ExpSimple($<symType>2->getId(), $<symType>2->getType());
+            Exp *exp = new ExpVar($<symType>2->getId(), $<symType>2->getType());
             std::vector<Exp *> *params = new std::vector<Exp *>;
             params->push_back(exp);
             $<node>$ = new FuncApp("leer", params, type_void);
@@ -442,9 +445,9 @@ asign : asignid EQUAL exp
 asignid : idlist
             {
                 if ($<symType>1 == NULL) {
-                    $<exp>$ = new ExpSimple("", new TypeError(""));
+                    $<exp>$ = new ExpVar("", new TypeError(""));
                 } else {
-                    $<exp>$ = new ExpSimple($<symType>1->getId(), $<symType>1->getType());
+                    $<exp>$ = new ExpVar($<symType>1->getId(), $<symType>1->getType());
                 }
             }
         ;
@@ -457,7 +460,6 @@ arrasign : checkid arrasignaux
                 bool badarray = false;
                 int i;
                 for (i = 0; i < $<explist>2->size(); i++) {
-                    //str = str + "[" +  ((Exp *) (*$<explist>2)[i])->getElem() + "]";
                     if (! (((Exp *) (*$<explist>2)[i])->getType()->is("ent")))
                         badarray = true;
                 }
@@ -472,7 +474,7 @@ arrasign : checkid arrasignaux
                 else
                     new_type = new TypeError("");
 
-                $<exp>$ = new ExpSimple(str, new_type);
+                $<exp>$ = new ExpIndex(str, $<explist>2, new_type);
             }
         ;
 
@@ -600,14 +602,14 @@ sinoselect : pushoffset SINO enterscope instbl leavescope popoffset
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
-                  ExpSimple *var = new ExpSimple($<symType>2->getId(), $<symType>2->getType());
+                  ExpSimple *var = new ExpVar($<symType>2->getId(), $<symType>2->getType());
                   $<caso>$ = new Caso(var, $<optlist>5, $<lambda_opt>6);
               }
           ;
 
 lastoption : sepaux BSLASH QUESTION ARROW instbl
                 {
-                    $<lambda_opt>$ = new LambdaOpt(new ExpSimple("?", new Car()), $<instlist>5);
+                    $<lambda_opt>$ = new LambdaOpt(new ExpConst("?", new Car()), $<instlist>5);
                 }
            ;
 
@@ -923,19 +925,19 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
 term : idlist
         {
             if ($<symType>1 == NULL) {
-                $<exp>$ = new ExpSimple("", new TypeError(""));
+                $<exp>$ = new ExpVar("", new TypeError(""));
             } else {
-                $<exp>$ = new ExpSimple($<symType>1->getId(), $<symType>1->getType());
+                $<exp>$ = new ExpVar($<symType>1->getId(), $<symType>1->getType());
             }
         }
-     | NUMENT   { $<exp>$ = new ExpSimple(to_string($1), entero); }
-     | NUMFLOT  { $<exp>$ = new ExpSimple(to_string($1), flot); }
-     | CIERTO   { $<exp>$ = new ExpSimple("cierto", booleano) ; }
-     | FALSO    { $<exp>$ = new ExpSimple("falso", booleano) ; }
+     | NUMENT   { $<exp>$ = new ExpConst(to_string($1), entero); }
+     | NUMFLOT  { $<exp>$ = new ExpConst(to_string($1), flot); }
+     | CIERTO   { $<exp>$ = new ExpConst("cierto", booleano) ; }
+     | FALSO    { $<exp>$ = new ExpConst("falso", booleano) ; }
      /* | checkid arr  ID arr */
      | callfunc    { $<exp>$ = $<exp>1; }
-     | CONSTCAD    { $<exp>$ = new ExpSimple(*$1, new Cadena()); }
-     | CONSTCAR    { $<exp>$ = new ExpSimple(*$1, new Car()); }
+     | CONSTCAD    { $<exp>$ = new ExpConst(*$1, new Cadena()); }
+     | CONSTCAR    { $<exp>$ = new ExpConst(*$1, new Car()); }
      | arrasign
      | error
         {
@@ -1149,7 +1151,7 @@ funcargs : LPAR explist RPAR { $<explist>$ = $<explist>2; }
          | LPAR RPAR
             {
                 std::vector<Exp *> *exps = new std::vector<Exp *>;
-                exps->push_back(new ExpSimple("", nada));
+                exps->push_back(new ExpConst("", nada));
                 $<explist>$ = exps;
             }
          ;

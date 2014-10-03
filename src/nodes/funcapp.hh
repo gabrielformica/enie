@@ -39,6 +39,8 @@ class FuncApp: public Exp {
         std::string getId() { return this->id; }
         std::vector<Exp *> *getParams() { return this->params; }
 
+        bool is(std::string str) { return str == "FuncApp"; }
+
 
         std::string toString() {
             std::string str = "Llamada a funcion: \n";

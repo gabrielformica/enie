@@ -43,6 +43,8 @@ class ExpBin: public Exp {
         Exp *getRight() { return this->right; }
         std::string getOperator() { return this->ope; }
 
+        bool is(std::string str) { return "ExpBin"; }
+
         std::string toString() {
             std::string signo = "";
             if (this->op != "")

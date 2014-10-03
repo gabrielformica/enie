@@ -33,10 +33,11 @@ class Exp: public Node {
 
         virtual std::string toString() = 0;
 
+        virtual bool is(std::string) = 0;
+
         void setUnaryOperator(std::string op) { this->op = op; }
 
         std::string getUnaryOperator() { return this->op; }
-
 };
 
 #endif
