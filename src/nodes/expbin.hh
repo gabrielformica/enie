@@ -45,8 +45,8 @@ class ExpBin: public Exp {
 
         std::string toString() {
             std::string signo = "";
-            if (this->op != NULL)
-                signo = "Signo: " + this->opToString();
+            if (this->op != "")
+                signo = "Signo: " + this->op;
 
             std::string str = "Expresion Binaria: " + signo + "\n";
             str = str + "Operando izquierdo: " + this->left->toString() + "\n";

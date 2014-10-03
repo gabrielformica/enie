@@ -21,7 +21,7 @@
 
 class Exp: public Node {
     protected:
-        char *op;  // +, -, !
+        std::string op;  // +, -, !
 
     public:
         typedef Node super;
@@ -33,16 +33,9 @@ class Exp: public Node {
 
         virtual std::string toString() = 0;
 
-        void setUnaryOperator(char *op) { this->op = op; }
+        void setUnaryOperator(std::string op) { this->op = op; }
 
-        char *getUnaryOperator() { return this->op; }
-
-        std::string opToString() {
-            if (this->op == NULL) 
-                return "";  
-
-            return this->op;
-        }
+        std::string getUnaryOperator() { return this->op; }
 
 };
 

@@ -55,9 +55,11 @@
 }
 
 %code {
-    char *minus_op = "-";
-    char *plus_op = "+";
-    char *negation_op = "!";
+
+    std::string minus_op = "-" ;
+    std::string plus_op = "+" ;
+    std::string negation_op = "!";
+
     SymbolTable *symtable = new SymbolTable();
     int offset = 0;                 // Keeps global count of offset
     std::list<int> *offsetStack = new std::list<int>;     // Tracks current offset for nested blocks
