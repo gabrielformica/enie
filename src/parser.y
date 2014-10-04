@@ -370,7 +370,7 @@ inst : asign           { $<node>$ = $<node>1; }
      | callfunc        { $<node>$ = $<node>1; }
      | LEER checkid
         {
-            Exp *exp = new ExpVar($<symType>2->getId(), $<symType>2->getType());
+            Exp *exp = new ExpVar($<symType>2, $<symType>2->getType());
             std::vector<Exp *> *params = new std::vector<Exp *>;
             params->push_back(exp);
             $<node>$ = new FuncApp("leer", params, type_void);
@@ -445,9 +445,9 @@ asign : asignid EQUAL exp
 asignid : idlist
             {
                 if ($<symType>1 == NULL) {
-                    $<exp>$ = new ExpVar("", new TypeError(""));
+                    $<exp>$ = new ExpVar(new TypeError(""));
                 } else {
-                    $<exp>$ = new ExpVar($<symType>1->getId(), $<symType>1->getType());
+                    $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
                 }
             }
         ;
@@ -602,7 +602,7 @@ sinoselect : pushoffset SINO enterscope instbl leavescope popoffset
 
 multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
-                  ExpSimple *var = new ExpVar($<symType>2->getId(), $<symType>2->getType());
+                  ExpSimple *var = new ExpVar($<symType>2, $<symType>2->getType());
                   $<caso>$ = new Caso(var, $<optlist>5, $<lambda_opt>6);
               }
           ;
@@ -925,9 +925,9 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
 term : idlist
         {
             if ($<symType>1 == NULL) {
-                $<exp>$ = new ExpVar("", new TypeError(""));
+                $<exp>$ = new ExpVar(new TypeError(""));
             } else {
-                $<exp>$ = new ExpVar($<symType>1->getId(), $<symType>1->getType());
+                $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
             }
         }
      | NUMENT   { $<exp>$ = new ExpConst(to_string($1), entero); }

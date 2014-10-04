@@ -14,14 +14,20 @@
 #ifndef EXP_VAR_HH
 #define EXP_VAR_HH
 
+#include "../symtable/symbol.hh"
+
 class ExpVar: public ExpSimple {
+    protected:
+        Symbol *var;
     public:
         typedef ExpSimple super;
 
         /** Class constructor */
-        ExpVar(Type *t) : super(t) { };
+        ExpVar(Type *t) : super(t) { this->var = NULL; };
 
-        ExpVar(std::string elem, Type *t) : super(elem, t) {}; 
+        ExpVar(Symbol *s, Type *t) : super(s->getId(), t) { 
+            this->var = s;
+        } 
 
         bool is(std::string str) { return "ExpVar"; }
 };
