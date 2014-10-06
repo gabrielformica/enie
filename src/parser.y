@@ -365,26 +365,34 @@ inst : asign
         { 
             $<node>$ = $<node>1; 
 
-            std::cout << "----------ASIGN----------" << std::endl;
-            tac = ((Asign *) $<node>1)->genCode();
-            std::cout << tac->emit() << std::endl;
-            std::cout << "----------ASIGN----------" << std::endl;
+           // std::cout << "----------ASIGN----------" << std::endl;
+           // tac = ((Asign *) $<node>1)->genCode();
+           // std::cout << tac->emit() << std::endl;
+           // std::cout << "----------ASIGN----------" << std::endl;
         }
      | decl            
         { 
-            std::cout << "----------DECL----------" << std::endl;
             $<node>$ = $<node>1; 
-            tac = ((Decl *) $<node>1)->genCode();
-            if (tac != NULL)
-                std::cout << tac->emit() << std::endl;
-            std::cout << "----------DECL----------" << std::endl;
+           // std::cout << "----------DECL----------" << std::endl;
+           // tac = ((Decl *) $<node>1)->genCode();
+           // if (tac != NULL)
+           //     std::cout << tac->emit() << std::endl;
+           // std::cout << "----------DECL----------" << std::endl;
         }
      | selec           { $<node>$ = $<node>1; }
      | multselec       { $<node>$ = $<node>1; }
      | indite          { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
      | ereturn         { $<node>$ = $<node>1; }
-     | callfunc        { $<node>$ = $<node>1; }
+     | callfunc        
+        { 
+            $<node>$ = $<node>1; 
+            //std::cout << "----------FUNCAPP-----------" << std::endl;
+            //tac = ((FuncApp *) $<node>1)->genCode();
+            //if (tac != NULL)
+            //    std::cout << tac->emit() << std::endl;
+            //std::cout << "----------FUNCAPP-----------" << std::endl;
+        }
      | LEER checkid
         {
             Exp *exp = new ExpVar($<symType>2, $<symType>2->getType());

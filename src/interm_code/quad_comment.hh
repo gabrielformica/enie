@@ -17,12 +17,17 @@
 
 #include <string>
 #include "quad.hh"
-#include "quad_utils.hh"
 
 class QuadComment: public Quad {
     private:
         int line;        //Line number of the instruction
     public:
+
+        typedef Quad super;
+        /* Class constructor */
+        QuadComment(int line): super("", NULL, NULL, NULL) {
+            this->line = line;
+        }
 
         /**
           * Returns the string representation of the quad
