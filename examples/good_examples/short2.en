@@ -1,0 +1,6 @@
+enie :: ~ {
+    ent a = 5 + 4*9
+    ent b = a + 1
+    ent c
+    c = 3 + a 
+}

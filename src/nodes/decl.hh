@@ -21,6 +21,7 @@
 #include "instruc.hh"
 #include "../symtable/symtable.hh"
 #include "../symtable/symbol.hh"
+#include "../interm_code/quad.hh"
 
 class Decl : public Instruc {
     private:
@@ -45,6 +46,21 @@ class Decl : public Instruc {
                 str = str +  "Variable : " + this->rhs->toString();
             }
             return str;
+        }
+
+        Quad *genCode() {
+            if (this->rhs == NULL)
+                return NULL;
+
+            Quad *right = this->rhs->genCode();
+            Argument *result = new ArgumentVar(this->lhs, this->type);
+            Quad *q = new Quad(":=", 
+                                right->getFinal()->getResult(),
+                                NULL,
+                                result);
+
+            right->appendToFinal(q);
+            return right;
         }
 };
 

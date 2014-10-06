@@ -20,6 +20,7 @@
 #include "exp.hh"
 #include "instruc.hh"
 #include "../symtable/symtable.hh"
+#include "../interm_code/quad.hh"
 
 class Asign: public Instruc {
     private:
@@ -42,6 +43,23 @@ class Asign: public Instruc {
             return str;
         }
 
+        Quad *genCode() {
+            //If it is a Symbol
+            if (this->lhs->is("ExpVar")) {
+                Quad *right = this->rhs->genCode();
+                Symbol *s = ((ExpVar *) this->lhs)->getVar();
+                Argument *result = new ArgumentVar(s, this->type);
+                Quad *q = new Quad(":=", 
+                                    right->getFinal()->getResult(),
+                                    NULL,
+                                    result);
+
+                right->appendToFinal(q);
+                return right;
+            }
+            //What if... x[i] = ?
+            return NULL;
+        }
 };
 
 #endif

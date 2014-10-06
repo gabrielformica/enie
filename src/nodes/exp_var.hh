@@ -31,6 +31,8 @@ class ExpVar: public ExpSimple {
 
         bool is(std::string str) { return "ExpVar" == str; }
 
+        Symbol *getVar() { return this->var; }
+
         Quad *genCode() {
             Symbol *temp = get_next_temp();
             Argument *result = new ArgumentVar(temp, this->type);

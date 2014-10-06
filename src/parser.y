@@ -361,8 +361,24 @@ instbl : OBRACE sepaux instlist sepaux CBRACE
             }
         ;
 
-inst : asign           { $<node>$ = $<node>1; }
-     | decl            { $<node>$ = $<node>1; }
+inst : asign           
+        { 
+            $<node>$ = $<node>1; 
+
+            std::cout << "----------ASIGN----------" << std::endl;
+            tac = ((Asign *) $<node>1)->genCode();
+            std::cout << tac->emit() << std::endl;
+            std::cout << "----------ASIGN----------" << std::endl;
+        }
+     | decl            
+        { 
+            std::cout << "----------DECL----------" << std::endl;
+            $<node>$ = $<node>1; 
+            tac = ((Decl *) $<node>1)->genCode();
+            if (tac != NULL)
+                std::cout << tac->emit() << std::endl;
+            std::cout << "----------DECL----------" << std::endl;
+        }
      | selec           { $<node>$ = $<node>1; }
      | multselec       { $<node>$ = $<node>1; }
      | indite          { $<node>$ = $<node>1; }
@@ -424,9 +440,6 @@ asign : asignid EQUAL exp
         {
             if ($<exp>1->getType() == $<exp>3->getType()) {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void) ;
-
-                tac = $<exp>3->genCode();
-                std::cout << tac->emit() << std::endl;
             }
             else {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
