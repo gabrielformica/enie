@@ -18,6 +18,9 @@
 #include <string>
 #include "node.hh"
 #include "exp.hh"
+#include "../interm_code/quad.hh"
+#include "../interm_code/interm_code_helper.hh"
+#include "../interm_code/argument.hh"
 #include "../sound_type_system/base/type.hh"
 
 class ExpBin: public Exp {
@@ -55,6 +58,26 @@ class ExpBin: public Exp {
             str = str + "Operador: " + this->ope + "\n";
             str = str + "Operando derecho: " + this->right->toString() + "\n";
             return str;
+        }
+
+        Quad *genCode() {
+            Quad *q1 = this->left->genCode(); 
+            Quad *q2 = this->right->genCode(); 
+            Symbol *s = get_next_temp();
+            Argument *r = new ArgumentVar(s, this->type);
+
+            Quad *q3 = new Quad(this->ope, 
+                                q1->getFinal()->getResult(),
+                                q2->getFinal()->getResult(),
+                                r); 
+
+            q1->appendToFinal(q2);
+
+            gen_un_op(q3, this->op);
+
+            q2->appendToFinal(q3);
+
+            return q1;
         }
 };
 

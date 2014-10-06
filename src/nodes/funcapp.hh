@@ -55,6 +55,7 @@ class FuncApp: public Exp {
             return str;
         }
 
+        Quad *genCode() { return NULL; }
 };
 
 #endif

@@ -51,13 +51,14 @@
     #include "nodes/funcapp.hh"
     #include "nodes/program.hh"
     #include "interm_code/quad.hh"
-    #include "interm_code/quad_asign.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
     extern "C" { int yyparse(void); int yylex(void);}
 }
 
 %code {
+
+    Quad *tac = NULL;
 
     std::string minus_op = "-" ;
     std::string plus_op = "+" ;
@@ -423,6 +424,9 @@ asign : asignid EQUAL exp
         {
             if ($<exp>1->getType() == $<exp>3->getType()) {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void) ;
+
+                tac = $<exp>3->genCode();
+                std::cout << tac->emit() << std::endl;
             }
             else {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));

@@ -17,6 +17,8 @@
 
 #include <string>
 #include "node.hh"
+#include "../interm_code/quad.hh"
+#include "../interm_code/interm_code_helper.hh"
 #include "../sound_type_system/base/type.hh"
 
 class Exp: public Node {
@@ -38,6 +40,8 @@ class Exp: public Node {
         void setUnaryOperator(std::string op) { this->op = op; }
 
         std::string getUnaryOperator() { return this->op; }
+
+        virtual Quad *genCode() = 0;
 };
 
 #endif

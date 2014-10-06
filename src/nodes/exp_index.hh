@@ -51,6 +51,8 @@ class ExpIndex: public Exp {
             return str;
         }
 
+        Quad *genCode() { return NULL; }
+
 };
 
 #endif

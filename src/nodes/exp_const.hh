@@ -25,6 +25,13 @@ class ExpConst: public ExpSimple {
         ExpConst(std::string elem, Type *t) : super(elem, t) {}; 
 
         bool is(std::string str) { return str == "ExpConst"; }
+
+        Quad *genCode() {
+            Argument *arg = new ArgumentConst(this->elem, this->type);
+            Quad *q = new Quad(":=", arg, NULL, arg);
+            gen_un_op(q, this->op);
+            return q;
+        }
 };
 
 #endif

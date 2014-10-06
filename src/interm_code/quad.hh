@@ -15,12 +15,26 @@
 #define QUAD_HH
 
 #include <string>
-#include "quad_utils.hh"
 #include "../symtable/symbol.hh"
 #include "../sound_type_system/base/type.hh"
+#include "argument.hh"
 
 class Quad {
-    virtual std::string emit() = 0;
+    private:
+        std::string op;
+        Argument *arg1;
+        Argument *arg2;
+        Argument *result;
+        Quad *next;
+
+    public:
+        Quad(std::string op, Argument *a1, Argument *a2, Argument *r); 
+        std::string emit(); 
+        Argument *getResult();
+        Quad *getNext();
+        Quad *getFinal();
+        void setNext(Quad *q);
+        void appendToFinal(Quad *q);
 };
 
 #endif

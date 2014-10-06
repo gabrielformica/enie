@@ -29,7 +29,17 @@ class ExpVar: public ExpSimple {
             this->var = s;
         } 
 
-        bool is(std::string str) { return "ExpVar"; }
+        bool is(std::string str) { return "ExpVar" == str; }
+
+        Quad *genCode() {
+            Symbol *temp = get_next_temp();
+            Argument *result = new ArgumentVar(temp, this->type);
+            Argument *arg1 = new ArgumentVar(this->var, this->type);
+
+            Quad *q1 = new Quad(":=", arg1, NULL, result);
+            gen_un_op(q1, this->op);
+            return q1;
+        }
 };
 
 #endif
