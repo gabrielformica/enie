@@ -35,6 +35,8 @@ class QuadComment: public Quad {
         std::string toString() {
             return std::to_string(line) + " -------";
         }
+
+        
 };
 
 #endif

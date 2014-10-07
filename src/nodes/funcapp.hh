@@ -69,6 +69,7 @@ class FuncApp: public Exp {
             //Connecting the quads and getting the results
             for (int i = 0; i < params_quads->size(); i++) {
                 Argument *arg = (* params_quads)[i]->getFinal()->getResult();
+
                 comment->appendToFinal(new Quad("param", arg, NULL, arg));
             }
 

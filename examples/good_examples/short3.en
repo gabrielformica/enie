@@ -4,5 +4,5 @@ sumar :: ent a, ent b, ent c -> ent {
 
 enie :: ~ {
     ent a = 5
-    sumar(1, 2, 3)
+    sumar(a, a*a, 3*5 + 9)
 }

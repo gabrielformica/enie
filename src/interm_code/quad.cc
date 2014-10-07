@@ -39,7 +39,9 @@ std::string Quad::emit() {
         str += this->arg2->toString();
 
     str += "\n";
-    str += "result : " + this->result->toString();
+    str+= "result : ";
+    if (this->result != NULL) 
+        str += this->result->toString();
     str += "\n--------\n";
 
     if (this->next != NULL)

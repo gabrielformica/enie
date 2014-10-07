@@ -387,11 +387,11 @@ inst : asign
      | callfunc        
         { 
             $<node>$ = $<node>1; 
-            //std::cout << "----------FUNCAPP-----------" << std::endl;
-            //tac = ((FuncApp *) $<node>1)->genCode();
-            //if (tac != NULL)
-            //    std::cout << tac->emit() << std::endl;
-            //std::cout << "----------FUNCAPP-----------" << std::endl;
+            std::cout << "----------FUNCAPP-----------" << std::endl;
+            tac = ((FuncApp *) $<node>1)->genCode();
+            if (tac != NULL)
+                std::cout << tac->emit() << std::endl;
+            std::cout << "----------FUNCAPP-----------" << std::endl;
         }
      | LEER checkid
         {
