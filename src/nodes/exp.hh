@@ -42,6 +42,9 @@ class Exp: public Node {
         std::string getUnaryOperator() { return this->op; }
 
         virtual Quad *genCode() = 0;
+
+        Quad *genJumpingCode() { return NULL; }
+        Quad *genJumpingCode(std::string, std::string) { return NULL; }
 };
 
 #endif

@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file 
+  * @file
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
   * @author: Melecio Ponte <pontezambrano@gmail.com>
@@ -22,6 +22,8 @@
 #include "instruc.hh"
 #include "instlist.hh"
 #include "osi.hh"
+#include "../interm_code/interm_code_helper.hh"
+#include "../interm_code/quad.hh"
 
 class Selec: public Instruc {
     private:
@@ -48,7 +50,7 @@ class Selec: public Instruc {
             }
 
             this->type = il->getType();   //setting void or error
-            if (il->getType()->is("error")) 
+            if (il->getType()->is("error"))
                 return;
 
             if ((osi != NULL) && (osi->getType()->is("error"))) {
@@ -60,7 +62,7 @@ class Selec: public Instruc {
         std::string toString() {
             std::string str = "";
             str = "Selecion:\n";
-             
+
             str = str + "Condicion: " + this->cond->toString() + "\n";
             str = str + "Bloque de instrucciones: " + this->block->toString();
 
@@ -71,9 +73,91 @@ class Selec: public Instruc {
             if (this->sino != NULL) {
                 str = str + "Bloque Sino" + this->sino->toString() + "\n";
             }
-            
+
 
             return str;
+        }
+
+        Quad *genCode() {
+            std::string true_label = get_next_label();
+            std::string false_label = get_next_label();
+            // std::string exit_label = false_label;
+
+            ArgumentConst *true_arg = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
+
+            Quad *cond_quad = this->cond->genJumpingCode(true_label, false_label);
+            Quad *true_quad = new Quad("label", NULL, NULL, true_arg);
+            cond_quad->appendToFinal(true_quad);
+
+
+
+            if (this->osi == NULL and this->sino == NULL ) {
+                Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
+                cond_quad->appendToFinal(false_quad);
+            }
+            else if (this->osi != NULL and this->sino == NULL) {
+                // Exit label after SI block
+                std::string exit_label = get_next_label();
+                ArgumentConst *exit_arg = new ArgumentConst(exit_label, NULL);
+                Quad *goto_exit = new Quad("goto", NULL, NULL, exit_arg);
+                cond_quad->appendToFinal(goto_exit);
+
+                // If condition is false
+                Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
+                cond_quad->appendToFinal(false_quad);
+
+                // OSI instructions quads
+                Quad *osi_quad = this->osi->genCode(exit_arg);
+                cond_quad->appendToFinal(osi_quad);
+
+                // Exit label for complete block
+                Quad *exit_quad = new Quad("label", NULL, NULL, exit_arg);
+                cond_quad->appendToFinal(exit_quad);
+            }
+            else if (this->osi == NULL and this->sino != NULL) {
+                // Exit label after SI block
+                std::string exit_label = get_next_label();
+                ArgumentConst *exit_arg = new ArgumentConst(exit_label, NULL);
+                Quad *goto_exit = new Quad("goto", NULL, NULL, exit_arg);
+                cond_quad->appendToFinal(goto_exit);
+
+                Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
+                cond_quad->appendToFinal(false_quad);
+
+                Quad *sino_quad = this->sino->genCode();
+                cond_quad->appendToFinal(sino_quad);
+
+                // Exit label for complete block
+                Quad *exit_quad = new Quad("label", NULL, NULL, exit_arg);
+                cond_quad->appendToFinal(exit_quad);
+            }
+            else {
+                // Exit label after SI block
+                std::string exit_label = get_next_label();
+                ArgumentConst *exit_arg = new ArgumentConst(exit_label, NULL);
+                Quad *goto_exit = new Quad("goto", NULL, NULL, exit_arg);
+                cond_quad->appendToFinal(goto_exit);
+
+                // If
+                Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
+                cond_quad->appendToFinal(false_quad);
+
+
+                // OSI instructions quads
+                Quad *osi_quad = this->osi->genCode(exit_arg);
+                cond_quad->appendToFinal(osi_quad);
+
+                // SINO instructions quads
+                Quad *sino_quad = this->sino->genCode();
+                cond_quad->appendToFinal(sino_quad);
+
+                Quad *exit_quad = new Quad("label", NULL, NULL, exit_arg);
+                cond_quad->appendToFinal(exit_quad);
+            }
+
+            return cond_quad;
+
         }
 
 };

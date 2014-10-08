@@ -15,11 +15,17 @@
 #include "interm_code_helper.hh"
 #include "../symtable/symbol.hh"
 
-Symbol *get_next_temp() { 
+Symbol *get_next_temp() {
     int next = next_temp++;
     std::string id = "@t" + std::to_string(next);
     Symbol *next_temp_symbol = new Symbol(id,0,0,0);
     return next_temp_symbol;
+}
+
+std::string get_next_label() {
+    int next = next_label++;
+    std::string label = "@L" + std::to_string(next);
+    return label;
 }
 
 void gen_un_op(Quad *q, std::string un_op) {
@@ -28,9 +34,7 @@ void gen_un_op(Quad *q, std::string un_op) {
         Argument *result = new ArgumentVar(temp, q->getResult()->getType());
 
         Quad *next = new Quad(un_op, q->getResult(), NULL, result);
-                            
+
         q->appendToFinal(next);
     }
 }
-
-

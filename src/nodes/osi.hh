@@ -1,7 +1,7 @@
 /**
   * Copyright 2014
   *
-  * @file 
+  * @file
   *
   * @author: Gabriel Formica <gabrielformica93@gmail.com>
   * @author: Melecio Ponte <pontezambrano@gmail.com>
@@ -20,6 +20,7 @@
 #include "node.hh"
 #include "instruc.hh"
 #include "instlist.hh"
+#include "../interm_code/quad.hh"
 
 class Osi: public Instruc {
     private:
@@ -47,8 +48,8 @@ class Osi: public Instruc {
             }
             this->type = il->getType();   //setting void or error
 
-           
-            if (il->getType()->is("error")) 
+
+            if (il->getType()->is("error"))
                 return;
 
             if ((osi != NULL) && (osi->getType()->is("error"))) {
@@ -60,7 +61,7 @@ class Osi: public Instruc {
         std::string toString() {
                 std::string str = "";
                 str = "Bloque Osi:\n";
-                
+
                 str = str + "Condicion: " + this->cond->toString() + "\n";
                 str = str + "Bloque de instrucciones: " + this->block->toString();
 
@@ -70,6 +71,8 @@ class Osi: public Instruc {
 
                 return str;
         }
+
+        Quad *genCode(Argument *arg) { return NULL; }
 };
 
 #endif

@@ -19,9 +19,11 @@
 #include "../symtable/symbol.hh"
 
 static int next_temp = 0;
+static int next_label = 0;
 
 Symbol *get_next_temp();
+std::string get_next_label();
 
-void gen_un_op(Quad *q, std::string un_op); 
+void gen_un_op(Quad *q, std::string un_op);
 
 #endif

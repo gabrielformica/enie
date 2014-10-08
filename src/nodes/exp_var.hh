@@ -25,9 +25,9 @@ class ExpVar: public ExpSimple {
         /** Class constructor */
         ExpVar(Type *t) : super(t) { this->var = NULL; };
 
-        ExpVar(Symbol *s, Type *t) : super(s->getId(), t) { 
+        ExpVar(Symbol *s, Type *t) : super(s->getId(), t) {
             this->var = s;
-        } 
+        }
 
         bool is(std::string str) { return "ExpVar" == str; }
 

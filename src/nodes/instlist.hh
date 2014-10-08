@@ -21,7 +21,7 @@
 #include "instruc.hh"
 #include "../sound_type_system/base/type_error.hh"
 #include "../sound_type_system/base/type.hh"
-
+#include "../interm_code/quad.hh"
 
 class InstList : public Instruc {
     private:
@@ -42,7 +42,7 @@ class InstList : public Instruc {
             }
             else {
                 this->list->push_back(inst);
-                if (inst->getType()->is("error")) 
+                if (inst->getType()->is("error"))
                     this->type = inst->getType();
             }
         }
@@ -53,7 +53,9 @@ class InstList : public Instruc {
                 str = str + (*this->list)[i]->toString() + "\n";
             }
             return str;
-        }     
+        }
+
+        Quad *genCode();
 };
 
 #endif

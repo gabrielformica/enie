@@ -22,7 +22,7 @@ class ExpConst: public ExpSimple {
         /** Class constructor */
         ExpConst(Type *t) : super(t) { };
 
-        ExpConst(std::string elem, Type *t) : super(elem, t) {}; 
+        ExpConst(std::string elem, Type *t) : super(elem, t) {};
 
         bool is(std::string str) { return str == "ExpConst"; }
 
@@ -32,6 +32,20 @@ class ExpConst: public ExpSimple {
             gen_un_op(q, this->op);
             return q;
         }
+
+
+        Quad *genJumpingCode(std::string true_label, std::string false_label) {
+            ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
+
+            Quad *true_quad  = new Quad("goto", true_arg, NULL, true_arg);
+            Quad *false_quad = new Quad("goto", false_arg, NULL, false_arg);
+
+            true_quad->appendToFinal(false_quad);
+
+            return true_quad;
+        }
+
 };
 
 #endif

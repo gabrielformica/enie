@@ -61,15 +61,15 @@ class ExpBin: public Exp {
         }
 
         Quad *genCode() {
-            Quad *q1 = this->left->genCode(); 
-            Quad *q2 = this->right->genCode(); 
+            Quad *q1 = this->left->genCode();
+            Quad *q2 = this->right->genCode();
             Symbol *s = get_next_temp();
             Argument *r = new ArgumentVar(s, this->type);
 
-            Quad *q3 = new Quad(this->ope, 
+            Quad *q3 = new Quad(this->ope,
                                 q1->getFinal()->getResult(),
                                 q2->getFinal()->getResult(),
-                                r); 
+                                r);
 
             q1->appendToFinal(q2);
 
@@ -78,6 +78,18 @@ class ExpBin: public Exp {
             q2->appendToFinal(q3);
 
             return q1;
+        }
+
+
+        Quad *genJumpingCode(std::string true_label, std::string false_label) {
+            Quad *q1 = this->left->genCode();
+            Quad *q2 = this->right->genCode();
+            ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
+
+            Quad *q_false = new Quad("goto", false_arg, NULL, false_arg);
+
+            // ++ q_false
         }
 };
 
