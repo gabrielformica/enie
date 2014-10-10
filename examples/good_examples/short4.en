@@ -1,0 +1,9 @@
+enie :: ~ {
+    ent a = 5
+    si (a == 5) {
+        ent b = 3
+    } osi (a < 3) {
+        ent z = 5
+    }
+
+}
