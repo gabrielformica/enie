@@ -65,6 +65,8 @@ class Caso: public Instruc {
 
             return str;
         }
+
+        Quad *genCode() { return NULL; }
 };
 
 #endif

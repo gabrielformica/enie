@@ -22,6 +22,7 @@
 #include "../interm_code/interm_code_helper.hh"
 #include "../interm_code/argument.hh"
 #include "../sound_type_system/base/type.hh"
+#include "../sound_type_system/type_system_utils.hh"
 
 class ExpBin: public Exp {
     private:
@@ -82,16 +83,74 @@ class ExpBin: public Exp {
 
 
         Quad *genJumpingCode(std::string true_label, std::string false_label) {
-            Quad *left_quad = this->left->genCode();
-            Quad *right_quad = this->right->genCode();
-            ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
-            ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
+            Argument *false_arg = new ArgumentConst(false_label, NULL);
+            Argument *true_arg = new ArgumentConst(true_label, NULL);
 
-            // // Arguments for
-            // ArgumentVar *result_left = new ArgumentVar(q1->getResult(), NULL);
-            // ArgumentVar *result_right = new ArgumentVar(q2->getResult(), NULL);
+            if (this->op == "!") {
+                Argument *temp = true_arg;
+                true_arg = false_arg;
+                false_arg = temp;
+            }
+            
+            if (this->ope == "&") {
+                 std::string new_label = get_next_label();
+                 Argument *new_label_arg = new ArgumentConst(new_label, NULL);
 
-            // Quad *
+                 Quad *l = this->left->genJumpingCode(new_label, false_label);
+                 Quad *r = this->right->genJumpingCode(true_label, false_label);
+
+                 Quad *label_quad = new Quad("label", NULL, NULL, new_label_arg);
+                 l->appendToFinal(label_quad);
+                 l->appendToFinal(r);
+
+                 return l;
+            }
+            else if (this->ope == "|") {
+                 std::string new_label = get_next_label();
+                 Argument *new_label_arg = new ArgumentConst(new_label, NULL);
+
+                 Quad *l = this->left->genJumpingCode(true_label, new_label);
+                 Quad *r = this->right->genJumpingCode(true_label, false_label);
+
+                 Quad *label_quad = new Quad("label", NULL, NULL, new_label_arg);
+                 l->appendToFinal(label_quad);
+                 l->appendToFinal(r);
+
+                 return l;
+            }
+            else if (this->ope == "<" || this->ope == "<=" || 
+                     this->ope == ">" || this->ope == ">=" ||
+                     this->ope == "==" || this->ope == "!=") {
+
+
+                Quad *l = this->left->genCode();
+                Quad *r = this->right->genCode();
+
+                Argument *arg1 = l->getFinal()->getResult();
+                Argument *arg2 = r->getFinal()->getResult();
+                Quad *jump = NULL;
+                if (this->ope == "<")
+                    jump = new Quad("blt", arg1, arg2, true_arg);
+                else if (this->ope == "<=")
+                    jump = new Quad("ble", arg1, arg2, true_arg);
+                else if (this->ope == ">")
+                    jump = new Quad("bgt", arg1, arg2, true_arg);
+                else if (this->ope == ">=")
+                    jump = new Quad("bge", arg1, arg2, true_arg);
+                else if (this->ope == "==")
+                    jump = new Quad("beq", arg1, arg2, true_arg);
+                else if (this->ope == "!=")
+                    jump = new Quad("bne", arg1, arg2, true_arg);
+
+                l->appendToFinal(r);
+                
+                l->appendToFinal(jump);
+
+                Quad *goto_false = new Quad("goto", NULL, NULL, false_arg);
+                l->appendToFinal(goto_false);
+
+                return l;
+            }
             return NULL;
         }
 };

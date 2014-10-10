@@ -72,6 +72,7 @@ class Osi: public Instruc {
                 return str;
         }
 
+        Quad *genCode() { return NULL; }
         Quad *genCode(Argument *exit_arg) {
             std::string true_label = get_next_label();
             std::string false_label = get_next_label();
@@ -84,8 +85,7 @@ class Osi: public Instruc {
             cond_quad->appendToFinal(true_quad);
 
             // Append instructions block quads
-            // Quad *block_quad = this->block->genCode();
-            // cond_quad->appendToFinal(block_quad);
+            cond_quad->appendToFinal(this->block->genCode());
 
             // Append goto exit
             Quad *goto_exit = new Quad("goto", NULL, NULL, exit_arg);

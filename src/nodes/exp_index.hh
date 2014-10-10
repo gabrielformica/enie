@@ -55,6 +55,10 @@ class ExpIndex: public Exp {
             return NULL; 
         }
 
+        Quad *genJumpingCode(std::string a, std::string b) {
+            return NULL;
+        }
+
 };
 
 #endif

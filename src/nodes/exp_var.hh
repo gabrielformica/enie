@@ -42,6 +42,10 @@ class ExpVar: public ExpSimple {
             gen_un_op(q1, this->op);
             return q1;
         }
+
+        Quad *genJumpingCode(std::string a, std::string b) {
+            return NULL;
+        }
 };
 
 #endif

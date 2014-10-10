@@ -75,6 +75,10 @@ class FuncApp: public Exp {
 
             return comment; 
         }
+
+        Quad *genJumpingCode(std::string a, std::string b) {
+            return NULL;
+        }
 };
 
 #endif

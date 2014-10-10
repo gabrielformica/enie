@@ -27,7 +27,7 @@ class Instruc: public Node {
 
         virtual std::string toString() = 0;
 
-        Quad *genCode() { return NULL; }
+        virtual Quad *genCode() = 0;
 };
 
 #endif

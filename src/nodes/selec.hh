@@ -87,8 +87,11 @@ class Selec: public Instruc {
 
             // Generation of jumping code and label for true
             Quad *cond_quad = this->cond->genJumpingCode(true_label, false_label);
+
+
             Quad *true_quad = new Quad("label", NULL, NULL, true_arg);
             cond_quad->appendToFinal(true_quad);
+            cond_quad->appendToFinal(this->block->genCode());
 
             // si () {}
             if (this->osi == NULL and this->sino == NULL ) {

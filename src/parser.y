@@ -606,6 +606,11 @@ selec : pushoffset SI LPAR exp RPAR enterscope instbl leavescope oselect sinosel
         {
 
             $<selec>$ = new Selec($<exp>4,  $<instlist>7, $<osi>9, $<sino>10);
+
+            // DEBUGGING
+            Quad *q = $<selec>$->genCode();
+            std::cout << q->emit() << std::endl;
+            // DEBUGGING
         }
       ;
 
@@ -667,6 +672,9 @@ leftsideopt : term
 indite : pushoffset MIENTRAS LPAR exp RPAR enterscope instbl leavescope popoffset
             {
                 $<mientras>$ = new Mientras($<exp>4, $<instlist>7);
+                Quad *q = $<mientras>$->genCode();
+                std::cout << q->emit() << std::endl;
+
             }
        ;
 
