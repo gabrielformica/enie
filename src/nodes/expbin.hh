@@ -82,14 +82,17 @@ class ExpBin: public Exp {
 
 
         Quad *genJumpingCode(std::string true_label, std::string false_label) {
-            Quad *q1 = this->left->genCode();
-            Quad *q2 = this->right->genCode();
+            Quad *left_quad = this->left->genCode();
+            Quad *right_quad = this->right->genCode();
             ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
             ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
 
-            Quad *q_false = new Quad("goto", false_arg, NULL, false_arg);
+            // // Arguments for
+            // ArgumentVar *result_left = new ArgumentVar(q1->getResult(), NULL);
+            // ArgumentVar *result_right = new ArgumentVar(q2->getResult(), NULL);
 
-            // ++ q_false
+            // Quad *
+            return NULL;
         }
 };
 

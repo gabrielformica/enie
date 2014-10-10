@@ -208,7 +208,8 @@ enie    : begin enterscope globals end leavescope
 
                 //Check if every forward declaration was defined
                 std::string str = not_implemented(symtable);
-                //errors.push_back(str); 
+                if (str != "")
+                    errors.push_back(str);
             }
         ;
 
@@ -288,7 +289,7 @@ idheader : ID
                         errors.push_back(str);
                     }
                     else {                                                      //A function, but not implemented yet
-                        s = aux;                         
+                        s = aux;
                     }
                 }
                 else {
@@ -361,18 +362,18 @@ instbl : OBRACE sepaux instlist sepaux CBRACE
             }
         ;
 
-inst : asign           
-        { 
-            $<node>$ = $<node>1; 
+inst : asign
+        {
+            $<node>$ = $<node>1;
 
            // std::cout << "----------ASIGN----------" << std::endl;
            // tac = ((Asign *) $<node>1)->genCode();
            // std::cout << tac->emit() << std::endl;
            // std::cout << "----------ASIGN----------" << std::endl;
         }
-     | decl            
-        { 
-            $<node>$ = $<node>1; 
+     | decl
+        {
+            $<node>$ = $<node>1;
            // std::cout << "----------DECL----------" << std::endl;
            // tac = ((Decl *) $<node>1)->genCode();
            // if (tac != NULL)
@@ -384,9 +385,9 @@ inst : asign
      | indite          { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
      | ereturn         { $<node>$ = $<node>1; }
-     | callfunc        
-        { 
-            $<node>$ = $<node>1; 
+     | callfunc
+        {
+            $<node>$ = $<node>1;
             std::cout << "----------FUNCAPP-----------" << std::endl;
             tac = ((FuncApp *) $<node>1)->genCode();
             if (tac != NULL)
@@ -615,7 +616,7 @@ oselect : pushoffset OSI LPAR exp RPAR enterscope instbl leavescope oselect popo
         | /* lambda */
             {
                 $<osi>$ = NULL;
-            } 
+            }
         ;
 
 sinoselect : pushoffset SINO enterscope instbl leavescope popoffset
@@ -933,15 +934,15 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
            //     $<exp>$ = exp;
            // }
         }
-    | NEGATION exp  
-        { 
+    | NEGATION exp
+        {
             $<exp>2->setUnaryOperator(negation_op);
-            $<exp>$ = $<exp>2; 
+            $<exp>$ = $<exp>2;
         }
-    | MINUS exp  %prec NEG 
-        { 
-            $<exp>2->setUnaryOperator(minus_op); 
-            $<exp>$ = $<exp>2; 
+    | MINUS exp  %prec NEG
+        {
+            $<exp>2->setUnaryOperator(minus_op);
+            $<exp>$ = $<exp>2;
         }
     | LPAR exp RPAR  { $<exp>$ = $<exp>2; }
     ;

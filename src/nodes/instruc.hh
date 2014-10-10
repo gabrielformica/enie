@@ -17,6 +17,7 @@
 #define INSTRUC_HH
 
 #include "node.hh"
+#include "../interm_code/quad.hh"
 
 class Instruc: public Node {
     public:
@@ -25,6 +26,8 @@ class Instruc: public Node {
         Instruc(Type *t) : super(t) { }
 
         virtual std::string toString() = 0;
+
+        Quad *genCode() { return NULL; }
 };
 
 #endif

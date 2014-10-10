@@ -22,6 +22,7 @@
 #include "../sound_type_system/base/type_error.hh"
 #include "../sound_type_system/base/type.hh"
 #include "../interm_code/quad.hh"
+#include "../interm_code/quad_comment.hh"
 
 class InstList : public Instruc {
     private:
@@ -55,7 +56,17 @@ class InstList : public Instruc {
             return str;
         }
 
-        Quad *genCode();
+        Quad *genCode() {
+            std::vector<Instruc *>* inst_list = this->list;
+            Quad *inst_quad = new QuadComment(0);
+            for (std::vector<Instruc *>::iterator it = inst_list->begin();
+                it != inst_list->end(); ++it) {
+                Quad *inst = (*it)->genCode();
+                inst_quad->appendToFinal(inst);
+            }
+
+            return inst_quad;
+        };
 };
 
 #endif

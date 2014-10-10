@@ -72,7 +72,36 @@ class Osi: public Instruc {
                 return str;
         }
 
-        Quad *genCode(Argument *arg) { return NULL; }
+        Quad *genCode(Argument *exit_arg) {
+            std::string true_label = get_next_label();
+            std::string false_label = get_next_label();
+            ArgumentConst *true_arg = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
+
+            // Generation of jumping code and label for true
+            Quad *cond_quad = this->cond->genJumpingCode(true_label, false_label);
+            Quad *true_quad = new Quad("label", NULL, NULL, true_arg);
+            cond_quad->appendToFinal(true_quad);
+
+            // Append instructions block quads
+            // Quad *block_quad = this->block->genCode();
+            // cond_quad->appendToFinal(block_quad);
+
+            // Append goto exit
+            Quad *goto_exit = new Quad("goto", NULL, NULL, exit_arg);
+            cond_quad->appendToFinal(goto_exit);
+
+            Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
+            cond_quad->appendToFinal(false_quad);
+
+            if (this->osi != NULL) {
+                Quad *osi_quad = this->osi->genCode(exit_arg);
+                cond_quad->appendToFinal(osi_quad);
+            }
+
+            return cond_quad;
+        }
+
 };
 
 #endif

@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Para class definition 
+  * Para class definition
   */
 
 
@@ -21,6 +21,9 @@
 #include "decl.hh"
 #include "exp.hh"
 #include "instlist.hh"
+#include "../interm_code/interm_code_helper.hh"
+#include "../interm_code/quad.hh"
+
 
 class Para: public Instruc {
     private:
@@ -28,7 +31,7 @@ class Para: public Instruc {
         Exp* left;
         Exp* right;
         InstList *block;
-    
+
     public:
         typedef Instruc super;
 
@@ -42,11 +45,11 @@ class Para: public Instruc {
 
         void setType() {
             if (this->decl == NULL) {
-                this->type = new TypeError("Declaracion nula"); 
+                this->type = new TypeError("Declaracion nula");
                 return;
             }
             else if (this->decl->getType()->is("error")) {
-                this->type = this->decl->getType(); 
+                this->type = this->decl->getType();
                 return;
             }
 
@@ -66,7 +69,7 @@ class Para: public Instruc {
                 this->type = this->block->getType();
                 return;
             }
-            
+
         }
 
         std::string toString() {
@@ -80,6 +83,50 @@ class Para: public Instruc {
 
             return str;
         }
+
+        Quad *genCode() {
+            std::string true_label = get_next_label();
+            std::string false_label = get_next_label();
+            std::string begin_label = get_next_label();
+
+            ArgumentConst *true_arg = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
+            ArgumentConst *begin_arg = new ArgumentConst(begin_label, NULL);
+
+            // Begin label quad is appended
+            Quad *code = this->left->genCode();
+            code->appendToFinal(new Quad("label", NULL, NULL, begin_arg));
+
+            code->appendToFinal(this->left->genJumpingCode(true_label, false_label));
+
+            // True quad is appended
+            Quad *true_quad = new Quad("label", NULL, NULL, true_arg);
+            code->appendToFinal(true_quad);
+
+            // Generate code for block of instructions
+            code->appendToFinal(this->block->genCode());
+
+            Quad *change = this->right->genCode();
+            code->appendToFinal(change);
+
+            Symbol *variable = this->decl->getLeft();
+            Argument *var_arg = new ArgumentVar(variable, variable->getType());
+            Quad *inc = new Quad(":=", change->getFinal()->getResult(),
+                                NULL,
+                                var_arg);
+            code->appendToFinal(inc);
+
+            // Go to begin
+            Quad *goto_begin = new Quad("goto", NULL, NULL, begin_arg);
+            code->appendToFinal(goto_begin);
+
+            // False quad is appended
+            Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
+            code->appendToFinal(false_quad);
+
+            return code;
+        }
+
 };
 
 #endif
