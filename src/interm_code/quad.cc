@@ -39,11 +39,16 @@ std::string Quad::emit() {
 
     // Emit for assignment instruction
     } else if (this->op == ":=") {
-        str += this->result->toString() + " ";
-        str += this->op + " ";
-        str += this->arg1->toString() + " \n";
 
-    // Emit for assignment instruction
+        // Constant quads are for data structure purposes only
+        // this can be ignored during the code emision
+        if (this->arg1->toString() != this->result->toString()) {
+            str += this->result->toString() + " ";
+            str += this->op + " ";
+            str += this->arg1->toString() + " \n";
+        }
+
+    // Emit for relational expression instruction
     } else if (this->op == "blt" || this->op == "ble" ||
                this->op == "bgt" || this->op == "bge" ||
                this->op == "beq" || this->op == "bne") {
@@ -58,7 +63,6 @@ std::string Quad::emit() {
 
     // Emit for algebraic operations (hopefully)
     } else {
-
         if (this->result != NULL)
             str += this->result->toString() + " := ";
 
