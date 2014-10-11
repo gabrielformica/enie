@@ -1,6 +1,6 @@
 enie :: ~ {
     ent a = 5
-    mientras (a < 15) {
+    mientras (a < 5 | a > 10) {
         ent b = a + 1
         ent z = b
         z = z + 1

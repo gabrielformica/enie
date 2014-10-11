@@ -25,30 +25,57 @@ Quad::Quad(std::string op, Argument *a1, Argument *a2, Argument *r) {
     this->next = NULL;
 }
 
-std::string Quad::emit() { 
-    std::string str = "--------\n";
-    
-    str += "operator: " + this->op + "\n";
-    str += "arg1 : "; 
-    if (this->arg1 != NULL) 
-        str += this->arg1->toString();
+std::string Quad::emit() {
+    std::string str = "";
 
-    str += "\n";
-    str += "arg2 : "; 
-    if (this->arg2 != NULL)
-        str += this->arg2->toString();
+    // Emit for label instruction
+    if (this->op == "label") {
+        str += this->result->toString() + ": \n";
 
-    str += "\n";
-    str+= "result : ";
-    if (this->result != NULL) 
-        str += this->result->toString();
-    str += "\n--------\n";
+    // Emit for goto instruction
+    } else if (this->op == "goto") {
+        str += "goto ";
+        str += this->result->toString() + "\n";
 
+    // Emit for assignment instruction
+    } else if (this->op == ":=") {
+        str += this->result->toString() + " ";
+        str += this->op + " ";
+        str += this->arg1->toString() + " \n";
+
+    // Emit for assignment instruction
+    } else if (this->op == "blt" || this->op == "ble" ||
+               this->op == "bgt" || this->op == "bge" ||
+               this->op == "beq" || this->op == "bne") {
+        str += "if " + this->arg1->toString();
+        str += " " + this->op;
+        str += " " + this->arg2->toString();
+        str += " then goto";
+        str += " " + this->result->toString() +"\n";
+
+    // Omit for comments (this should be implemented later)
+    } else if (this->op == "") {
+
+    // Emit for algebraic operations (hopefully)
+    } else {
+
+        if (this->result != NULL)
+            str += this->result->toString() + " := ";
+
+        if (this->arg1 != NULL)
+            str += this->arg1->toString() + " ";
+
+        str += this->op + " ";
+
+        if (this->arg2 != NULL)
+            str += this->arg2->toString() + "\n";
+    }
+
+    // Recursive call
     if (this->next != NULL)
         str += this->next->emit();
 
-
-    return str; 
+    return str;
 }
 
 Argument* Quad::getResult() {
