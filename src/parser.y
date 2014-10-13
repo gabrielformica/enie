@@ -388,11 +388,11 @@ inst : asign
      | callfunc
         {
             $<node>$ = $<node>1;
-            std::cout << "----------FUNCAPP-----------" << std::endl;
-            tac = ((FuncApp *) $<node>1)->genCode();
-            if (tac != NULL)
-                std::cout << tac->emit() << std::endl;
-            std::cout << "----------FUNCAPP-----------" << std::endl;
+            //std::cout << "----------FUNCAPP-----------" << std::endl;
+            //tac = ((FuncApp *) $<node>1)->genCode();
+            //if (tac != NULL)
+            //    std::cout << tac->emit() << std::endl;
+            //std::cout << "----------FUNCAPP-----------" << std::endl;
         }
      | LEER checkid
         {
@@ -500,7 +500,7 @@ arrasign : checkid arrasignaux
                 else
                     new_type = new TypeError("");
 
-                $<exp>$ = new ExpIndex(str, $<explist>2, new_type);
+                $<exp>$ = new ExpIndex($<symType>1, $<explist>2, new_type);
             }
         ;
 
@@ -608,8 +608,8 @@ selec : pushoffset SI LPAR exp RPAR enterscope instbl leavescope oselect sinosel
             $<selec>$ = new Selec($<exp>4,  $<instlist>7, $<osi>9, $<sino>10);
 
             // DEBUGGING
-            Quad *q = $<selec>$->genCode();
-            std::cout << q->emit() << std::endl;
+            //Quad *q = $<selec>$->genCode();
+            //std::cout << q->emit() << std::endl;
             // DEBUGGING
         }
       ;
@@ -672,8 +672,8 @@ leftsideopt : term
 indite : pushoffset MIENTRAS LPAR exp RPAR enterscope instbl leavescope popoffset
             {
                 $<mientras>$ = new Mientras($<exp>4, $<instlist>7);
-                Quad *q = $<mientras>$->genCode();
-                std::cout << q->emit() << std::endl;
+                //Quad *q = $<mientras>$->genCode();
+                //std::cout << q->emit() << std::endl;
 
             }
        ;
@@ -972,7 +972,14 @@ term : idlist
      | callfunc    { $<exp>$ = $<exp>1; }
      | CONSTCAD    { $<exp>$ = new ExpConst(*$1, new Cadena()); }
      | CONSTCAR    { $<exp>$ = new ExpConst(*$1, new Car()); }
-     | arrasign
+     | arrasign   
+        { 
+            $<exp>$ = $<exp>1; 
+            // DEBUGGING 
+            // Quad *q = $<exp>$->genCode();
+            // std::cout << q->emit() << std::endl;
+            // DEBUGGING 
+        }
      | error
         {
             $<node>$ = syntax_error;
@@ -1003,43 +1010,72 @@ arr : OBRACK exp CBRACK arr
                 $<type>$ = $<type>4;
             }
             else {
-                ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
-                ExpSimple *right = (ExpSimple *) ((ExpBin *) $<exp>2)->getRight();
-                std::string ope = ((ExpBin *) $<exp>2)->getOperator();
-
-                if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
-                    int first_index = std::stoi(left->getElem());
-                    int last_index = std::stoi(right->getElem());
-                    if (first_index  >= last_index) {
-                        $<type>$ = new TypeError("");
+                if ($<exp>2->is("ExpConst")) {
+                    ExpConst *e = (ExpConst *) $<exp>2;
+                    if (e->getType() == entero) {
+                        int w = std::stoi(e->getElem());
+                        $<type>$ = new Arreglo($<type>4, w);
                     }
                     else {
-                        $<type>$ = new Arreglo($<type>4, first_index, last_index);
+                        $<type>$ = new TypeError("");
                     }
+
+                    //ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
+                    //ExpSimple *right = (ExpSimple *) ((ExpBin *) $<exp>2)->getRight();
+                    //std::string ope = ((ExpBin *) $<exp>2)->getOperator();
+
+                    //if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
+                    //    int first_index = std::stoi(left->getElem());
+                    //    int last_index = std::stoi(right->getElem());
+                    //    if (first_index  >= last_index) {
+                    //        $<type>$ = new TypeError("");
+                    //    }
+                    //    else {
+                    //        $<type>$ = new Arreglo($<type>4, first_index, last_index);
+                    //    }
+                    //}
+                    //else {
+                    //    $<type>$ = new TypeError("");
+                    //}
                 }
                 else {
-                    $<type>$ = new TypeError("");
+                    $<type>$ = new TypeError("No es una expresion constante");
                 }
             }
         }
     | OBRACK exp CBRACK
         {
-            ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
-            ExpSimple *right = (ExpSimple *)  ((ExpBin *) $<exp>2)->getRight();
-            std::string ope = ((ExpBin *) $<exp>2)->getOperator();
+            //ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
+            //ExpSimple *right = (ExpSimple *)  ((ExpBin *) $<exp>2)->getRight();
+            //std::string ope = ((ExpBin *) $<exp>2)->getOperator();
 
-            if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
-                int first_index = std::stoi(left->getElem());
-                int last_index = std::stoi(right->getElem());
-                if (first_index  >= last_index) {
-                    $<type>$ = new TypeError("");
+            //if ((left->getType() == entero) && (right->getType() == entero) && (ope == "..")) {
+            //    int first_index = std::stoi(left->getElem());
+            //    int last_index = std::stoi(right->getElem());
+            //    if (first_index  >= last_index) {
+            //        $<type>$ = new TypeError("");
+            //    }
+            //    else {
+            //        $<type>$ = new Arreglo(NULL, first_index, last_index);
+            //    }
+            //}
+            if ($<exp>2->is("ExpConst")) {
+                ExpConst *e = (ExpConst *) $<exp>2;
+                if (e->getType() == entero) {
+                    int size = std::stoi(e->getElem());
+                    if (size <= 0)
+                        $<type>$ = new TypeError("El indice debe ser positivo");
+                    else {
+                        $<type>$ = new Arreglo(NULL, size);
+                    }
                 }
+
                 else {
-                    $<type>$ = new Arreglo(NULL, first_index, last_index);
+                    $<type>$ = new TypeError("El indice debe ser entero");
                 }
             }
             else {
-                $<type>$ = new TypeError("");
+                $<type>$ = new TypeError("No es una expresion constante");
             }
         }
     ;

@@ -23,23 +23,20 @@
 class Arreglo: public Type {
     private:
         Type *type_elem;
-        int first_index;
-        int last_index;
+        int size;
 
     public:
         typedef Type super;
 
         /** Class constructor */
-        Arreglo(Type *t, int fi, int li) : super(0) {
+        Arreglo(Type *t, int size) : super(0) {
             this->type_elem = t;
-            this->first_index = fi;
-            this->last_index = li;
+            this->size = size;
          }
 
         std::string typeString() {
             std::string str;
-            str = "arreglo(" + std::to_string(first_index) + "..";
-            str = str + std::to_string(last_index);
+            str = "arreglo(" + std::to_string(size);
             std::string str1 = "NULL";
             if (this->type_elem != NULL) {
                 str1 = this->type_elem->typeString();
@@ -65,6 +62,8 @@ class Arreglo: public Type {
 
         Type *getTypeElem() { return this->type_elem; }
 
+        int getSize() { return this->size; }
+
         bool is(std::string t) { return t == "arreglo"; }
 
         void setWidth() {
@@ -73,7 +72,7 @@ class Arreglo: public Type {
             if (t->getWidth() == 0)
                 t->setWidth();
 
-            this->width = (1 + last_index - first_index) * t->getWidth();
+            this->width = this->size * t->getWidth();
         }
 
         int getDimensions() {
@@ -82,6 +81,17 @@ class Arreglo: public Type {
 
 
             return 1 + ((Arreglo *) this->type_elem)->getDimensions();
+        }
+
+        int getSizeOfDim(int dimensions) {
+            if (dimensions > this->getDimensions()) 
+                return 0;
+
+            Arreglo *t = this;
+            while (dimensions-- > 1) 
+                t = (Arreglo *) t->getTypeElem();
+
+            return t->getSize();
         }
 
         Type *getRootType() {

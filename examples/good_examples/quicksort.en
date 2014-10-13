@@ -1,10 +1,11 @@
-swap :: ent v[1..15], ent i, ent j -> nada {
+swap :: ent v[15], ent i, ent j -> nada {
     ent temp = v[i]
     v[i] = v[j]
     v[j] = temp
+    ent x 
 }
 
-quicksort :: ent v[1..15], ent izq, ent der -> nada {
+quicksort :: ent v[15], ent izq, ent der -> nada {
     si (izq >= der) {
         retorna
     }
@@ -25,6 +26,6 @@ quicksort :: ent v[1..15], ent izq, ent der -> nada {
 }
 
 enie :: ~ {
-    ent v[1..15]  
+    ent v[15]  
     quicksort(v, 0, 15)
 }
