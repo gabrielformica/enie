@@ -73,6 +73,7 @@ class Osi: public Instruc {
         }
 
         Quad *genCode() { return NULL; }
+
         Quad *genCode(Argument *exit_arg) {
             std::string true_label = get_next_label();
             std::string false_label = get_next_label();

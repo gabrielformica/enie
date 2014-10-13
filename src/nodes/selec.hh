@@ -158,6 +158,7 @@ class Selec: public Instruc {
                 Quad *sino_quad = this->sino->genCode();
                 cond_quad->appendToFinal(sino_quad);
 
+                // Exit label
                 Quad *exit_quad = new Quad("label", NULL, NULL, exit_arg);
                 cond_quad->appendToFinal(exit_quad);
             }

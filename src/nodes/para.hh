@@ -93,8 +93,9 @@ class Para: public Instruc {
             ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
             ArgumentConst *begin_arg = new ArgumentConst(begin_label, NULL);
 
+            Quad *code = new QuadComment(0);
+
             // Begin label quad is appended
-            Quad *code = this->left->genCode();
             code->appendToFinal(new Quad("label", NULL, NULL, begin_arg));
 
             code->appendToFinal(this->left->genJumpingCode(true_label, false_label));
