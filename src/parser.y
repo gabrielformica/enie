@@ -635,6 +635,11 @@ multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
                   ExpSimple *var = new ExpVar($<symType>2, $<symType>2->getType());
                   $<caso>$ = new Caso(var, $<optlist>5, $<lambda_opt>6);
+
+                  // DEBUGGING
+                  Quad *q = $<caso>$->genCode();
+                  std::cout << q->emit() << std::endl;
+                  // DEBUGGING
               }
           ;
 
@@ -682,6 +687,12 @@ detite : pushoffset PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instb
             {
                 if ($<decl>4 != NULL) {
                     $<para>$ = new Para($<decl>5, $<exp>7, $<exp>9, $<instlist>11);
+
+                    // DEBUGGING
+                    Quad *q = $<para>$->genCode();
+                    std::cout << q->emit() << std::endl;
+                    // DEBUGGING
+
                 }
                 else {
                     $<para>$ = new Para(NULL, $<exp>7, $<exp>9, $<instlist>11);

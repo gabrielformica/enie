@@ -18,6 +18,9 @@
 
 #include <list>
 #include "option.hh"
+#include "../interm_code/interm_code_helper.hh"
+#include "../interm_code/quad.hh"
+
 
 class Optlist {
     private:
@@ -26,6 +29,11 @@ class Optlist {
         Optlist(Option *o);
 
         void addOption(Option *o);
+
+        Quad *genCode(Argument *exit_arg) {
+
+        }
+
 };
 
 #endif
