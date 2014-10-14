@@ -35,6 +35,7 @@ class Quad {
         Quad *getFinal();
         void setNext(Quad *q);
         void appendToFinal(Quad *q);
+        void clean();
 };
 
 #endif

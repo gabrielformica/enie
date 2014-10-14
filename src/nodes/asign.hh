@@ -44,21 +44,34 @@ class Asign: public Instruc {
         }
 
         Quad *genCode() {
-            //If it is a Symbol
-            if (this->lhs->is("ExpVar")) {
-                Quad *right = this->rhs->genCode();
-                Symbol *s = ((ExpVar *) this->lhs)->getVar();
+            Quad *right = this->rhs->genCode();
+            std::string ope = "";
+            Symbol *s = NULL;
+            if (this->lhs->is("ExpVar")) {    //If it is a Symbol
+                s = ((ExpVar *) this->lhs)->getVar();
                 Argument *result = new ArgumentVar(s, this->type);
-                Quad *q = new Quad(":=", 
-                                    right->getFinal()->getResult(),
-                                    NULL,
-                                    result);
-
+                Quad *q = new Quad(":=",
+                            right->getFinal()->getResult(),
+                            NULL,
+                            result);
                 right->appendToFinal(q);
                 return right;
             }
-            //What if... x[i] = ?
-            return NULL;
+            
+            //If it is a exp index
+            s = ((ExpIndex *) this->lhs)->getVar();
+            Quad *q1 = this->lhs->genCode();
+            q1->clean();
+            Argument *result = new ArgumentVar(s, this->type);
+            Quad *q2 = new Quad("[]=",
+                        q1->getFinal()->getResult(),
+                        right->getFinal()->getResult(),
+                        result);
+
+            right->appendToFinal(q1);
+            right->appendToFinal(q2);
+
+            return  right;
         }
 };
 

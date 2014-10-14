@@ -28,6 +28,7 @@ Quad::Quad(std::string op, Argument *a1, Argument *a2, Argument *r) {
 std::string Quad::emit() {
     std::string str = "";
 
+
     // Emit for label instruction
     if (this->op == "label") {
         str += this->result->toString() + ": \n";
@@ -48,6 +49,15 @@ std::string Quad::emit() {
             str += this->arg1->toString() + " \n";
         }
 
+    // Emit  for assignment like result[arg1] = arg2
+    } else if (this->op == "[]=") {
+        str += this->result->toString() + "[" + this->arg1->toString() + "]";
+        str += " := " + this->arg2->toString() + "\n";
+        
+    } else if (this->op == "=[]") {
+        str += this->result->toString() + " := " + this->arg1->toString();
+        str += "[" + this->arg2->toString() + "]" + "\n";
+
     // Emit for relational expression instruction
     } else if (this->op == "blt" || this->op == "ble" ||
                this->op == "bgt" || this->op == "bge" ||
@@ -59,20 +69,28 @@ std::string Quad::emit() {
         str += " " + this->result->toString() +"\n";
 
     // Omit for comments (this should be implemented later)
-    } else if (this->op == "") {
+    } else if (this->result == NULL) {
 
     // Emit for algebraic operations (hopefully)
     } else {
-        if (this->result != NULL)
-            str += this->result->toString() + " := ";
+        if (this->arg2 == NULL) {  // Unary operand and i
+            if ((this->op == "!") || (this->op == "-")) {
+                str += this->result->toString() + " := ";
+                str += this->op + this->arg1->toString() + "\n";
+            }
+        }
+        else {
+            if (this->result != NULL)
+                str += this->result->toString() + " := ";
 
-        if (this->arg1 != NULL)
-            str += this->arg1->toString() + " ";
+            if (this->arg1 != NULL)
+                str += this->arg1->toString() + " ";
 
-        str += this->op + " ";
+            str += this->op + " ";
 
-        if (this->arg2 != NULL)
-            str += this->arg2->toString() + "\n";
+            if (this->arg2 != NULL)
+                str += this->arg2->toString() + "\n";
+        }
     }
 
     // Recursive call
@@ -96,6 +114,14 @@ void Quad::setNext(Quad *q) {
 
 void Quad::appendToFinal(Quad *q) {
     this->getFinal()->setNext(q);
+}
+
+void Quad::clean() {
+    Quad *temp = this;
+    while (temp->next != this->getFinal()) {
+        temp = temp->next;
+    }
+    temp->next = NULL;
 }
 
 Quad *Quad::getFinal() {

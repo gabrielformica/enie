@@ -367,8 +367,8 @@ inst : asign
             $<node>$ = $<node>1;
 
            // std::cout << "----------ASIGN----------" << std::endl;
-           // tac = ((Asign *) $<node>1)->genCode();
-           // std::cout << tac->emit() << std::endl;
+           tac = ((Asign *) $<node>1)->genCode();
+           std::cout << tac->emit() << std::endl;
            // std::cout << "----------ASIGN----------" << std::endl;
         }
      | decl
@@ -380,7 +380,10 @@ inst : asign
            //     std::cout << tac->emit() << std::endl;
            // std::cout << "----------DECL----------" << std::endl;
         }
-     | selec           { $<node>$ = $<node>1; }
+     | selec           
+        { 
+            $<node>$ = $<node>1; 
+        }
      | multselec       { $<node>$ = $<node>1; }
      | indite          { $<node>$ = $<node>1; }
      | detite          { $<node>$ = $<node>1; }
@@ -608,8 +611,8 @@ selec : pushoffset SI LPAR exp RPAR enterscope instbl leavescope oselect sinosel
             $<selec>$ = new Selec($<exp>4,  $<instlist>7, $<osi>9, $<sino>10);
 
             // DEBUGGING
-            //Quad *q = $<selec>$->genCode();
-            //std::cout << q->emit() << std::endl;
+            Quad *q = $<selec>$->genCode();
+            std::cout << q->emit() << std::endl;
             // DEBUGGING
         }
       ;
@@ -987,8 +990,8 @@ term : idlist
         { 
             $<exp>$ = $<exp>1; 
             // DEBUGGING 
-            // Quad *q = $<exp>$->genCode();
-            // std::cout << q->emit() << std::endl;
+             //Quad *q = $<exp>$->genCode();
+             //std::cout << q->emit() << std::endl;
             // DEBUGGING 
         }
      | error

@@ -23,16 +23,16 @@
 
 class ExpIndex: public Exp {
     private:
-        Symbol *id;
+        Symbol *var;
         std::vector<Exp *> *explist;
 
     public:
         typedef Exp super;
 
-        ExpIndex(Symbol *id, std::vector<Exp *> *explist, Type *t)
+        ExpIndex(Symbol *var, std::vector<Exp *> *explist, Type *t)
                 : super(t) {
             
-            this->id = id;
+            this->var = var;
             this->explist = explist;
         }
 
@@ -40,7 +40,7 @@ class ExpIndex: public Exp {
 
         std::string toString() {
             std::string str = "Expresion -Indexada-: \n";
-            str += this->getUnaryOperator() + this->id->getId();
+            str += this->getUnaryOperator() + this->var->getId();
             
             for (std::vector<Exp *>::iterator it = this->explist->begin();
                     it != this->explist->end(); ++it) {
@@ -53,7 +53,7 @@ class ExpIndex: public Exp {
 
         Quad *genCode() { 
             Quad *comment = new QuadComment(0);
-            Arreglo *t = (Arreglo *) this->id->getType();
+            Arreglo *t = (Arreglo *) this->var->getType();
             comment->appendToFinal((* this->explist)[0]->genCode());
             for (int i = 1; i < this->explist->size(); i++) {
                 //Begin Magic
@@ -81,9 +81,20 @@ class ExpIndex: public Exp {
 
                 comment->appendToFinal(q2);
             }
+            // Last quad has to be t(i) := a[@t(i-1)]
+            Symbol *t1 = get_next_temp();
+            Argument *result = new ArgumentVar(t1, this->type);
+            Argument *s = new ArgumentVar(this->var, this->type);
+            Quad *last = new Quad("=[]", 
+                                    s, 
+                                    comment->getFinal()->getResult(),
+                                    result);
+
+            comment->appendToFinal(last);
             return comment;
         }
 
+        Symbol *getVar() { return this->var; }
         Quad *genJumpingCode(std::string a, std::string b) {
             return NULL;
         }
