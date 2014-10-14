@@ -2,7 +2,6 @@ swap :: ent v[15], ent i, ent j -> nada {
     ent temp = v[i]
     v[i] = v[j]
     v[j] = temp
-    ent x 
 }
 
 quicksort :: ent v[15], ent izq, ent der -> nada {

@@ -40,7 +40,15 @@ class Retorna: public Instruc {
             return str;
         }
 
-        Quad *genCode() { return NULL; }
+        Quad *genCode() { 
+            if (exp == NULL) 
+                return new Quad("return", NULL, NULL, NULL);
+
+            Quad *q = this->exp->genCode();
+            Argument *arg1 = q->getFinal()->getResult();
+            q->appendToFinal(new Quad("return", arg1, NULL, NULL));
+            return q;
+        }
 
 };
 

@@ -46,7 +46,12 @@ std::string Quad::emit() {
     if (this->line > 0)  {
         str += "-----> " + this->comment + ", linea ";
         str += std::to_string(this->line) + "<-----\n";
-    } else if (this->op == "param") {
+    } else if (this->op == "return") {
+        str += "return ";
+        if (this->arg1 != NULL)
+            str += this->arg1->toString();
+        str += "\n";
+    }  else if (this->op == "param") {
         str += "param " + this->arg1->toString() + "\n";
 
     } else if (this->op == "call") {
