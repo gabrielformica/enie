@@ -60,19 +60,31 @@ class FuncApp: public Exp {
             Quad *comment = new Quad(0,"");
             std::vector<Quad *> *params_quads = new std::vector<Quad *>;
 
+            Quad *temps = new Quad(0,"");
             //Quads vector of every expression
             for (int i = 0; i < this->params->size(); i++) {
                 Quad *resolv_exp = (* this->params)[i]->genCode();
+                Argument *arg = resolv_exp->getFinal()->getResult();
                 params_quads->push_back(resolv_exp);
+                comment->appendToFinal(resolv_exp);
+                temps->appendToFinal(new Quad("param", arg, NULL, arg));
             }
+            comment->appendToFinal(temps);
+
 
             //Connecting the quads and getting the results
-            for (int i = 0; i < params_quads->size(); i++) {
-                Argument *arg = (* params_quads)[i]->getFinal()->getResult();
+            //for (int i = 0; i < params_quads->size(); i++) {
+            //    Argument *arg = (* params_quads)[i]->getFinal()->getResult();
 
-                comment->appendToFinal(new Quad("param", arg, NULL, arg));
-            }
+            //    comment->appendToFinal(new Quad("param", arg, NULL, arg));
+            //}
 
+            int num_param = this->params->size();  //Number of parameters
+            std::string num_p = std::to_string(num_param);
+            Argument *arg1 = new ArgumentConst(this->id, NULL);
+            Argument *arg2 = new ArgumentConst(num_p, NULL);
+
+            comment->appendToFinal(new Quad("call",  arg1, arg2, NULL));
             return comment; 
         }
 

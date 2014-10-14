@@ -46,11 +46,14 @@ std::string Quad::emit() {
     if (this->line > 0)  {
         str += "-----> " + this->comment + ", linea ";
         str += std::to_string(this->line) + "<-----\n";
-    }
-    // Emit for label instruction
-    else if (this->op == "label") {
-        str += this->result->toString() + ": \n";
+    } else if (this->op == "param") {
+        str += "param " + this->arg1->toString() + "\n";
 
+    } else if (this->op == "call") {
+        str += "call " + this->arg1->toString() + ", ";
+        str += this->arg2->toString() + "\n";
+    } else if (this->op == "label") {   // Emit for label instruction
+        str += this->result->toString() + ": \n";
     // Emit for goto instruction
     } else if (this->op == "goto") {
         str += "goto ";
