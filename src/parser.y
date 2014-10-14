@@ -7,6 +7,7 @@
     #include <string>
     #include <list>
     #include <vector>
+    #include <set>
     #include <string.h>
     #include <stdlib.h>
     #include <stdio.h>
@@ -69,6 +70,7 @@
     std::list<int> *offsetStack = new std::list<int>;     // Tracks current offset for nested blocks
 
     std::vector<std::string> errors;
+    std::vector<TypeError *> *errors_vector = new std::vector<TypeError *>;  // Semantic errors
     void yyerror(char const *);
 
     Program *enie;
@@ -211,9 +213,15 @@ enie    : begin enterscope globals end leavescope
                 if (str != "")
                     errors.push_back(str);
 
+                if (! errors_vector->empty()) {
+                   for (int i = 0; i < errors_vector->size(); i++) {
+                        errors.push_back(( *errors_vector)[i]->toString());     
+                   }
+                }
+
                 //DEBUGGING
-                Quad *this_is_it = $<program>3->genCode();
-                std::cout << this_is_it->emit() << std::endl;
+                //Quad *this_is_it = $<program>3->genCode();
+                //std::cout << this_is_it->emit() << std::endl;
                 //DEBUGGING
             }
         ;
@@ -325,6 +333,10 @@ signa   : arglist ARROW type
                 std::vector<Type*> *tl = new std::vector<Type*>;
                 tl->push_back(nada);
                 $<type>$ = new Function(tl, nada);
+            }
+        | error   
+            {
+                $<node>$ = syntax_error;
             }
         ;
 
@@ -438,7 +450,9 @@ inst : asign
                 $<node>$ = new FuncApp("escribir", params, type_void);
             }
             else {
-                $<node>$ = new FuncApp("escribir", NULL, new TypeError("leer no esta recibiendo una cadena de caracteres"));
+                TypeError *te = new TypeError(@1.first_line, "Escribir no esta recibiendo una cadena de caracteres");
+                $<node>$ = new FuncApp("escribir", NULL, te);
+                errors_vector->push_back(te);
             }
         }
      | error
@@ -480,7 +494,11 @@ asign : asignid EQUAL exp
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void) ;
             }
             else {
-                $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
+                std::string str = "asignacion con tipos distintos";
+                str += " '" + $<exp>1->getType()->typeString() + " :=  " + $<exp>3->getType()->typeString() + "'";
+                TypeError *te = new TypeError(@1.first_line, str);
+                $<asign>$ = new Asign($<exp>1, $<exp>3, te);
+                errors_vector->push_back(te);
             }
 
         }
@@ -492,7 +510,11 @@ asign : asignid EQUAL exp
             if (lhs == rhs) {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void);
             } else {
-                $<asign>$ = new Asign($<exp>1, $<exp>3, new TypeError(""));
+                std::string str = "asignacion con tipos distintos";
+                str += " '" + $<exp>1->getType()->typeString() + " :=  " + $<exp>3->getType()->typeString() + "'";
+                TypeError *te = new TypeError(@1.first_line, str);
+                $<asign>$ = new Asign($<exp>1, $<exp>3, te);
+                errors_vector->push_back(te);
             }
         }
       ;
@@ -500,7 +522,10 @@ asign : asignid EQUAL exp
 asignid : idlist
             {
                 if ($<symType>1 == NULL) {
-                    $<exp>$ = new ExpVar(new TypeError(""));
+                    std::string str = "simbolo no existe";
+                    TypeError *te = new TypeError(@1.first_line, str);
+                    $<exp>$ = new ExpVar(te);
+                    errors_vector->push_back(te);
                 } else {
                     $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
                 }
@@ -526,8 +551,11 @@ arrasign : checkid arrasignaux
                 Type *new_type;
                 if ((! badarray) && ($<symType>1->getType()->is("arreglo")) && (dimensions == size_arrlist))
                     new_type = ((Arreglo *) $<symType>1->getType())->getRootType();
-                else
-                    new_type = new TypeError("");
+                else {
+                    std::string str = "arreglo mal construido";
+                    new_type = new TypeError(@1.first_line, str); 
+                    errors_vector->push_back((TypeError *) new_type);
+                }
 
                 $<exp>$ = new ExpIndex($<symType>1, $<explist>2, new_type);
             }
@@ -562,7 +590,11 @@ decl : typeid EQUAL exp
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
-                $<node>$ = new Decl($<symType>1, $<exp>3, new TypeError(""));
+                std::string str = "declaracion/asignacion con tipos distintos";
+                str += " '" + $<exp>1->getType()->typeString() + " :=  " + $<exp>3->getType()->typeString() + "'";
+                TypeError *te = new TypeError(@1.first_line, str);
+                $<node>$ = new Decl($<symType>1, $<exp>3, te);
+                errors_vector->push_back(te);
             }
         }
      | arrid EQUAL arrvalues
@@ -573,7 +605,10 @@ decl : typeid EQUAL exp
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
-                $<node>$ = new Decl($<symType>1, $<exp>3, new TypeError(""));
+                std::string str = "declaracion/asignacion con tipos distintos";
+                TypeError *te = new TypeError(@1.first_line, str);
+                $<node>$ = new Decl($<symType>1, $<exp>3, te);
+                errors_vector->push_back(te);
             }
 
         }
@@ -999,7 +1034,8 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
 term : idlist
         {
             if ($<symType>1 == NULL) {
-                $<exp>$ = new ExpVar(new TypeError(""));
+                std::string error_str = "Simbolo no existe";
+                $<exp>$ = new ExpVar(new TypeError(@1.first_line, error_str));
             } else {
                 $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
             }
@@ -1057,7 +1093,8 @@ arr : OBRACK exp CBRACK arr
                         $<type>$ = new Arreglo($<type>4, w);
                     }
                     else {
-                        $<type>$ = new TypeError("");
+                        std::string error_str = "sub indice no es entero";
+                        $<type>$ = new TypeError(@1.first_line, error_str);
                     }
 
                     //ExpSimple *left = (ExpSimple *) ((ExpBin *) $<exp>2)->getLeft();
@@ -1079,7 +1116,8 @@ arr : OBRACK exp CBRACK arr
                     //}
                 }
                 else {
-                    $<type>$ = new TypeError("No es una expresion constante");
+                    std::string error_str = "no puedes declarar un arreglo con sub indices no constantes";
+                    $<type>$ = new TypeError(@1.first_line, error_str);
                 }
             }
         }
@@ -1103,19 +1141,23 @@ arr : OBRACK exp CBRACK arr
                 ExpConst *e = (ExpConst *) $<exp>2;
                 if (e->getType() == entero) {
                     int size = std::stoi(e->getElem());
-                    if (size <= 0)
-                        $<type>$ = new TypeError("El indice debe ser positivo");
+                    if (size <= 0) {
+                        std::string str = "el indice debe ser positivo";
+                        $<type>$ = new TypeError(@1.first_line, str);
+                    }
                     else {
                         $<type>$ = new Arreglo(NULL, size);
                     }
                 }
 
                 else {
-                    $<type>$ = new TypeError("El indice debe ser entero");
+                    std::string error_str = "sub indice no es entero";
+                    $<type>$ = new TypeError(@1.first_line, error_str);
                 }
             }
             else {
-                $<type>$ = new TypeError("No es una expresion constante");
+                std::string error_str = "no puedes declarar un arreglo con sub indices no constantes";
+                $<type>$ = new TypeError(@1.first_line, error_str);
             }
         }
     ;
@@ -1248,7 +1290,10 @@ callfunc : ID funcargs
                 }
 
                 if (semantic_errors) {
-                    $<exp>$ = new FuncApp(*$1, $<explist>2, new TypeError(""));
+                    std::string str = "aplicacion funcional mal hecha";
+                    TypeError *te = new TypeError(@1.first_line, str);
+                    $<exp>$ = new FuncApp(*$1, $<explist>2, te);
+                    errors_vector->push_back(te);
                 }
                 else {
                     $<exp>$ =  new FuncApp(*$1, $<explist>2, ((Function *) s->getType())->getRetType());
@@ -1306,6 +1351,7 @@ int main (int argc, char **argv) {
             {"file", required_argument, 0, 'f'},
             {"symtable", no_argument, 0, 's'},
             {"tree", no_argument, 0, 't'},
+            {"interm_code", no_argument, 0, 'i'},
             {0,0,0,0}
     };
 
@@ -1315,9 +1361,10 @@ int main (int argc, char **argv) {
     bool f_flag = false;
     bool s_flag = false;
     bool t_flag = false;
+    bool i_flag = false;
 
     while (1) {
-        opt = getopt_long(argc, argv, "hf:st", long_options, &option_index);
+        opt = getopt_long(argc, argv, "hf:sti", long_options, &option_index);
         if (opt == -1)
             break;
 
@@ -1334,6 +1381,9 @@ int main (int argc, char **argv) {
             break;
         case 't':
             t_flag = true;
+            break;
+        case 'i': 
+            i_flag = true;
             break;
         case 'f':
             if (strlen(optarg) >= 100) {
@@ -1371,6 +1421,9 @@ int main (int argc, char **argv) {
 
     if ((f_flag) && (t_flag))
         std::cout << enie->toString() << std::endl;
+
+    if ((f_flag) && (i_flag))
+        std::cout << enie->genCode()->emit() << std::endl;
 
     return 0;
 }

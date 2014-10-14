@@ -19,6 +19,7 @@
 
 class TypeError: public Type {
     private:
+        int line;
         std::string error;
 
     public:
@@ -27,6 +28,18 @@ class TypeError: public Type {
         /** class constructor */
         TypeError(std::string error) : super(0) {
             this->error = error;
+        }
+
+        TypeError(int line, std::string error) : super(0) {
+            this->line = line;
+            this->error = error;
+        }
+
+        std::string toString() {
+            std::string str = "error semantico ";
+            str +=  "(linea " + std::to_string(line) + "): ";
+            str +=  this->error;
+            return str;
         }
 
         std::string typeString() { return "error"; }
