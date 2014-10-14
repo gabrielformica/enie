@@ -1,0 +1,9 @@
+enie :: ~ {
+    ent a
+    a = cierto
+    ent b
+    b = 3 + 4
+    si (b < a) {
+        escribir "Nop"
+    }
+}

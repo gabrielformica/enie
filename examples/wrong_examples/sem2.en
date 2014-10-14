@@ -1,0 +1,5 @@
+enie :: ~ {
+    ent a[3][4]
+    a[1][2] = cierto
+    a[cierto][3] = falso
+}

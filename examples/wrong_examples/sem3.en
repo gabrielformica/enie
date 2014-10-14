@@ -1,0 +1,9 @@
+sumar :: ent a, ent b -> ent {
+    retorna (a + b)
+}
+
+enie :: {
+    ent a = 4
+    ent b = 4
+    sumar(cierto, b)
+}
