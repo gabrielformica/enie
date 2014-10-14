@@ -94,6 +94,7 @@ class Para: public Instruc {
             ArgumentConst *begin_arg = new ArgumentConst(begin_label, NULL);
 
             Quad *code = new QuadComment(0);
+            code->appendToFinal(this->decl->genCode());
 
             // Begin label quad is appended
             code->appendToFinal(new Quad("label", NULL, NULL, begin_arg));
