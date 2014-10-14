@@ -30,6 +30,8 @@ class Error: public Node {
         std::string getTypeStr() { return this->type->typeString(); }
 
         std::string toString() { return ""; } // maybe change this later
+
+        Quad *genCode() { return NULL; }
 };
 
 #endif

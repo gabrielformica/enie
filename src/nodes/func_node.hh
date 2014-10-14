@@ -57,6 +57,13 @@ class FuncNode: public Node  {
             return str;
         }
 
+        Quad *genCode() { 
+            Quad *comment = new Quad(0,"");
+            comment->appendToFinal(this->header->genCode());
+            comment->appendToFinal(this->block->genCode());
+            return comment;
+        }
+
 };
 
 #endif

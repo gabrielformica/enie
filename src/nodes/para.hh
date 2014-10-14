@@ -93,7 +93,8 @@ class Para: public Instruc {
             ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
             ArgumentConst *begin_arg = new ArgumentConst(begin_label, NULL);
 
-            Quad *code = new QuadComment(0);
+            Quad *code = new Quad(this->line, "Para");
+            Quad *last_comment = new Quad(this->line, "Cierre-Para");
             code->appendToFinal(this->decl->genCode());
 
             // Begin label quad is appended
@@ -126,6 +127,7 @@ class Para: public Instruc {
             Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
             code->appendToFinal(false_quad);
 
+            code->appendToFinal(last_comment);
             return code;
         }
 

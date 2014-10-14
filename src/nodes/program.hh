@@ -57,6 +57,16 @@ class Program: public Node {
             return str;
         }
 
+        Quad *genCode() {
+            Quad *comment = new Quad(0, "");
+            Argument *enie = new ArgumentConst("enie", NULL);
+            comment->appendToFinal(new Quad("goto", NULL, NULL, enie));
+            for (int i = 0; i < this->node_list->size(); i++)
+                comment->appendToFinal((* this->node_list)[i]->genCode());
+
+            return comment;
+        }
+
 };
 
 #endif

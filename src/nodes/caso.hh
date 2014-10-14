@@ -77,7 +77,8 @@ class Caso: public Instruc {
             ArgumentConst *exit_arg = new ArgumentConst(exit_label, NULL);
 
             // Comment quad
-            Quad *case_quad = new QuadComment(0);
+            Quad *case_quad = new Quad(this->line, "Caso");
+            Quad *last_comment = new Quad(this->line, "Cierre-Caso");
 
             // Quad for the case variable
             Quad *var_quad = this->var->genCode();
@@ -89,7 +90,7 @@ class Caso: public Instruc {
             Quad *goto_test = new Quad("goto", NULL, NULL, test_arg);
             case_quad->appendToFinal(goto_test);
 
-            Quad *tests = new QuadComment(0);
+            Quad *tests = new Quad(0, "");
 
             // Generation for list of case options
             std::vector<LambdaOpt *>* opt_list = this->optlist;
@@ -125,6 +126,7 @@ class Caso: public Instruc {
             Quad *exit_quad = new Quad("label", NULL, NULL, exit_arg);
             case_quad->appendToFinal(exit_quad);
 
+            case_quad->appendToFinal(last_comment);
             return case_quad;
         }
 };

@@ -21,6 +21,8 @@
 
 class Quad {
     private:
+        int line; //Just for comments
+        std::string comment;
         std::string op;
         Argument *arg1;
         Argument *arg2;
@@ -28,11 +30,13 @@ class Quad {
         Quad *next;
 
     public:
+        Quad(int line, std::string comment);  //Just for comments
         Quad(std::string op, Argument *a1, Argument *a2, Argument *r); 
         std::string emit(); 
         Argument *getResult();
         Quad *getNext();
         Quad *getFinal();
+        void setLine(int l); 
         void setNext(Quad *q);
         void appendToFinal(Quad *q);
         void clean();

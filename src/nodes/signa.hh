@@ -27,6 +27,8 @@ class Signa: public Node {
         typedef Node super;
 
         Signa(ArgList *, std::string ret, Type *t) : super(t);
+
+        Quad *genCode() { return NULL; }
 };
 
 #endif

@@ -16,6 +16,8 @@
 #define NODE_HH
 
 #include "../sound_type_system/base/type.hh"
+#include "../interm_code/quad.hh"
+#include "../interm_code/quad_comment.hh"
 
 class Node {
     protected:
@@ -29,6 +31,7 @@ class Node {
 
         std::string getTypeStr() { return type->typeString(); }
         virtual std::string toString() = 0;
+        virtual Quad *genCode() = 0;
 
 };
 

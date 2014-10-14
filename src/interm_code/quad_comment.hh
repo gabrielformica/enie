@@ -18,22 +18,23 @@
 #include <string>
 #include "quad.hh"
 
-class QuadComment: public Quad {
+class QuadComment {
     private:
-        int line;        //Line number of the instruction
+        int line;              //Line number of the instruction
+        std::string inst_name; //Instruction name
     public:
 
         typedef Quad super;
         /* Class constructor */
-        QuadComment(int line): super("", NULL, NULL, NULL) {
+        QuadComment(int line) {
             this->line = line;
         }
 
         /**
-          * Returns the string representation of the quad
+          * Emit this
           */
-        std::string toString() {
-            return std::to_string(line) + " -------";
+        std::string emit() {
+            return std::to_string(line) + "-------> " + this->inst_name;
         }
 
         

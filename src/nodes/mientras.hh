@@ -59,12 +59,16 @@ class Mientras: public Instruc {
             std::string false_label = get_next_label();
             std::string begin_label = get_next_label();
 
+            Quad *comment = new Quad(this->line, "Mientras");
+            Quad *last_comment = new Quad(this->line, "Cierre-Mientras");
+
             ArgumentConst *true_arg = new ArgumentConst(true_label, NULL);
             ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
             ArgumentConst *begin_arg = new ArgumentConst(begin_label, NULL);
 
             // Begin label quad is appended
             Quad *code = new Quad("label", NULL, NULL, begin_arg);
+            comment->appendToFinal(code);   //Put the comment first
             code->appendToFinal(this->cond->genJumpingCode(true_label, false_label));
 
             // True quad is appended
@@ -81,7 +85,8 @@ class Mientras: public Instruc {
             Quad *false_quad = new Quad("label", NULL, NULL, false_arg);
             code->appendToFinal(false_quad);
 
-            return code;
+            comment->appendToFinal(last_comment);
+            return comment;
         }
 
 };

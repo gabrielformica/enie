@@ -20,10 +20,15 @@
 #include "../interm_code/quad.hh"
 
 class Instruc: public Node {
+    protected:
+        int line;
     public:
         typedef Node super;
 
         Instruc(Type *t) : super(t) { }
+
+        int getLine() { return this->line; }
+        void setLine(int line) { this->line = line; }
 
         virtual std::string toString() = 0;
 

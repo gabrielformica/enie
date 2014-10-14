@@ -58,7 +58,7 @@ class InstList : public Instruc {
 
         Quad *genCode() {
             std::vector<Instruc *>* inst_list = this->list;
-            Quad *inst_quad = new QuadComment(0);
+            Quad *inst_quad = new Quad(0,"");
             for (std::vector<Instruc *>::iterator it = inst_list->begin();
                 it != inst_list->end(); ++it) {
                 Quad *inst = (*it)->genCode();

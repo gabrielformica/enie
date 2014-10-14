@@ -52,7 +52,7 @@ class ExpIndex: public Exp {
         }
 
         Quad *genCode() { 
-            Quad *comment = new QuadComment(0);
+            Quad *comment = new Quad(0,"");
             Arreglo *t = (Arreglo *) this->var->getType();
             comment->appendToFinal((* this->explist)[0]->genCode());
             for (int i = 1; i < this->explist->size(); i++) {

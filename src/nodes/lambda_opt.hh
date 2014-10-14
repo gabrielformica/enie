@@ -55,7 +55,7 @@ class LambdaOpt: public Node {
         }
 
         Quad *genCode(Argument *exit_arg) {
-            Quad *opt_quad = new QuadComment(0);
+            Quad *opt_quad = new Quad(0,"");
 
             // Code for instructions of option
             Quad *inst_quad = this->bloque->genCode();
@@ -67,6 +67,8 @@ class LambdaOpt: public Node {
 
             return opt_quad;
         }
+
+        Quad *genCode() { return NULL; }
 };
 
 #endif

@@ -57,7 +57,7 @@ class FuncApp: public Exp {
         }
 
         Quad *genCode() { 
-            Quad *comment = new QuadComment(0);
+            Quad *comment = new Quad(0,"");
             std::vector<Quad *> *params_quads = new std::vector<Quad *>;
 
             //Quads vector of every expression

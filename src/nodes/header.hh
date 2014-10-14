@@ -29,6 +29,8 @@ class Header: public Node {
             this->id = id;
         }
 
+        std::string getId() { return this->id; }
+
         std::string toString() {
             std::string str = "";
             //std::vector<Type *> *params = ((Function *) this->type)->getParams();
@@ -36,6 +38,11 @@ class Header: public Node {
             str =  "nombre: " + id + "\n";  
 
             return str;
+        }
+
+        Quad *genCode() { 
+            Argument *label = new ArgumentConst(id, NULL); 
+            return new Quad("label", NULL, NULL, label);
         }
 };
 

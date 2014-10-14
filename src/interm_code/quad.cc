@@ -23,14 +23,32 @@ Quad::Quad(std::string op, Argument *a1, Argument *a2, Argument *r) {
     this->arg2 = a2;
     this->result = r;
     this->next = NULL;
+    this->line = -1;
+    this->comment = "";
+}
+
+Quad::Quad(int line, std::string comment) {
+    this->op = "";
+    this->arg1 = NULL;
+    this->arg2 = NULL;
+    this->result = NULL;
+    this->next = NULL;
+    this->line = line;
+    this->comment = comment;
 }
 
 std::string Quad::emit() {
     std::string str = "";
+    
+    if (this->line == 0)
+        return this->next->emit();
 
-
+    if (this->line > 0)  {
+        str += "-----> " + this->comment + ", linea ";
+        str += std::to_string(this->line) + "<-----\n";
+    }
     // Emit for label instruction
-    if (this->op == "label") {
+    else if (this->op == "label") {
         str += this->result->toString() + ": \n";
 
     // Emit for goto instruction
@@ -122,6 +140,10 @@ void Quad::clean() {
         temp = temp->next;
     }
     temp->next = NULL;
+}
+
+void Quad::setLine(int l) {
+    this->line = l;
 }
 
 Quad *Quad::getFinal() {
