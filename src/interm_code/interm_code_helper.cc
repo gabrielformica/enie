@@ -17,7 +17,7 @@
 
 Symbol *get_next_temp() {
     int next = next_temp++;
-    std::string id = "@t" + std::to_string(next);
+    std::string id = "$t" + std::to_string(next);
     Symbol *next_temp_symbol = new Symbol(id,0,0,0);
     return next_temp_symbol;
 }

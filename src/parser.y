@@ -658,7 +658,11 @@ type : ENT     { $<type>$ = entero; }
         {
             Symbol *s = symtable->lookup(*$1);
             if (s == NULL) {
-                $<type>$ = new TypeError("");
+                std::string str = "el constructor de nombre '" + *$1 + "'";
+                str += " no ha sido definido";
+                TypeError *te = new TypeError(@1.first_line, str);
+                $<type>$ = te;
+                errors_vector->push_back(te);
             }
             else {
                 $<type>$ = s->getType();
@@ -780,14 +784,15 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
         Exp *exp = NULL;
         exp = get_expbin($<exp>1, $<exp>3, "+");
 
-
-
          //constructing binary expression with type error
         if (exp == NULL) {
             int l = @1.first_line;    //line of the binary expression
             int c = @1.first_column;  //column of the binary expression
-            TypeError *t = new TypeError("");
+            std::string str = "no puedes sumar expresion del tipo '" + $<exp>1->getType()->typeString();
+            str += "' con expresion del tipo '" + $<exp>3->getType()->typeString() + "'";
+            TypeError *t = new TypeError(@1.first_line, str);
             $<exp>$ = new ExpBin($<exp>1, $<exp>3, "+", t);
+            errors_vector->push_back(t);
          }
          else {
              $<exp>$ = exp;
@@ -801,8 +806,11 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
             if (exp == NULL) {
                int l = @1.first_line;    //line of the binary expression
                int c = @1.first_column;  //column of the binary expression
-               TypeError *t = new TypeError("");
+               std::string str = "no puedes restar expresion del tipo '" + $<exp>1->getType()->typeString();
+               str += "' con expresion del tipo '" + $<exp>3->getType()->typeString() + "'";
+               TypeError *t = new TypeError(l, str);
                $<exp>$ = new ExpBin($<exp>1, $<exp>3, "-", t);
+                errors_vector->push_back(t);
             }
             else {
                 $<exp>$ = exp;

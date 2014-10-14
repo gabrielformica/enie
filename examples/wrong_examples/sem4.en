@@ -1,0 +1,6 @@
+enie :: ~ {
+    ent a = 3
+    ent b = 4
+
+    ent c = (a*b) + (a - cierto + 4)
+}
