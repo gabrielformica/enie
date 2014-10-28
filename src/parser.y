@@ -218,11 +218,6 @@ enie    : begin enterscope globals end leavescope
                         errors.push_back(( *errors_vector)[i]->toString());     
                    }
                 }
-
-                //DEBUGGING
-                //Quad *this_is_it = $<program>3->genCode();
-                //std::cout << this_is_it->emit() << std::endl;
-                //DEBUGGING
             }
         ;
 
@@ -384,21 +379,11 @@ inst : asign
         {
             $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
-
-           // std::cout << "----------ASIGN----------" << std::endl;
-           //tac = ((Asign *) $<node>1)->genCode();
-           //std::cout << tac->emit() << std::endl;
-           // std::cout << "----------ASIGN----------" << std::endl;
         }
      | decl
         {
             $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
-           // std::cout << "----------DECL----------" << std::endl;
-           // tac = ((Decl *) $<node>1)->genCode();
-           // if (tac != NULL)
-           //     std::cout << tac->emit() << std::endl;
-           // std::cout << "----------DECL----------" << std::endl;
         }
      | selec           
         { 
@@ -429,11 +414,6 @@ inst : asign
         {
             $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
-            //std::cout << "----------FUNCAPP-----------" << std::endl;
-            //tac = ((FuncApp *) $<node>1)->genCode();
-            //if (tac != NULL)
-            //    std::cout << tac->emit() << std::endl;
-            //std::cout << "----------FUNCAPP-----------" << std::endl;
         }
      | LEER checkid
         {
@@ -672,13 +652,7 @@ type : ENT     { $<type>$ = entero; }
 
 selec : pushoffset SI LPAR exp RPAR enterscope instbl leavescope oselect sinoselect popoffset
         {
-
             $<selec>$ = new Selec($<exp>4,  $<instlist>7, $<osi>9, $<sino>10);
-
-            // DEBUGGING
-            //Quad *q = $<selec>$->genCode();
-            //std::cout << q->emit() << std::endl;
-            // DEBUGGING
         }
       ;
 
@@ -703,11 +677,6 @@ multselec : CASO checkid OBRACE sepaux optionslist lastoption sepaux CBRACE
               {
                   ExpSimple *var = new ExpVar($<symType>2, $<symType>2->getType());
                   $<caso>$ = new Caso(var, $<optlist>5, $<lambda_opt>6);
-
-                  // DEBUGGING
-                  //Quad *q = $<caso>$->genCode();
-                  //std::cout << q->emit() << std::endl;
-                  // DEBUGGING
               }
           ;
 
@@ -745,9 +714,6 @@ leftsideopt : term
 indite : pushoffset MIENTRAS LPAR exp RPAR enterscope instbl leavescope popoffset
             {
                 $<mientras>$ = new Mientras($<exp>4, $<instlist>7);
-                //Quad *q = $<mientras>$->genCode();
-                //std::cout << q->emit() << std::endl;
-
             }
        ;
 
@@ -755,12 +721,6 @@ detite : pushoffset PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instb
             {
                 if ($<decl>4 != NULL) {
                     $<para>$ = new Para($<decl>5, $<exp>7, $<exp>9, $<instlist>11);
-
-                    // DEBUGGING
-                    //Quad *q = $<para>$->genCode();
-                    //std::cout << q->emit() << std::endl;
-                    // DEBUGGING
-
                 }
                 else {
                     $<para>$ = new Para(NULL, $<exp>7, $<exp>9, $<instlist>11);
@@ -1059,10 +1019,6 @@ term : idlist
      | arrasign   
         { 
             $<exp>$ = $<exp>1; 
-            // DEBUGGING 
-             //Quad *q = $<exp>$->genCode();
-             //std::cout << q->emit() << std::endl;
-            // DEBUGGING 
         }
      | error
         {
