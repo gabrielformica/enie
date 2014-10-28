@@ -1,0 +1,15 @@
+¿mayor? :: ent a, ent b -> cierto { 
+    retorna  a >= b
+}
+
+enie :: ~ {
+    ent a
+    leer a
+
+    ent b
+    leer b
+
+    si (¿mayor?(a,b)) {
+        escribir "a es mayor que b"
+    }
+}

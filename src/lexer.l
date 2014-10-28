@@ -112,7 +112,7 @@ retorna                     return RETORNA;
 \/                          return DIV;
 \\                          return BSLASH;
 \?                          return QUESTION;
-[a-zA-Z][a-zA-Z0-9_]*       {
+[a-zA-Z][?a-zA-Z0-9_]*       {
                             yylval.str = new std::string(yytext);
                             return ID;
                             }
