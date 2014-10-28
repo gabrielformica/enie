@@ -1,0 +1,19 @@
+enie :: ~ {
+    ent a[5][5]
+
+    para (ent i = 0; i < 5; i + 1) {
+        ent j = 0
+        mientras (j < 5) {
+            a[i][j] = 42 
+            j = j + 1
+        }
+    }
+
+/*
+    para (ent i = 0; i < 5; i + 1) {
+        para (ent j = 0; j < 5; j + 1) {
+            a[i][j] = 42 
+        }
+    }
+    */
+}

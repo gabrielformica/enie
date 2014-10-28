@@ -1,0 +1,7 @@
+enie :: ~ {
+    ent a = 42
+    ent b = 22
+    ent c = 10
+
+    ent d = (a / b) + (((a * c) + (c * 42)) / 30)
+}
