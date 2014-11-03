@@ -247,7 +247,10 @@ globals : globals sepaux global
 
 global : func leavescope { $<node>$ = $<node>1; }
        | decl { $<node>$ = $<node>1; }
-       | declbox { $<node>$ = new Decl($<symType>1, NULL, $<symType>1->getType()); }
+       | declbox
+            {
+                $<node>$ = new Decl($<symType>1, NULL, $<symType>1->getType());
+            }
        | error { $<node>$ = syntax_error; }
        ;
 
@@ -1185,7 +1188,7 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
 
                 //Setting width
                 type->setWidth();
-
+                type->setOffset();
             }
         ;
 
@@ -1239,7 +1242,6 @@ declpritype : type ID EQUAL exp
                     int line = @2.first_line;
                     int column = @2.first_column;
                     Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
-
                     ((Arreglo *) $<type>3)->setRootTypeElem($<type>1);
                     s->setType($<type>3);  //linking types with arr type
                     $<symType>$ = s;
@@ -1258,7 +1260,6 @@ declpritype : type ID EQUAL exp
                     int line = @2.first_line;
                     int column = @2.first_column;
                     Symbol *s = new Symbol(*$2, $<type>1, scope, line, column);
-
                     ((Arreglo *) $<type>3)->setRootTypeElem($<type>1);
                     s->setType($<type>3);  //linking types with arr type
                     $<symType>$ = s;
