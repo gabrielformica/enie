@@ -53,6 +53,8 @@ class Union: public ConstructorType {
             this->width = max;
         }
 
+        void setOffset() { }
+
 };
 
 #endif

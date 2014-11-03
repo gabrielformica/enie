@@ -51,6 +51,18 @@ class Registro: public ConstructorType {
 
             this->width = sum;
         }
+
+        void setOffset() {
+            int offset = 0;
+            std::list<Symbol *> *list = this->table->getAllSymbols();
+
+            for (std::list<Symbol *>::iterator it = list->begin();
+                                     it != list->end(); ++it) {
+                (*it)->setOffset(offset);
+                offset += (*it)->getType()->getWidth();
+            }
+        }
+
 };
 
 #endif

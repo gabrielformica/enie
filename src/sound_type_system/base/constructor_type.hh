@@ -43,7 +43,7 @@ class ConstructorType: public Type {
 
         virtual std::string typeString() = 0;
         virtual bool is(std::string) = 0;
-
+        virtual void setOffset() = 0;
 };
 
 #endif
