@@ -35,6 +35,7 @@
     #include "nodes/exp_var.hh"
     #include "nodes/exp_const.hh"
     #include "nodes/exp_index.hh"
+    #include "nodes/exp_record.hh"
     #include "nodes/expbin.hh"
     #include "nodes/asign.hh"
     #include "nodes/decl.hh"
@@ -99,6 +100,7 @@
     SymbolTable *symboltable;
     std::vector<Type*> *typelist;
     std::vector<Exp *> *explist;
+    std::vector<Symbol *> *symlist;
     Instruc *instruc;
     InstList *instlist, *sino;
     Selec *selec;
@@ -215,7 +217,7 @@ enie    : begin enterscope globals end leavescope
 
                 if (! errors_vector->empty()) {
                    for (int i = 0; i < errors_vector->size(); i++) {
-                        errors.push_back(( *errors_vector)[i]->toString());     
+                        errors.push_back(( *errors_vector)[i]->toString());
                    }
                 }
             }
@@ -329,7 +331,7 @@ signa   : arglist ARROW type
                 tl->push_back(nada);
                 $<type>$ = new Function(tl, nada);
             }
-        | error   
+        | error
             {
                 $<node>$ = syntax_error;
             }
@@ -385,29 +387,29 @@ inst : asign
             $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
         }
-     | selec           
-        { 
-            $<instruc>$ = $<instruc>1; 
+     | selec
+        {
+            $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
         }
-     | multselec      
-        { 
-            $<instruc>$ = $<instruc>1; 
+     | multselec
+        {
+            $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
         }
-     | indite          
-        { 
-            $<instruc>$ = $<instruc>1; 
+     | indite
+        {
+            $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
         }
-     | detite         
-        { 
-            $<instruc>$ = $<instruc>1; 
+     | detite
+        {
+            $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
         }
-     | ereturn         
-        { 
-            $<instruc>$ = $<instruc>1; 
+     | ereturn
+        {
+            $<instruc>$ = $<instruc>1;
             $<instruc>$->setLine(@1.first_line);
         }
      | callfunc
@@ -501,14 +503,28 @@ asign : asignid EQUAL exp
 
 asignid : idlist
             {
-                if ($<symType>1 == NULL) {
+                if ($<symlist>1 == NULL) {
                     std::string str = "simbolo no existe";
                     TypeError *te = new TypeError(@1.first_line, str);
                     $<exp>$ = new ExpVar(te);
                     errors_vector->push_back(te);
                 } else {
-                    $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
+                    Symbol *s = $<symlist>1->back();
+                    if ($<symlist>1->size() == 1) {
+                        $<exp>$ = new ExpVar(s, s->getType());
+                    } else {
+                        $<exp>$ = new ExpRecord($<symlist>1, s->getType());
+                    }
                 }
+
+                // if ($<symType>1 == NULL) {
+                //     std::string str = "simbolo no existe";
+                //     TypeError *te = new TypeError(@1.first_line, str);
+                //     $<exp>$ = new ExpVar(te);
+                //     errors_vector->push_back(te);
+                // } else {
+                //     $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
+                // }
             }
         ;
 
@@ -533,7 +549,7 @@ arrasign : checkid arrasignaux
                     new_type = ((Arreglo *) $<symType>1->getType())->getRootType();
                 else {
                     std::string str = "arreglo mal construido";
-                    new_type = new TypeError(@1.first_line, str); 
+                    new_type = new TypeError(@1.first_line, str);
                     errors_vector->push_back((TypeError *) new_type);
                 }
 
@@ -1001,12 +1017,25 @@ exp : term   { $<exp>$ = $<exp>1; } /*{ $<expType>$ = $<expType>1; } */
 
 term : idlist
         {
-            if ($<symType>1 == NULL) {
+            if ($<symlist>1 == NULL) {
                 std::string error_str = "Simbolo no existe";
                 $<exp>$ = new ExpVar(new TypeError(@1.first_line, error_str));
             } else {
-                $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
+                Symbol *s = $<symlist>1->back();
+
+                if ($<symlist>1->size() == 1) {
+                    $<exp>$ = new ExpVar(s, s->getType());
+                } else {
+                    std::cout << $<symlist>1->size() << std::endl;
+                    $<exp>$ = new ExpRecord($<symlist>1, s->getType());
+                }
             }
+            // if ($<symType>1 == NULL) {
+            //     std::string error_str = "Simbolo no existe";
+            //     $<exp>$ = new ExpVar(new TypeError(@1.first_line, error_str));
+            // } else {
+            //     $<exp>$ = new ExpVar($<symType>1, $<symType>1->getType());
+            // }
         }
      | NUMENT   { $<exp>$ = new ExpConst(to_string($1), entero); }
      | NUMFLOT  { $<exp>$ = new ExpConst(to_string($1), flot); }
@@ -1016,9 +1045,9 @@ term : idlist
      | callfunc    { $<exp>$ = $<exp>1; }
      | CONSTCAD    { $<exp>$ = new ExpConst(*$1, new Cadena()); }
      | CONSTCAR    { $<exp>$ = new ExpConst(*$1, new Car()); }
-     | arrasign   
-        { 
-            $<exp>$ = $<exp>1; 
+     | arrasign
+        {
+            $<exp>$ = $<exp>1;
         }
      | error
         {
@@ -1028,20 +1057,39 @@ term : idlist
 
 idlist : idlist ONEDOT ID
             {
-                if ($<symType>1 == NULL || ! $<symType>1->getType()->is("constructor")) {
-                    $<symType>$ = NULL;
+                if ($<symlist>1 == NULL || ! $<symlist>1->back()->getType()->is("constructor")) {
+                    $<symlist>$ = NULL;
                 } else {
-                    SymbolTable *st = ((ConstructorType *) $<symType>1->getType())->getSymbolTable();
-
+                    SymbolTable *st = ((ConstructorType *) $<symlist>1->back()->getType())->getSymbolTable();
                     if (st->isActive(*$3)) {
-                        $<symType>$ = st->lookup(*$3);
+                        $<symlist>$->push_back(st->lookup(*$3));
                     } else {
-                        $<symType>$ = NULL;
+                        $<symlist>$ = NULL;
                     }
                 }
+                // if ($<symType>1 == NULL || ! $<symType>1->getType()->is("constructor")) {
+                //     $<symType>$ = NULL;
+                // } else {
+                //     SymbolTable *st = ((ConstructorType *) $<symType>1->getType())->getSymbolTable();
+
+                //     if (st->isActive(*$3)) {
+                //         $<symType>$ = st->lookup(*$3);
+                //     } else {
+                //         $<symType>$ = NULL;
+                //     }
+                // }
             }
 
-       | checkid   { $<symType>$ = $<symType>1; }
+       | checkid
+            {
+                if ($<symType>1 == NULL) {
+                    $<symlist>$ = NULL;
+                } else {
+                    std::vector <Symbol *> *list = new std::vector <Symbol *>;
+                    list->push_back($<symType>1);
+                    $<symlist>$ = list;
+                }
+            }
        ;
 
 arr : OBRACK exp CBRACK arr
@@ -1346,7 +1394,7 @@ int main (int argc, char **argv) {
         case 't':
             t_flag = true;
             break;
-        case 'i': 
+        case 'i':
             i_flag = true;
             break;
         case 'f':
