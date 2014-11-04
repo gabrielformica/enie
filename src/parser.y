@@ -738,7 +738,7 @@ indite : pushoffset MIENTRAS LPAR exp RPAR enterscope instbl leavescope popoffse
 
 detite : pushoffset PARA LPAR enterscope decl SEMICOL exp SEMICOL exp RPAR instbl leavescope popoffset
             {
-                if ($<decl>4 != NULL) {
+                if ($<decl>5 != NULL) {
                     $<para>$ = new Para($<decl>5, $<exp>7, $<exp>9, $<instlist>11);
                 }
                 else {
