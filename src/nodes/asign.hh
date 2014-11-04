@@ -56,22 +56,34 @@ class Asign: public Instruc {
                             result);
                 right->appendToFinal(q);
                 return right;
+            } else if (this->lhs->is("ExpRecord")) { // If it is a Constructor
+
+                Quad *left = this->lhs->genCode();
+                Quad *q = new Quad(":=",
+                            right->getFinal()->getResult(),
+                            NULL,
+                            left->getFinal()->getResult());
+                right->appendToFinal(left);
+                right->appendToFinal(q);
+                return right;
+
+            } else {
+                //If it is a exp index
+                s = ((ExpIndex *) this->lhs)->getVar();
+                Quad *q1 = this->lhs->genCode();
+                q1->clean();
+                Argument *result = new ArgumentVar(s, this->type);
+                Quad *q2 = new Quad("[]=",
+                            q1->getFinal()->getResult(),
+                            right->getFinal()->getResult(),
+                            result);
+
+                right->appendToFinal(q1);
+                right->appendToFinal(q2);
+
+                return  right;
             }
-            
-            //If it is a exp index
-            s = ((ExpIndex *) this->lhs)->getVar();
-            Quad *q1 = this->lhs->genCode();
-            q1->clean();
-            Argument *result = new ArgumentVar(s, this->type);
-            Quad *q2 = new Quad("[]=",
-                        q1->getFinal()->getResult(),
-                        right->getFinal()->getResult(),
-                        result);
 
-            right->appendToFinal(q1);
-            right->appendToFinal(q2);
-
-            return  right;
         }
 };
 

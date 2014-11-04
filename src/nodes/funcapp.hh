@@ -26,22 +26,31 @@ class FuncApp: public Exp {
     private:
         std::string id;
         std::vector<Exp *> *params;
+        bool retorna = false;
 
     public:
         typedef Exp super;
 
-        FuncApp(std::string id, std::vector<Exp *> *params, Type *t) : 
-                     super(t) { 
+        FuncApp(std::string id, std::vector<Exp *> *params, Type *t) :
+                     super(t) {
 
             this->id = id;
             this->params = params;
         }
 
+        FuncApp(std::string id, std::vector<Exp *> *params, Type *t, bool r) :
+                     super(t) {
+
+            this->id = id;
+            this->params = params;
+            this->retorna = r;
+        }
+
+
         std::string getId() { return this->id; }
         std::vector<Exp *> *getParams() { return this->params; }
-
+        void setRetorna(bool ret) { this->retorna = ret; }
         bool is(std::string str) { return str == "FuncApp"; }
-
 
         std::string toString() {
             std::string str = "Llamada a funcion: \n";
@@ -56,7 +65,7 @@ class FuncApp: public Exp {
             return str;
         }
 
-        Quad *genCode() { 
+        Quad *genCode() {
             Quad *comment = new Quad(0,"");
             std::vector<Quad *> *params_quads = new std::vector<Quad *>;
 
@@ -84,8 +93,15 @@ class FuncApp: public Exp {
             Argument *arg1 = new ArgumentConst(this->id, NULL);
             Argument *arg2 = new ArgumentConst(num_p, NULL);
 
-            comment->appendToFinal(new Quad("call",  arg1, arg2, NULL));
-            return comment; 
+            if (!this->retorna) {
+                comment->appendToFinal(new Quad("call",  arg1, arg2, NULL));
+            } else {
+                Symbol *temp  = get_next_temp();
+                Argument *ret = new ArgumentVar(temp, this->type);
+                comment->appendToFinal(new Quad("call",  arg1, arg2, ret));
+            }
+
+            return comment;
         }
 
         Quad *genJumpingCode(std::string a, std::string b) {

@@ -39,7 +39,7 @@ Quad::Quad(int line, std::string comment) {
 
 std::string Quad::emit() {
     std::string str = "";
-    
+
     if (this->line == 0)
         return this->next->emit();
 
@@ -55,6 +55,9 @@ std::string Quad::emit() {
         str += "param " + this->arg1->toString() + "\n";
 
     } else if (this->op == "call") {
+        if (this->result != NULL) {
+            str += this->result->toString() + " := ";
+        }
         str += "call " + this->arg1->toString() + ", ";
         str += this->arg2->toString() + "\n";
     } else if (this->op == "label") {   // Emit for label instruction
@@ -79,7 +82,7 @@ std::string Quad::emit() {
     } else if (this->op == "[]=") {
         str += this->result->toString() + "[" + this->arg1->toString() + "]";
         str += " := " + this->arg2->toString() + "\n";
-        
+
     } else if (this->op == "=[]") {
         str += this->result->toString() + " := " + this->arg1->toString();
         str += "[" + this->arg2->toString() + "]" + "\n";

@@ -31,7 +31,7 @@ class ExpIndex: public Exp {
 
         ExpIndex(Symbol *var, std::vector<Exp *> *explist, Type *t)
                 : super(t) {
-            
+
             this->var = var;
             this->explist = explist;
         }
@@ -41,17 +41,17 @@ class ExpIndex: public Exp {
         std::string toString() {
             std::string str = "Expresion -Indexada-: \n";
             str += this->getUnaryOperator() + this->var->getId();
-            
+
             for (std::vector<Exp *>::iterator it = this->explist->begin();
                     it != this->explist->end(); ++it) {
-                
+
                 str += "[" + (*it)->toString()  + "]";
             }
 
             return str;
         }
 
-        Quad *genCode() { 
+        Quad *genCode() {
             Quad *comment = new Quad(0,"");
             Arreglo *t = (Arreglo *) this->var->getType();
             comment->appendToFinal((* this->explist)[0]->genCode());
@@ -60,7 +60,7 @@ class ExpIndex: public Exp {
                 int size = t->getSizeOfDim(i+1);
                 std::string str_size = std::to_string(size);
 
-                Argument *r1 = comment->getFinal()->getResult();  
+                Argument *r1 = comment->getFinal()->getResult();
                 Argument *size_arg = new ArgumentConst(str_size, this->type);
 
                 Symbol *new_temp = get_next_temp();
@@ -68,7 +68,7 @@ class ExpIndex: public Exp {
                 Quad *q1 = new Quad("*", r1, size_arg, temp);
                 //End Magic
                 comment->appendToFinal(q1);
-                
+
                 Argument *r2 = comment->getFinal()->getResult();  //Last result
                 Quad *exp = (* this->explist)[i]->genCode();
                 comment->appendToFinal(exp);
@@ -85,8 +85,8 @@ class ExpIndex: public Exp {
             Symbol *t1 = get_next_temp();
             Argument *result = new ArgumentVar(t1, this->type);
             Argument *s = new ArgumentVar(this->var, this->type);
-            Quad *last = new Quad("=[]", 
-                                    s, 
+            Quad *last = new Quad("=[]",
+                                    s,
                                     comment->getFinal()->getResult(),
                                     result);
 

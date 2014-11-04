@@ -1044,7 +1044,11 @@ term : idlist
      | CIERTO   { $<exp>$ = new ExpConst("cierto", booleano) ; }
      | FALSO    { $<exp>$ = new ExpConst("falso", booleano) ; }
      /* | checkid arr  ID arr */
-     | callfunc    { $<exp>$ = $<exp>1; }
+     | callfunc
+        {
+            ((FuncApp *)$<exp>1)->setRetorna(true);
+            $<exp>$ = $<exp>1;
+        }
      | CONSTCAD    { $<exp>$ = new ExpConst(*$1, new Cadena()); }
      | CONSTCAR    { $<exp>$ = new ExpConst(*$1, new Car()); }
      | arrasign
