@@ -115,6 +115,6 @@ void Symbol::print() {
     std::cout << "Línea:   " <<  line << "   Columna:   " << column;
     std::cout << " Alcance:   " << scope;
     std::cout << " Offset:   " << offset;
-    std::cout << " Width:   " << type->getWidth(); 
+    std::cout << " Width:   " << type->getWidth();
     std::cout << " Tipo:    " << type->typeString() << std::endl;
 }

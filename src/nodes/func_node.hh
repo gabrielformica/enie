@@ -34,7 +34,7 @@ class FuncNode: public Node  {
         }
 
         void setType() {
-            this->type = this->header->getType(); 
+            this->type = this->header->getType();
             if (this->block != NULL)  {
                 if (this->block->getType()->is("error")) {
                     this->type = this->block->getType();
@@ -43,21 +43,21 @@ class FuncNode: public Node  {
         }
 
         std::string toString() {
-            std::string str = "Funcion\n"; 
+            std::string str = "Funcion\n";
             str = str + this->header->toString();
 
             if (this->block == NULL) {     //It's a forward declaration
                 str += "FORWARD DECLARATION\n";
             }
             else {
-                str += "Bloque de instrucciones:\n"; 
+                str += "Bloque de instrucciones:\n";
                 str +=  this->block->toString();
             }
 
             return str;
         }
 
-        Quad *genCode() { 
+        Quad *genCode() {
             Quad *comment = new Quad(0,"");
             comment->appendToFinal(this->header->genCode());
             comment->appendToFinal(this->block->genCode());

@@ -475,7 +475,7 @@ checkid : ID
 
 asign : asignid EQUAL exp
         {
-            if ($<exp>1->getType() == $<exp>3->getType()) {
+            if ($<exp>1->getType()->typeString() == $<exp>3->getType()->typeString()) {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void) ;
             }
             else {
@@ -492,7 +492,7 @@ asign : asignid EQUAL exp
             Type *lhs = $<exp>1->getType();
             Type *rhs = $<exp>3->getType();
 
-            if (lhs == rhs) {
+            if (lhs->typeString() == rhs->typeString()) {
                 $<asign>$ = new Asign($<exp>1, $<exp>3, type_void);
             } else {
                 std::string str = "asignacion con tipos distintos";
@@ -1029,7 +1029,6 @@ term : idlist
                 if ($<symlist>1->size() == 1) {
                     $<exp>$ = new ExpVar(s, s->getType());
                 } else {
-                    std::cout << $<symlist>1->size() << std::endl;
                     $<exp>$ = new ExpRecord($<symlist>1, s->getType());
                 }
             }
@@ -1184,10 +1183,13 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
 
                 //Linking types
                 type->setSymbolTable($<symboltable>5);
+                $<symType>1->setOffset(offset);     // Setting offset
                 $<symType>$ = $<symType>1;
 
                 //Setting width
                 type->setWidth();
+
+                //Setting offsets inside record
                 type->setOffset();
             }
         ;
