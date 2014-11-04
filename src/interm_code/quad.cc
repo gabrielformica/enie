@@ -133,6 +133,15 @@ Argument* Quad::getResult() {
     return this->result;
 }
 
+Argument* Quad::getArg1() {
+    return this->arg1;
+}
+
+Argument* Quad::getArg2() {
+    return this->arg2;
+}
+
+
 Quad* Quad::getNext() {
     return this->next;
 }

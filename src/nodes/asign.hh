@@ -62,7 +62,7 @@ class Asign: public Instruc {
                 Quad *q = new Quad(":=",
                             right->getFinal()->getResult(),
                             NULL,
-                            left->getFinal()->getResult());
+                            left->getFinal()->getArg1());
                 right->appendToFinal(left);
                 right->appendToFinal(q);
                 return right;

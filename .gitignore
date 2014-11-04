@@ -10,3 +10,4 @@ lex.yy.c*
 parser.tab.c*
 parser.tab.h*
 parser.output
+examples/good_examples/forinfor.en
