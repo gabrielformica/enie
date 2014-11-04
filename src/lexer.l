@@ -7,7 +7,7 @@
 
     extern YYLTYPE yylloc;
     extern std::vector<std::string> errors;
-    
+
     extern "C" { int yylex(void); }
 
     int yycolumn = 1;
@@ -37,7 +37,7 @@
 [0-9]+\.[0-9]+              {
                                 std::string *str0 = new std::string(yytext);
                                 yylval.floatval = atof(str0->c_str());
-                                free(str0);
+                                delete(str0);
                                 return NUMFLOT;
                             }
 
