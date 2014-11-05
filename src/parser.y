@@ -254,10 +254,11 @@ global : func leavescope { $<node>$ = $<node>1; }
        | error { $<node>$ = syntax_error; }
        ;
 
-func : header instbl
+func : header pushoffset_z instbl popoffset
+// func : header instbl
         {
-            ((Function *) $<header>1->getType())->unsetForward();      //This set -forward- to false forever!
-            $<func_node>$ = new FuncNode($<header>1, $<instlist>2);
+            ((Function *) $<header>1->getType())->unsetForward();      //This sets -forward- to false forever!
+            $<func_node>$ = new FuncNode($<header>1, $<instlist>3);
         }
      | header
         {
@@ -1192,9 +1193,13 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
 
                 //Setting width
                 type->setWidth();
-
                 //Setting offsets inside record
                 type->setOffset();
+
+
+                // Prints register symbol tables
+                // Just for debugging
+                // type->getSymbolTable()->printTable();
             }
         ;
 
@@ -1346,10 +1351,16 @@ enterscope : {symtable->enterScope(); }
 leavescope : {symtable->leaveScope(); }
 
 pushoffset : { offsetStack->push_back(offset); }
-popoffset  : {
+popoffset  :
+            {
                 offset = offsetStack->back();
                 offsetStack->pop_back();
-             }
+            }
+pushoffset_z :
+            {
+                offsetStack->push_back(offset);
+                offset = 0;
+            }
 
 %%
 
