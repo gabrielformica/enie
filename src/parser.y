@@ -60,6 +60,7 @@
 
 %code {
 
+    bool debug = false;
     Quad *tac = NULL;
 
     std::string minus_op = "-" ;
@@ -1193,13 +1194,22 @@ declbox : declboxtypeid enterscope OBRACE sepaux declist sepaux CBRACE leavescop
 
                 //Setting width
                 type->setWidth();
+                offset += type->getWidth();
                 //Setting offsets inside record
                 type->setOffset();
 
 
                 // Prints register symbol tables
                 // Just for debugging
-                // type->getSymbolTable()->printTable();
+                if (debug) {
+                    std::cout << "########## START DEBUG INFO ##########";
+                    std::cout << std::endl;
+                    std::cout << "######### Record inner table #########";
+                    std::cout << std::endl;
+                    type->getSymbolTable()->printTable();
+                    std::cout << "##########  END DEBUG INFO  ##########";
+                    std::cout << std::endl;
+                }
             }
         ;
 
@@ -1382,6 +1392,7 @@ int main (int argc, char **argv) {
             {"symtable", no_argument, 0, 's'},
             {"tree", no_argument, 0, 't'},
             {"interm_code", no_argument, 0, 'i'},
+            {"debug", no_argument, 0, 'd'},
             {0,0,0,0}
     };
 
@@ -1394,7 +1405,7 @@ int main (int argc, char **argv) {
     bool i_flag = false;
 
     while (1) {
-        opt = getopt_long(argc, argv, "hf:sti", long_options, &option_index);
+        opt = getopt_long(argc, argv, "hf:stid", long_options, &option_index);
         if (opt == -1)
             break;
 
@@ -1405,6 +1416,8 @@ int main (int argc, char **argv) {
             std::cout << "-h\t\tprint this help, genius" << std::endl;
             std::cout << "-s\t\tprint symbol table"  << std::endl;
             std::cout << "-t\t\tprint abstract syntax tree" << std::endl;
+            std::cout << "-i\t\tprint intermidiate code" << std::endl;
+            std::cout << "-d\t\tprint some debug information" << std::endl;
             exit(EXIT_SUCCESS);
         case 's':
             s_flag = true;
@@ -1414,6 +1427,9 @@ int main (int argc, char **argv) {
             break;
         case 'i':
             i_flag = true;
+            break;
+        case 'd':
+            debug = true;
             break;
         case 'f':
             if (strlen(optarg) >= 100) {
