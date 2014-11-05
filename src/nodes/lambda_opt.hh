@@ -68,7 +68,15 @@ class LambdaOpt: public Node {
             return opt_quad;
         }
 
-        Quad *genCode() { return NULL; }
+        Quad *genCode() {
+            Quad *opt_quad = new Quad(0,"");
+
+            // Code for instructions of option
+            Quad *inst_quad = this->bloque->genCode();
+            opt_quad->appendToFinal(inst_quad);
+
+            return opt_quad;
+        }
 };
 
 #endif

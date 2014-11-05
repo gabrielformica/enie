@@ -122,6 +122,10 @@ class Caso: public Instruc {
             // List of options
             case_quad->appendToFinal(tests);
 
+            // Quad for otherwise
+            Quad *othw_quad = this->otherwise->genCode();
+            case_quad->appendToFinal(othw_quad);
+
             // Exit label
             Quad *exit_quad = new Quad("label", NULL, NULL, exit_arg);
             case_quad->appendToFinal(exit_quad);
