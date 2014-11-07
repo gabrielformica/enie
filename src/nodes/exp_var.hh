@@ -57,7 +57,6 @@ class ExpVar: public ExpSimple {
                 q  = new Quad(str, true_arg, NULL, true_arg);
             }
 
-
             return q;
         }
 };

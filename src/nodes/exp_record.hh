@@ -93,8 +93,30 @@ class ExpRecord: public Exp {
             return code;
         }
 
-        Quad *genJumpingCode(std::string a, std::string b) {
-            return NULL;
+        Quad *genJumpingCode(std::string true_label, std::string false_label) {
+            Quad *code = this->genCode();
+            ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg  = new ArgumentConst(false_label, NULL);
+
+            Argument *r = code->getFinal()->getResult();
+
+            std::string quad_op = r->toString();
+
+            Quad *q = NULL;
+
+            if (this->op == "!") {
+                q = new Quad(quad_op, NULL, NULL, false_arg);
+                code->appendToFinal(q);
+                q = new Quad("goto", NULL, NULL, true_arg);
+                code->appendToFinal(q);
+            } else {
+                q = new Quad(quad_op, NULL, NULL, true_arg);
+                code->appendToFinal(q);
+                q = new Quad("goto", NULL, NULL, false_arg);
+                code->appendToFinal(q);
+            }
+
+            return code;
         }
 
 };

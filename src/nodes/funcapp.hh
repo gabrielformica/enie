@@ -104,8 +104,38 @@ class FuncApp: public Exp {
             return comment;
         }
 
-        Quad *genJumpingCode(std::string a, std::string b) {
-            return NULL;
+        Quad *genJumpingCode(std::string true_label, std::string false_label) {
+            ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg  = new ArgumentConst(false_label, NULL);
+
+            Quad *code = this->genCode();
+            Argument *func_result = code->getFinal()->getResult();
+
+            if (func_result != NULL) {
+                std::string quad_op = func_result->toString();
+                Quad *q = NULL;
+
+                if (this->op == "!") {
+                    q = new Quad(quad_op, NULL, NULL, false_arg);
+                    code->appendToFinal(q);
+                    q = new Quad("goto", NULL, NULL, true_arg);
+                    code->appendToFinal(q);
+                } else {
+                    q = new Quad(quad_op, NULL, NULL, true_arg);
+                    code->appendToFinal(q);
+                    q = new Quad("goto", NULL, NULL, false_arg);
+                    code->appendToFinal(q);
+                }
+            } else {
+                ///////////////////////////////////////////////
+                // This comment is for pedagogical purposes. //
+                ///////////////////////////////////////////////
+                // This should never happen because it means you're
+                // calling a function that does not return as if it returned
+                // bool. Type checking should get care of this.
+            }
+
+            return code;
         }
 };
 
