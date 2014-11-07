@@ -87,11 +87,12 @@ class ExpBin: public Exp {
             Argument *true_arg = new ArgumentConst(true_label, NULL);
 
             if (this->op == "!") {
+                std::cout << "THIS" << std::endl;
                 Argument *temp = true_arg;
                 true_arg = false_arg;
                 false_arg = temp;
             }
-            
+
             if (this->ope == "&") {
                  std::string new_label = get_next_label();
                  Argument *new_label_arg = new ArgumentConst(new_label, NULL);
@@ -118,7 +119,7 @@ class ExpBin: public Exp {
 
                  return l;
             }
-            else if (this->ope == "<" || this->ope == "<=" || 
+            else if (this->ope == "<" || this->ope == "<=" ||
                      this->ope == ">" || this->ope == ">=" ||
                      this->ope == "==" || this->ope == "!=") {
 
@@ -130,20 +131,20 @@ class ExpBin: public Exp {
                 Argument *arg2 = r->getFinal()->getResult();
                 Quad *jump = NULL;
                 if (this->ope == "<")
-                    jump = new Quad("blt", arg1, arg2, true_arg);
+                    jump = new Quad("<", arg1, arg2, true_arg);
                 else if (this->ope == "<=")
-                    jump = new Quad("ble", arg1, arg2, true_arg);
+                    jump = new Quad("<=", arg1, arg2, true_arg);
                 else if (this->ope == ">")
-                    jump = new Quad("bgt", arg1, arg2, true_arg);
+                    jump = new Quad(">", arg1, arg2, true_arg);
                 else if (this->ope == ">=")
-                    jump = new Quad("bge", arg1, arg2, true_arg);
+                    jump = new Quad(">=", arg1, arg2, true_arg);
                 else if (this->ope == "==")
-                    jump = new Quad("beq", arg1, arg2, true_arg);
+                    jump = new Quad("==", arg1, arg2, true_arg);
                 else if (this->ope == "!=")
-                    jump = new Quad("bne", arg1, arg2, true_arg);
+                    jump = new Quad("!=", arg1, arg2, true_arg);
 
                 l->appendToFinal(r);
-                
+
                 l->appendToFinal(jump);
 
                 Quad *goto_false = new Quad("goto", NULL, NULL, false_arg);

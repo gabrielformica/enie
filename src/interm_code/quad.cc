@@ -88,14 +88,25 @@ std::string Quad::emit() {
         str += "[" + this->arg2->toString() + "]" + "\n";
 
     // Emit for relational expression instruction
-    } else if (this->op == "blt" || this->op == "ble" ||
-               this->op == "bgt" || this->op == "bge" ||
-               this->op == "beq" || this->op == "bne") {
+    } else if (this->op == "<" || this->op == "<=" ||
+               this->op == ">" || this->op == ">=" ||
+               this->op == "==" || this->op == "!=") {
         str += "if " + this->arg1->toString();
         str += " " + this->op;
         str += " " + this->arg2->toString();
         str += " then goto";
         str += " " + this->result->toString() +"\n";
+
+    } else if (this->op[0] == '_' || this->op[0] == '$') {
+
+        if (this->op[0] == '_') {
+            str += "if " + this->op.substr(1);
+        } else {
+            str += "if " + this->op;
+        }
+        str += " then goto";
+        str += " " + this->result->toString() +"\n";
+
 
     // Omit for comments (this should be implemented later)
     } else if (this->result == NULL) {

@@ -43,8 +43,22 @@ class ExpVar: public ExpSimple {
             return q1;
         }
 
-        Quad *genJumpingCode(std::string a, std::string b) {
-            return NULL;
+        Quad *genJumpingCode(std::string true_label, std::string false_label) {
+            Quad *q = NULL;
+            ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
+            ArgumentConst *false_arg  = new ArgumentConst(false_label, NULL);
+
+            std::string str = "_";
+            str += this->var->getId();
+
+            if (this->op == "!") {
+                q = new Quad(str, false_arg, NULL, false_arg);
+            } else {
+                q  = new Quad(str, true_arg, NULL, true_arg);
+            }
+
+
+            return q;
         }
 };
 

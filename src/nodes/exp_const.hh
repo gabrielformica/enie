@@ -38,12 +38,14 @@ class ExpConst: public ExpSimple {
             ArgumentConst *true_arg  = new ArgumentConst(true_label, NULL);
             ArgumentConst *false_arg = new ArgumentConst(false_label, NULL);
 
-            Quad *true_quad  = new Quad("goto", true_arg, NULL, true_arg);
-            Quad *false_quad = new Quad("goto", false_arg, NULL, false_arg);
+            Quad *q = NULL;
+            if (this->op == "!") {
+                q = new Quad("goto", false_arg, NULL, false_arg);
+            } else {
+                q  = new Quad("goto", true_arg, NULL, true_arg);
+            }
 
-            true_quad->appendToFinal(false_quad);
-
-            return true_quad;
+            return q;
         }
 
 };
