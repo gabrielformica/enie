@@ -1,0 +1,11 @@
+enie :: ~ {
+    cadena despedida
+    despedida = "Chao estupidos"
+    despedida = "Chao estupidos"
+
+
+    escribir despedida
+
+    escribir "Hola como estas"
+    escribir "Gabriel Formica es un marico"
+}
