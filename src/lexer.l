@@ -96,7 +96,6 @@ para                        return PARA;
 \>                          return GTHAN;
 \<=                         return LETHAN;
 \>=                         return GETHAN;
-enie                        return ENIE;
 \[                          return OBRACK;
 \]                          return CBRACK;
 ->                          return ARROW;

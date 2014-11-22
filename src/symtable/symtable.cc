@@ -71,6 +71,16 @@ Symbol *SymbolTable::lookup(std::string id) {
     return NULL;
 }
 
+/* Iterate over the entire symbol table, en return the first symbol found */
+
+Symbol *SymbolTable::getSymbol(std::string id) {
+    for (MapTable::iterator it = table.begin(); it != table.end(); ++it) {
+        if ((*it).second->getId() == id) 
+            return it->second;
+    }
+    return NULL;
+}
+
 /* Tells if id is already in scope */
 bool SymbolTable::idIsInScope(string id, int scope) {
     return this->getSymbolInScope(id, scope) != NULL;

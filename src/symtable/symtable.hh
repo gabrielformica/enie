@@ -37,6 +37,7 @@ class SymbolTable {
         int  getCurrentScope();
         Symbol *getSymbolInScope(std::string, int);
         Symbol *lookup(std::string);
+        Symbol *getSymbol(std::string);
         bool idIsInScope(std::string, int);
         bool isActive(std::string);
         void printStack();
