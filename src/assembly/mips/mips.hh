@@ -20,6 +20,7 @@
 #include "../../symtable/symtable.hh" 
 #include "../../symtable/symbol.hh"
 #include "../../interm_code/argument.hh"
+#include "../../sound_type_system/base/cadena.hh"
 
 
 static int next_str_label = 0;

@@ -45,7 +45,7 @@ class SymbolTable {
         void printTable();
         std::list<Symbol *> *getAllSymbols();
         std::list<Symbol *> *getStillForwards();
-        std::vector<std::string> *getAllStrings();
+        std::vector<Symbol *> *getAllStrings();
 };
 
 #endif

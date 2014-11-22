@@ -1429,7 +1429,7 @@ int main (int argc, char **argv) {
     bool c_flag = false;
 
     while (1) {
-        opt = getopt_long(argc, argv, "hf:stid", long_options, &option_index);
+        opt = getopt_long(argc, argv, "hf:sticd", long_options, &option_index);
         if (opt == -1)
             break;
 
