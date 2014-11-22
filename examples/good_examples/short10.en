@@ -1,0 +1,6 @@
+enie :: ~ {
+    ent a = 4
+    flot b = 1.0
+    bool c = cierto
+    a = a + 5
+}
