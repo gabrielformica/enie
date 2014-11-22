@@ -25,7 +25,7 @@ class Bool: public Type {
         typedef Type super;
 
         /** class constructor */
-        Bool() : super(1) { }
+        Bool() : super(4) { }
 
         std::string typeString() { return "bool"; }
         bool is(std::string t) { return t == "bool"; }
