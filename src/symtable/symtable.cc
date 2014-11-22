@@ -77,7 +77,7 @@ Symbol *SymbolTable::lookup(std::string id) {
 
 Symbol *SymbolTable::getSymbol(std::string id) {
     for (MapTable::iterator it = table.begin(); it != table.end(); ++it) {
-        if ((*it).second->getId() == id) 
+        if ((*it).second->getId() == id)
             return it->second;
     }
     return NULL;
@@ -158,12 +158,17 @@ std::list<Symbol *> *SymbolTable::getStillForwards() {
 
 /* return all strings */
 
-std::vector<std::string> *SymbolTable::getAllStrings() {
-    std::vector<std::string> *l = new std::vector<std::string>;
-    for (MapTable::iterator it=table.begin(); it!=table.end(); ++it) {
-        if (it->second->getType()->is("cadena") &&
-                    ((Cadena *) it->second->getType())->getStr() != "")
-            l->push_back(((Cadena * ) it->second->getType())->getStr());
+std::vector<Symbol *> *SymbolTable::getAllStrings() {
+
+    std::vector<Symbol *> *l = new std::vector<Symbol *>;
+
+    for (MapTable::iterator it=table.begin();
+                            it!=table.end();
+                            ++it) {
+
+        if (it->first.at(0) == '@') {
+            l->push_back(it->second);
+        }
     }
     return l;
 }

@@ -437,13 +437,13 @@ inst : asign
         }
      | ESCRIBIR exp
         {
-            if ($<exp>2->is("ExpConst")) {
-                std::string id = "@s_";
-                id += std::to_string(anon_cads++);
-                Symbol *s;
-                s = new Symbol(id, $<exp>2->getType(), 0, @1.first_line, @1.first_column);
-                tryAddSymbol(symtable, &errors, s);
-            }
+            // if ($<exp>2->is("ExpConst")) {
+            //     std::string id = "@s_";
+            //     id += std::to_string(anon_cads++);
+            //     Symbol *s;
+            //     s = new Symbol(id, $<exp>2->getType(), 0, @1.first_line, @1.first_column);
+            //     tryAddSymbol(symtable, &errors, s);
+            // }
 
             if ($<exp>2->getType()->is("cadena")) {
                 std::vector<Exp *> *params = new std::vector<Exp *>;
@@ -603,6 +603,12 @@ decl : typeid EQUAL exp
                 $<symType>1->setOffset(offset);     // Setting offset
                 offset += $<symType>1->getType()->getWidth();
                 max_offset = offset > max_offset ? offset : max_offset;
+
+                // Ditching the type created at the variable declaration for the
+                // type created at the term CONSTCAD rule
+
+                $<symType>1->setType($<exp>3->getType());
+
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
@@ -1071,7 +1077,14 @@ term : idlist
      | CONSTCAD
         {
             // $<exp>$ = new ExpConst(*$1, new Cadena());
-            $<exp>$ = new ExpConst(*$1, new Cadena(*$1));
+            Cadena *cad = new Cadena(*$1);
+
+            $<exp>$ = new ExpConst(*$1, cad);
+            std::string id = "@s_";
+            id += std::to_string(anon_cads++);
+
+            Symbol *s = new Symbol(id, cad, 0, @1.first_line, @1.first_column);
+            tryAddSymbol(symtable, &errors, s);
         }
      | CONSTCAR    { $<exp>$ = new ExpConst(*$1, new Car()); }
      | arrasign
@@ -1490,6 +1503,14 @@ int main (int argc, char **argv) {
         }
     }
 
+    std::vector<Symbol *> *this_crap = symtable->getAllStrings();
+
+    for(std::vector<Symbol *>::iterator it = this_crap->begin();
+        it != this_crap->end(); ++it) {
+        std::cout << (*it)->getId() << std::endl;
+    }
+
+
     if ((f_flag) && (s_flag))
         symtable->printTable();
 
@@ -1499,9 +1520,9 @@ int main (int argc, char **argv) {
     if ((f_flag) && (i_flag))
         std::cout << enie->genCode()->emit() << std::endl;
 
-    if((f_flag) && (c_flag)) 
+    if((f_flag) && (c_flag))
         std::cout << (new Mips(enie->genCode(), symtable))->emit() << std::endl;
-    
+
 
     return 0;
 }
