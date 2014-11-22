@@ -30,6 +30,7 @@ class Cadena: public Type {
         Cadena() : super(0) { }
 
         std::string typeString() { return "cadena"; }
+        std::string getStr() { return this->str; }
         bool is(std::string t) { return t == "cadena"; }
         void setWidth() { this->width = str.size(); }
 };
