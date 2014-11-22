@@ -19,6 +19,7 @@
 #include <list>
 #include <unordered_map>
 #include "symbol.hh"
+#include "../sound_type_system/base/cadena.hh"
 
 
 typedef std::unordered_multimap<std::string, Symbol *> MapTable;
@@ -44,7 +45,7 @@ class SymbolTable {
         void printTable();
         std::list<Symbol *> *getAllSymbols();
         std::list<Symbol *> *getStillForwards();
-
+        std::vector<std::string> *getAllStrings();
 };
 
 #endif

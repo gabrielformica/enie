@@ -31,6 +31,7 @@ class Cadena: public Type {
         Cadena(std::string s) : super(4) { this->str = s; }
 
         std::string typeString() { return "cadena"; }
+        std::string getStr() { return this->str; }
         bool is(std::string t) { return t == "cadena"; }
         void setWidth() { this->width = str.size(); }
         void setStr(std::string s) {

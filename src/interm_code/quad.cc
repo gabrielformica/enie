@@ -140,6 +140,8 @@ std::string Quad::emit() {
     return str;
 }
 
+std::string Quad::getOp() { return this->op; }
+
 Argument* Quad::getResult() {
     return this->result;
 }
@@ -171,6 +173,12 @@ void Quad::clean() {
         temp = temp->next;
     }
     temp->next = NULL;
+}
+
+bool Quad::isComment() {
+    if (this->line > 0) 
+        return true;
+    return false;
 }
 
 void Quad::setLine(int l) {

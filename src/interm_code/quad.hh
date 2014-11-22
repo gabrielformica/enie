@@ -32,12 +32,14 @@ class Quad {
     public:
         Quad(int line, std::string comment);  //Just for comments
         Quad(std::string op, Argument *a1, Argument *a2, Argument *r);
+        std::string getOp();
         std::string emit();
         Argument *getResult();
         Argument *getArg1();
         Argument *getArg2();
         Quad *getNext();
         Quad *getFinal();
+        bool isComment();
         void setLine(int l);
         void setNext(Quad *q);
         void appendToFinal(Quad *q);

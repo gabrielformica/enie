@@ -3,9 +3,10 @@ CLANG= clang++
 CC= clang++
 YACC= bison -v -yd -o parser.tab.cc
 LEX= flex --yylineno -o lex.yy.cc
-OBJ=  parser.tab.cc lex.yy.cc  parserhelper.cc sound_type_system/type_system_utils.cc $(SYMTABLE) $(QUADS)
+OBJ=  parser.tab.cc lex.yy.cc  parserhelper.cc sound_type_system/type_system_utils.cc $(SYMTABLE) $(QUADS) $(MIPS)
 SYMTABLE= $(wildcard symtable/*.cc)
 QUADS= $(wildcard interm_code/*.cc)
+MIPS= $(wildcard assembly/mips/*.cc)
 
 clang: CC=clang++
 clang: $(OBJ)
