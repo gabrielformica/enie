@@ -53,6 +53,7 @@
     #include "nodes/funcapp.hh"
     #include "nodes/program.hh"
     #include "interm_code/quad.hh"
+    #include "assembly/mips/mips.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
     extern "C" { int yyparse(void); int yylex(void);}
@@ -1401,6 +1402,7 @@ int main (int argc, char **argv) {
             {"tree", no_argument, 0, 't'},
             {"interm_code", no_argument, 0, 'i'},
             {"debug", no_argument, 0, 'd'},
+            {"compile", no_argument, 0, 'c'},
             {0,0,0,0}
     };
 
@@ -1411,6 +1413,7 @@ int main (int argc, char **argv) {
     bool s_flag = false;
     bool t_flag = false;
     bool i_flag = false;
+    bool c_flag = false;
 
     while (1) {
         opt = getopt_long(argc, argv, "hf:stid", long_options, &option_index);
@@ -1426,9 +1429,13 @@ int main (int argc, char **argv) {
             std::cout << "-t\t\tprint abstract syntax tree" << std::endl;
             std::cout << "-i\t\tprint intermidiate code" << std::endl;
             std::cout << "-d\t\tprint some debug information" << std::endl;
+            std::cout << "-c\t\tcompile to MIPS code" << std::endl;
             exit(EXIT_SUCCESS);
         case 's':
             s_flag = true;
+            break;
+        case 'c':
+            c_flag = true;
             break;
         case 't':
             t_flag = true;
@@ -1478,6 +1485,10 @@ int main (int argc, char **argv) {
 
     if ((f_flag) && (i_flag))
         std::cout << enie->genCode()->emit() << std::endl;
+
+    if((f_flag) && (c_flag)) 
+        std::cout << (new Mips(enie->genCode(), symtable))->emit() << std::endl;
+    
 
     return 0;
 }
