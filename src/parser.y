@@ -69,7 +69,7 @@
 
     SymbolTable *symtable = new SymbolTable();
     int offset = 0;                 // Keeps global count of offset
-    int max_offset = 0;             // Keeps max offset for a given frame 
+    int max_offset = 0;             // Keeps max offset for a given frame
     std::list<int> *offsetStack = new std::list<int>;     // Tracks current offset for nested blocks
 
     std::vector<std::string> errors;
@@ -257,7 +257,6 @@ global : func leavescope { $<node>$ = $<node>1; }
        ;
 
 func : header pushoffset_z instbl popoffset
-// func : header instbl
         {
             ((Function *) $<header>1->getType())->unsetForward();      //This sets -forward- to false forever!
             $<func_node>$ = new FuncNode($<header>1, $<instlist>3);
@@ -590,9 +589,9 @@ arrvalueslist : arrvalueslist COMMA arrvalues
 decl : typeid EQUAL exp
         {
             if ($<symType>1->getType()->typeString() == $<exp>3->getType()->typeString()) {
-                max_offset = offset > max_offset ? offset : max_offset;
                 $<symType>1->setOffset(offset);     // Setting offset
                 offset += $<symType>1->getType()->getWidth();
+                max_offset = offset > max_offset ? offset : max_offset;
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
@@ -606,9 +605,9 @@ decl : typeid EQUAL exp
      | arrid EQUAL arrvalues
         {
             if ($<symType>1->getType() == $<exp>3->getType()) {
-                max_offset = offset > max_offset ? offset : max_offset;
                 $<symType>1->setOffset(offset);     // Setting offset
                 offset += $<symType>1->getType()->getWidth();
+                max_offset = offset > max_offset ? offset : max_offset;
                 $<node>$ = new Decl($<symType>1, $<exp>3, type_void);
             }
             else {
@@ -621,9 +620,9 @@ decl : typeid EQUAL exp
         }
      | declonly
         {
-            max_offset = offset > max_offset ? offset : max_offset;
             $<symType>1->setOffset(offset);     // Setting offset
             offset += $<symType>1->getType()->getWidth();
+            max_offset = offset > max_offset ? offset : max_offset;
             $<node>$ = new Decl($<symType>1, NULL, new TypeError(""));
         }
         ;
