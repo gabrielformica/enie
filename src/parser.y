@@ -1,4 +1,5 @@
 %defines
+
 %locations
 
 %code requires {
@@ -70,6 +71,7 @@
     SymbolTable *symtable = new SymbolTable();
     int offset = 0;                 // Keeps global count of offset
     int max_offset = 0;             // Keeps max offset for a given frame
+    int anon_cads = 0;
     std::list<int> *offsetStack = new std::list<int>;     // Tracks current offset for nested blocks
 
     std::vector<std::string> errors;
@@ -83,7 +85,7 @@
     Type *entero = new Ent();
     Type *booleano = new Bool();
     Type *flot = new Flot();
-    Type *cadena = new Cadena();
+    // Type *cadena = new Cadena();
     Type *car = new Car();
     Type *type_void = new Void();
     Node *syntax_error = new Error(new TypeError("Error sintactico"));
@@ -434,6 +436,14 @@ inst : asign
         }
      | ESCRIBIR exp
         {
+            if ($<exp>2->is("ExpConst")) {
+                std::string id = "@s_";
+                id += std::to_string(anon_cads++);
+                Symbol *s;
+                s = new Symbol(id, $<exp>2->getType(), 0, @1.first_line, @1.first_column);
+                tryAddSymbol(symtable, &errors, s);
+            }
+
             if ($<exp>2->getType()->is("cadena")) {
                 std::vector<Exp *> *params = new std::vector<Exp *>;
                 params->push_back($<exp>2);
@@ -660,7 +670,7 @@ type : ENT     { $<type>$ = entero; }
      | FLOT    { $<type>$ = flot; }
      | NADA    { $<type>$ = nada; }
      | BOOL    { $<type>$ = booleano; }
-     | CADENA  { $<type>$ = cadena; }
+     | CADENA  { $<type>$ = new Cadena(); }
      | ID
         {
             Symbol *s = symtable->lookup(*$1);
@@ -1057,7 +1067,11 @@ term : idlist
             ((FuncApp *)$<exp>1)->setRetorna(true);
             $<exp>$ = $<exp>1;
         }
-     | CONSTCAD    { $<exp>$ = new ExpConst(*$1, new Cadena()); }
+     | CONSTCAD
+        {
+            // $<exp>$ = new ExpConst(*$1, new Cadena());
+            $<exp>$ = new ExpConst(*$1, new Cadena(*$1));
+        }
      | CONSTCAR    { $<exp>$ = new ExpConst(*$1, new Car()); }
      | arrasign
         {

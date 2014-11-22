@@ -27,11 +27,15 @@ class Cadena: public Type {
         typedef Type super;
 
         /** class constructor */
-        Cadena() : super(0) { }
+        Cadena() : super(4) { }
+        Cadena(std::string s) : super(4) { this->str = s; }
 
         std::string typeString() { return "cadena"; }
         bool is(std::string t) { return t == "cadena"; }
         void setWidth() { this->width = str.size(); }
+        void setStr(std::string s) {
+            this->str = s;
+        }
 };
 
 #endif
