@@ -198,4 +198,23 @@ class Syscall: public MipsInst {
         std::string toString();
 };
 
+class Lw: public MipsInst {
+    private:
+        std::string arg1;
+        std::string dir;
+
+    public:
+        Lw(std::string a1, std::string d);
+};
+
+class Sw: public MipsInst {
+    private:
+        std::string arg1;
+        std::string dir;
+
+    public:
+        Sw(std::string a1, std::string d);
+};
+
 #endif
+

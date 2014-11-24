@@ -1,4 +1,4 @@
-/**
+ /*
   * Copyright 2014
   *
   * @file
@@ -189,4 +189,27 @@ std::string Blt::toString() {
     str += "blt " + this->arg1 + ", " + this->arg2 + ", " + this->label;
     return str;
 }
+
+Lw::Lw(std::string a1, std::string d) {
+    this->arg1 = a1;
+    this->dir = d;
+}
+
+std::string Lw::toString() {
+    std::string str = "";
+    str += "lw " + this->arg1 + ", " + this->dir;
+    return str;
+}
+
+Sw::Sw(std::string a1, std::string d) {
+    this->arg1 = a1;
+    this->dir = d;
+}
+
+std::string Sw::toString() {
+    std::string str = "";
+    str += "sw " + this->arg1 + ", " + this->dir;
+    return str;
+}
+
 
