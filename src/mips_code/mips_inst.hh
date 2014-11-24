@@ -205,6 +205,7 @@ class Lw: public MipsInst {
 
     public:
         Lw(std::string a1, std::string d);
+        std::string toString();
 };
 
 class Sw: public MipsInst {
@@ -214,6 +215,7 @@ class Sw: public MipsInst {
 
     public:
         Sw(std::string a1, std::string d);
+        std::string toString();
 };
 
 #endif
