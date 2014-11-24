@@ -53,6 +53,8 @@
     #include "nodes/funcapp.hh"
     #include "nodes/program.hh"
     #include "interm_code/quad.hh"
+    #include "interm_code/interm_function.hh"
+    #include "interm_code/interm_program.hh"
     extern FILE* yyin;
     extern std::vector<std::string> errors;
     extern "C" { int yyparse(void); int yylex(void);}
@@ -1468,8 +1470,123 @@ int main (int argc, char **argv) {
     if ((f_flag) && (t_flag))
         std::cout << enie->toString() << std::endl;
 
-    if ((f_flag) && (i_flag))
-        std::cout << enie->genCode()->emit() << std::endl;
+    if ((f_flag) && (i_flag)) {
+        Quad *code = enie->genCode();
+
+
+        // Clear quad comments
+        code->clearComments();
+        std::cout << code->emit() << std::endl;
+
+        // Generate basic blocks and clear the first comment
+        std::vector<BasicBlock *> *blocks = genBasicBlocks(code);
+        blocks->front()->clearFirst();
+
+        // IntermProgram *i_program = new IntermProgram(blocks);
+
+
+        //////////////////////// //////////////////////////////////////////////
+        //////////////////////// DEGUG CODE CRAP  ////////////////////////////
+        //////////////////////// //////////////////////////////////////////////
+
+        // std::string f_label = "";
+        // int f_count = 0;
+
+        // std::cout << "main:" << std::endl;
+        // std::cout << "jal f_enie" << std::endl;
+        // std::cout << "la $sp , 0($sp)" << std::endl;
+        // std::cout << "li $v0, 10" << std::endl;
+        // std::cout << "syscall" << std::endl;
+
+        // for (vector<BasicBlock *>::iterator it = blocks->begin();
+        //     it != blocks->end(); ++it) {
+
+        //     vector<Quad *> * quads = (*it)->getList();
+
+        //     for (vector<Quad *>::iterator it2 = quads->begin();
+        //         it2 != quads->end(); ++it2) {
+        //         Quad *temp = *it2;
+
+        //         // std::cout << "    Quad:" << std::endl;
+        //         // std::cout << "        operador: ";
+        //         // std::cout << temp->getOp() << std::endl;;
+
+        //         // if a label is found
+        //         if (temp->getOp() == "label") {
+
+        //             string l = temp->getResult()->toString();
+
+        //             // If it's a function name
+        //             if (l.at(0) != '@') {
+        //                 f_label = temp->getResult()->toString();
+
+        //                 std::cout << "f_" << f_label << ":" << std::endl;
+
+        //             // If it's a flow control label
+        //             } else {
+        //                 std::string name = "f_" + f_label;
+        //                 name += "_" + string(1, l.back()) + ":";
+        //                 std::cout << name << std::endl;
+        //             }
+        //         } else if (temp->getOp() == "goto" && temp->getResult()->toString() != "enie") {
+        //             std::string l = temp->getResult()->toString();
+        //             std::string jump = "jal f_" + f_label;
+        //             jump += "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         } else if (temp->getOp() == "<") {
+        //             std::string l = temp->getResult()->toString();
+
+        //             std::string jump = "blt ";
+        //             jump += "f_" + f_label + "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         } else if (temp->getOp() == "<=") {
+        //             std::string l = temp->getResult()->toString();
+
+        //             std::string jump = "ble ";
+        //             jump += "f_" + f_label + "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         } else if (temp->getOp() == ">") {
+        //             std::string l = temp->getResult()->toString();
+
+        //             std::string jump = "bgt ";
+        //             jump += "f_" + f_label + "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         } else if (temp->getOp() == ">=") {
+        //             std::string l = temp->getResult()->toString();
+
+        //             std::string jump = "bge ";
+        //             jump += "f_" + f_label + "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         } else if (temp->getOp() == "==") {
+        //             std::string l = temp->getResult()->toString();
+
+        //             std::string jump = "beq ";
+        //             jump += "f_" + f_label + "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         } else if (temp->getOp() == "!=") {
+        //             std::string l = temp->getResult()->toString();
+
+        //             std::string jump = "bne ";
+        //             jump += "f_" + f_label + "_" + string(1, l.back());
+        //             std::cout << jump << std::endl;
+        //         }
+
+        //         if (temp->getResult() != NULL) {
+        //             std::cout << "        resultado: ";
+        //             std::cout << temp->getResult()->toString() << std::endl;;
+        //         }
+
+
+        //     }
+        // }
+
+        //////////////////////// //////////////////////////////////////////////
+        //////////////////////// DEGUG CODE CRAP  ////////////////////////////
+        //////////////////////// //////////////////////////////////////////////
+
+
+    }
+
 
     return 0;
 }

@@ -16,6 +16,7 @@
 
 #include <string>
 #include "quad.hh"
+#include "basic_block.hh"
 #include "../symtable/symbol.hh"
 
 static int next_temp = 0;
@@ -25,5 +26,7 @@ Symbol *get_next_temp();
 std::string get_next_label();
 
 void gen_un_op(Quad *q, std::string un_op);
+
+std::vector<BasicBlock *> *genBasicBlocks(Quad *);
 
 #endif

@@ -36,9 +36,13 @@ class Quad {
         Argument *getResult();
         Argument *getArg1();
         Argument *getArg2();
+        std::string getOp();
         Quad *getNext();
         Quad *getFinal();
+        bool isComment();
+        void clearComments();
         void setLine(int l);
+        int getLine();
         void setNext(Quad *q);
         void appendToFinal(Quad *q);
         void clean();

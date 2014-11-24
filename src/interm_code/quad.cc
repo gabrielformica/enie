@@ -152,6 +152,10 @@ Argument* Quad::getArg2() {
     return this->arg2;
 }
 
+std::string Quad::getOp() {
+    return this->op;
+}
+
 
 Quad* Quad::getNext() {
     return this->next;
@@ -177,10 +181,34 @@ void Quad::setLine(int l) {
     this->line = l;
 }
 
+int Quad::getLine() {
+    return this->line;
+}
+
 Quad *Quad::getFinal() {
     Quad *temp = this;
     while (temp->getNext() != NULL) {
         temp = temp->getNext();
     }
     return temp;
+}
+
+bool Quad::isComment() {
+    return this->line == 0 || this->line > 0;
+}
+
+void Quad::clearComments() {
+    Quad *before = this;
+    Quad *after = before->getNext();
+
+    while (after != NULL) {
+        if (after->isComment()) {
+            before->setNext(after->getNext());
+            after = after->getNext();
+        } else {
+            after = after->getNext();
+            before = before->getNext();
+        }
+
+    }
 }
