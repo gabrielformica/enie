@@ -25,7 +25,7 @@ std::string Add::toString() {
     return str;
 }
 
-AddI::AddI(std::string z, std::string x, int i) {
+AddI::AddI(std::string z, std::string x, std::string i) {
     this->res  = z;
     this->arg1 = x;
     this->arg2 = i; // this is an imm
@@ -34,7 +34,7 @@ AddI::AddI(std::string z, std::string x, int i) {
 std::string AddI::toString() {
     std::string str = "";
     str += "addi " + this->res +  ", " + this->arg1 + ", ";
-    str += std::to_string(this->arg2);
+    str += this->arg2;
     return str;
 }
 

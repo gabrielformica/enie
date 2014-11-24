@@ -43,13 +43,13 @@ class AddI: public MipsInst {
     private:
         std::string res;
         std::string arg1;
-        int arg2; // this is an imm
+        std::string arg2; // this is an imm
 
     public:
-        AddI(std::string z, std::string x, int i);
+        AddI(std::string z, std::string x, std::string i);
 
         void setArg1(std::string);
-        void setArg2(int);
+        void setArg2(std::string);
         void setRes(std::string);
 
         std::string toString();

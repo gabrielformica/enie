@@ -31,3 +31,8 @@ std::string MipsProgram::emit() {
     return code;
 }
 
+void MipsProgram::addInst(MipsInst *i) {
+    this->program->push_back(i);
+}
+
+

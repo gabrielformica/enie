@@ -26,6 +26,7 @@ class MipsProgram {
 
         std::vector<MipsInst *> *getList();
         std::string emit();
+        void addInst(MipsInst *);
 };
 
 #endif

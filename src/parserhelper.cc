@@ -38,12 +38,21 @@ std::vector<Type *> *getTypesFromExps(std::vector<Exp *> *exps) {
     return types;
 }
 
+std::string chop(std::string str) {
+    return "$t" + str.substr(2);
+}
+
+std::string catOffset(Symbol *s) {
+    std::string str = std::to_string(s->getOffset()) + "($" + s->getId() + ")";
+    return str;
+}
+
 /**
   * Returns the errors given by declared functions that were not implemented
-  */ 
+  */
 
 std::string not_implemented(SymbolTable *symtable) {
-    std::list<Symbol *> *functions = symtable->getStillForwards(); 
+    std::list<Symbol *> *functions = symtable->getStillForwards();
     std::string str = "";
     for (std::list<Symbol *>::iterator it = functions->begin();
                              it != functions->end(); ++it) {
@@ -56,42 +65,89 @@ std::string not_implemented(SymbolTable *symtable) {
         str += "funcion '" + symbol->getId() + "'";
         str += " fue declarada pero nunca implementada\n";
     }
-    
+
     return str;
 }
 
 /* getReg */
 
-void getReg(Quad *inst, SymbolTable *symtable) {
-    //if quad is  z = x op y 
-    if (inst->zxy()) {  
-        Symbol *x = getRegAux(inst->getArg1(), NULL, symtable);
-        Symbol *y = getRegAux(inst->getArg1(), x, symtable);
+void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
+    //if quad is  z = x op y
+    if (inst->zxy()) {
+        // Get register and add instructions of x operands of the quad
+        // The second argument is the symbol to ignore when looking for
+        // registers.
+        Symbol *x = getRegAux(inst->getArg1(), NULL, symtable, program);
+
+        if (inst->getOp() == "+") {
+            if (inst->getArg2()->is("ArgumentVar")) {
+                Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
+                Add *add = new Add(chop(x->getId()), chop(x->getId()), chop(y->getId()));
+                program->addInst(add);
+            } else {
+                AddI *addi = new AddI(chop(x->getId()), chop(x->getId()), ((ArgumentConst *)(inst->getArg2()))->getElem());
+                program->addInst(addi);
+            }
+        } else if (inst->getOp() == "-") {
+            Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
+            Sub *sub = new Sub(chop(x->getId()), chop(x->getId()), chop(y->getId()));
+            program->addInst(sub);
+        } else if (inst->getOp() == "*") {
+            Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
+            Mult *mult = new Mult(chop(x->getId()), chop(y->getId()));
+            program->addInst(mult);
+        } else if (inst->getOp() == "/") {
+            Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
+            Div *divi = new Div(chop(x->getId()), chop(y->getId()));
+            program->addInst(divi);
+
+            Mflo *mflo = new Mflo(chop(x->getId()));
+            program->addInst(mflo);
+        } else if (inst->getOp() == "%") {
+            Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
+            Div *divi = new Div(chop(x->getId()), chop(y->getId()));
+            program->addInst(divi);
+
+            Mfhi *mfhi = new Mfhi(chop(x->getId()));
+            program->addInst(mfhi);
+        }
+
     }
 }
 
 
 /* getRegAux:   reg is the register that can't be used */
-Symbol *getRegAux(Argument *arg, Symbol *dont_use, SymbolTable *symtable) {
+Symbol *getRegAux(Argument *arg, Symbol *dont_use,
+                    SymbolTable *symtable,
+                    MipsProgram *program) {
     if (arg->is("ArgumentVar")) {
         Symbol *s = ((ArgumentVar *) arg)->getSymbol();
+        Symbol *reg_to_use;
+
         if (! symtable->inReg(s)) {
-            Symbol *reg_to_use = symtable->getFreeReg(dont_use);
+            reg_to_use = symtable->getFreeReg(dont_use);
             if (reg_to_use == NULL) {
                 reg_to_use = symtable->getRandomReg(dont_use);
-                store_them(reg_to_use);
+                store_them(reg_to_use, program);
             }
+        } else {
+            reg_to_use = s->getRegToUse();
         }
-        //LW arg->getSymbol()->getId()  reg
+
+        Lw *lw = new Lw(catOffset(((ArgumentVar *)arg)->getSymbol()), chop(reg_to_use->getId()));
+        program->addInst(lw);
+    } else if (arg->is("ArgumentConst")) {
+
     }
 }
 
-void store_them(Symbol *reg) {
+void store_them(Symbol *reg, MipsProgram *program) {
     std::vector<Symbol *> *store_list = reg->getVars();
-    for (std::vector<Symbol *>::iterator it=store_list->begin(); 
+    for (std::vector<Symbol *>::iterator it=store_list->begin();
                                          it!=store_list->end();
                                          ++it) {
-        //new StoreWord( (*it), s)  
-        //Add them to the global vector 
+
+        Sw *sw = new Sw( chop(reg->getId()), catOffset((*it)) );
+        program->addInst(sw);
     }
 }

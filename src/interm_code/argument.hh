@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Class definitions for arguments 
+  * Class definitions for arguments
   */
 
 
@@ -32,7 +32,7 @@ class ArgumentVar: public Argument {
     protected:
         Symbol *var;
     public:
-        ArgumentVar(Symbol *var, Type *t); 
+        ArgumentVar(Symbol *var, Type *t);
         bool is(std::string);
         std::string toString();
         Symbol *getSymbol();
@@ -43,9 +43,10 @@ class ArgumentConst: public Argument {
     protected:
         std::string elem;
     public:
-        ArgumentConst(std::string elem, Type *t); 
+        ArgumentConst(std::string elem, Type *t);
         bool is(std::string);
         std::string toString();
+        std::string getElem();
 
 };
 

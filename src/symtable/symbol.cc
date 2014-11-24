@@ -124,3 +124,14 @@ std::vector<Symbol *> *Symbol::getVars() {
 }
 
 void Symbol::initializeVars() { this->vars = new std::vector<Symbol *>; }
+
+Symbol *Symbol::getRegToUse(){
+    for (std::vector<Symbol *>::iterator it=this->vars->begin();
+        it!=this->vars->end(); ++it) {
+        if ((*it)->getId().substr(0, 2) == "R_") {
+            return (*it);
+        }
+    }
+
+    return NULL;
+}

@@ -52,6 +52,7 @@ class Symbol {
         void print();
         std::vector<Symbol *> *getVars();
         void initializeVars();
+        Symbol *getRegToUse();
 };
 
 #endif
