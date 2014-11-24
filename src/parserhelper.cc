@@ -69,8 +69,32 @@ std::string not_implemented(SymbolTable *symtable) {
     return str;
 }
 
-/* getReg */
 
+void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
+    std::vector<Symbol *> *vars = reg->getVars();
+    reg->initializeVars();
+    if (b!= NULL) {
+        reg->getVars()->push_back(b);
+    }
+    for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
+        Symbol *s = (*it);
+        int i = 0;
+        for (std::vector<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); ++vit) {
+            if ((*vit) == reg) {
+                break;
+            }
+            i++;
+        }
+        s->getVars()->erase(s->getVars()->begin() + i);
+    }
+}
+
+
+void mainSW(Symbol *b) {
+    b->getVars()->push_back(b);
+}
+
+/* getReg */
 void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
     //if quad is  z = x op y
     if (inst->zxy()) {
@@ -84,18 +108,27 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
                 Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
                 Add *add = new Add(chop(x->getId()), chop(x->getId()), chop(y->getId()));
                 program->addInst(add);
+                mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
             } else {
                 AddI *addi = new AddI(chop(x->getId()), chop(x->getId()), ((ArgumentConst *)(inst->getArg2()))->getElem());
                 program->addInst(addi);
+                mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
             }
         } else if (inst->getOp() == "-") {
             Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
             Sub *sub = new Sub(chop(x->getId()), chop(x->getId()), chop(y->getId()));
             program->addInst(sub);
+                mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
+            program->addInst(sub);
         } else if (inst->getOp() == "*") {
             Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
             Mult *mult = new Mult(chop(x->getId()), chop(y->getId()));
             program->addInst(mult);
+
+            Mflo *mflo = new Mflo(chop(x->getId()));
+            program->addInst(mflo);
+
+            mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
         } else if (inst->getOp() == "/") {
             Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
             Div *divi = new Div(chop(x->getId()), chop(y->getId()));
@@ -103,6 +136,7 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
 
             Mflo *mflo = new Mflo(chop(x->getId()));
             program->addInst(mflo);
+            mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
         } else if (inst->getOp() == "%") {
             Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
             Div *divi = new Div(chop(x->getId()), chop(y->getId()));
@@ -110,6 +144,7 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
 
             Mfhi *mfhi = new Mfhi(chop(x->getId()));
             program->addInst(mfhi);
+            mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
         }
 
         //arg1 is not in x
@@ -137,8 +172,8 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
         }
 
         Lw *lw = new Lw(catOffset(((ArgumentVar *)arg)->getSymbol()), chop(reg_to_use->getId()));
-        // mantener registros
         program->addInst(lw);
+        mainLW(symtable, reg_to_use, ((ArgumentVar *)arg)->getSymbol());
     } else if (arg->is("ArgumentConst")) {
         reg_to_use = symtable->getFreeReg(dont_use);
         if (reg_to_use == NULL) {
@@ -147,7 +182,7 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
         }
         Lw *lw = new Lw(((ArgumentConst *)arg)->getElem(), chop(reg_to_use->getId()));
         // mantener registros
-        // mainLw(symtable, reg_to_use)
+        mainLW(symtable, reg_to_use, NULL);
         program->addInst(lw);
     }
 }
@@ -159,22 +194,7 @@ void store_them(Symbol *reg, MipsProgram *program) {
                                          ++it) {
         Sw *sw = new Sw( chop(reg->getId()), catOffset((*it)) );
         program->addInst(sw);
+        mainSW((*it));
     }
 }
 
-void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
-    std::vector<Symbol *> *vars = reg->getVars();
-    reg->initializeVars();
-    reg->getVars()->push_back(b);
-    for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
-        Symbol *s = (*it);
-        int i = 0;
-        for (std::vector<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); ++vit) {
-            if ((*vit) == reg) {
-                break;
-            }
-            i++;
-        }
-        s->getVars()->erase(s->getVars()->begin() + i);
-    }
-}
