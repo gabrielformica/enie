@@ -1393,6 +1393,7 @@ int main (int argc, char **argv) {
             {"tree", no_argument, 0, 't'},
             {"interm_code", no_argument, 0, 'i'},
             {"debug", no_argument, 0, 'd'},
+            {"compile", no_argument, 0, 'c'},
             {0,0,0,0}
     };
 
@@ -1403,9 +1404,10 @@ int main (int argc, char **argv) {
     bool s_flag = false;
     bool t_flag = false;
     bool i_flag = false;
+    bool c_flag = false;
 
     while (1) {
-        opt = getopt_long(argc, argv, "hf:stid", long_options, &option_index);
+        opt = getopt_long(argc, argv, "hf:sctid", long_options, &option_index);
         if (opt == -1)
             break;
 
@@ -1427,6 +1429,9 @@ int main (int argc, char **argv) {
             break;
         case 'i':
             i_flag = true;
+            break;
+        case 'c':
+            c_flag = true;
             break;
         case 'd':
             debug = true;
@@ -1471,15 +1476,57 @@ int main (int argc, char **argv) {
     if ((f_flag) && (i_flag)) {
         Quad *code = enie->genCode();
 
+        std::cout << code->emit() << std::endl;
+    }
+
+    if ((f_flag) && (c_flag)) {
+        Quad *code = enie->genCode();
 
         // Clear quad comments
         code->clearComments();
-        std::cout << code->emit() << std::endl;
 
-        // Generate basic blocks and clear the first comment
+        // Gen blocks
         std::vector<BasicBlock *> *blocks = genBasicBlocks(code);
         blocks->front()->clearFirst();
 
+        MipsProgram *mips = new MipsProgram();
+
+        for (vector<BasicBlock *>::iterator it = blocks->begin();
+            it != blocks->end(); ++it) {
+
+            vector<Quad *> * quads = (*it)->getList();
+
+            for (vector<Quad *>::iterator it2 = quads->begin();
+                it2 != quads->end(); ++it2) {
+
+                Quad *temp = *it2;
+
+                // A label is found
+                if (temp->getOp() == "label") {
+                    string l = temp->getResult()->toString();
+
+                    // It's a function name
+                    if (l.at(0) != '@') {
+                        Label *label = new Label(l);
+                        mips->addInst(label);
+                    } else {
+                        Label *label = new Label(l);
+                        mips->addInst(label);
+                    }
+                } else if (temp->getOp() == "goto" && temp->getResult()->toString() != "enie") {
+
+                }
+
+            }
+
+        }
+
+
+
+        std::cout << mips->emit() << std::endl;
+
+
+    }
         // IntermProgram *i_program = new IntermProgram(blocks);
 
 
@@ -1583,7 +1630,7 @@ int main (int argc, char **argv) {
         //////////////////////// //////////////////////////////////////////////
 
 
-    }
+    // }
 
 
     return 0;

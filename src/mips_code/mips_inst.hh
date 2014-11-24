@@ -218,5 +218,14 @@ class Sw: public MipsInst {
         std::string toString();
 };
 
+class Label: public MipsInst {
+    private:
+        std::string name;
+    public:
+        Label(std::string);
+
+        std::string toString();
+};
+
 #endif
 

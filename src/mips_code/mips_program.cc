@@ -36,3 +36,8 @@ void MipsProgram::addInst(MipsInst *i) {
 }
 
 
+std::vector<MipsInst *> *MipsProgram::getList() {
+    return this->program;
+}
+
+

@@ -212,4 +212,11 @@ std::string Sw::toString() {
     return str;
 }
 
+Label::Label(std::string n) {
+    this->name = n;
+}
+
+std::string Label::toString() {
+    return this->name + ":";
+}
 
