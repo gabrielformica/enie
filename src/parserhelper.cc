@@ -112,6 +112,7 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
             program->addInst(mfhi);
         }
 
+        //arg1 is not in x
     }
 }
 
@@ -120,9 +121,10 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
 Symbol *getRegAux(Argument *arg, Symbol *dont_use,
                     SymbolTable *symtable,
                     MipsProgram *program) {
+
+    Symbol *reg_to_use;
     if (arg->is("ArgumentVar")) {
         Symbol *s = ((ArgumentVar *) arg)->getSymbol();
-        Symbol *reg_to_use;
 
         if (! symtable->inReg(s)) {
             reg_to_use = symtable->getFreeReg(dont_use);
@@ -135,9 +137,18 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
         }
 
         Lw *lw = new Lw(catOffset(((ArgumentVar *)arg)->getSymbol()), chop(reg_to_use->getId()));
+        // mantener registros
         program->addInst(lw);
     } else if (arg->is("ArgumentConst")) {
-
+        reg_to_use = symtable->getFreeReg(dont_use);
+        if (reg_to_use == NULL) {
+            reg_to_use = symtable->getRandomReg(dont_use);
+            store_them(reg_to_use, program);
+        }
+        Lw *lw = new Lw(((ArgumentConst *)arg)->getElem(), chop(reg_to_use->getId()));
+        // mantener registros
+        // mainLw(symtable, reg_to_use)
+        program->addInst(lw);
     }
 }
 
@@ -146,8 +157,24 @@ void store_them(Symbol *reg, MipsProgram *program) {
     for (std::vector<Symbol *>::iterator it=store_list->begin();
                                          it!=store_list->end();
                                          ++it) {
-
         Sw *sw = new Sw( chop(reg->getId()), catOffset((*it)) );
         program->addInst(sw);
+    }
+}
+
+void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
+    std::vector<Symbol *> *vars = reg->getVars();
+    reg->initializeVars();
+    reg->getVars()->push_back(b);
+    for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
+        Symbol *s = (*it);
+        int i = 0;
+        for (std::vector<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); ++vit) {
+            if ((*vit) == reg) {
+                break;
+            }
+            i++;
+        }
+        s->getVars()->erase(s->getVars()->begin() + i);
     }
 }
