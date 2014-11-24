@@ -1483,6 +1483,7 @@ int main (int argc, char **argv) {
 
     if ((f_flag) && (c_flag)) {
         Quad *code = enie->genCode();
+        std::cout << code->emit() << std::endl;
 
         addRegisters(symtable, cpu_reg);
         symtable->printTable();

@@ -102,20 +102,6 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
         // Get register and add instructions of x operands of the quad
         // The second argument is the symbol to ignore when looking for
         // registers.
-        std::cout << "++++++++++++++++++++++" << std::endl;
-        std::cout << inst->getResult()->toString() << std::endl;
-        std::cout << "++++++++++++++++++++++" << std::endl;
-        std::cout << inst->getArg1()->toString() << std::endl;
-        std::cout << "++++++++++++++++++++++" << std::endl;
-        std::cout << inst->getArg2()->toString() << std::endl;
-        std::cout << "++++++++++++++++++++++" << std::endl;
-
-        if (inst->getArg1() == NULL) {
-            std::cout << "++++++++++++++++++++++" << std::endl;
-            std::cout << "ARG1 ES NULL" << std::endl;
-            std::cout << "++++++++++++++++++++++" << std::endl;
-        }
-
 
         Symbol *x = getRegAux(inst->getArg1(), NULL, symtable, program);
 
@@ -180,6 +166,7 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
                     SymbolTable *symtable,
                     MipsProgram *program) {
 
+
     Symbol *reg_to_use;
     if (arg->is("ArgumentVar")) {
         Symbol *s = ((ArgumentVar *) arg)->getSymbol();
@@ -208,6 +195,8 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
         mainLW(symtable, reg_to_use, NULL);
         program->addInst(lw);
     }
+
+    return reg_to_use;
 }
 
 void store_them(Symbol *reg, MipsProgram *program) {
