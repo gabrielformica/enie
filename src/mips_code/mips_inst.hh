@@ -14,8 +14,12 @@
 #ifndef MIPS_INST_HH
 #define MIPS_INST_HH
 
+#include <string>
+
 class MipsInst {
 
+    public:
+        virtual std::string toString() = 0;
 };
 
 ///////////////////////////////////Arithmetic///////////////////////////////////
@@ -99,7 +103,7 @@ class Mflo: public MipsInst {
     private:
         std::string arg1;
     public:
-        Mfhi(std::string x);
+        Mflo(std::string x);
         std::string toString();
 };
 

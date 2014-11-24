@@ -11,8 +11,9 @@
   * MIPS Instruction class implementation
   */
 
+#include "mips_inst.hh"
+
 Add::Add(std::string z, std::string x, std::string y) {
-    this->mode = direct;
     this->res = z;
     this->arg1 = x;
     this->arg2 = y;
@@ -38,7 +39,7 @@ std::string AddI::toString() {
 }
 
 
-Sub(std::string z, std::string x, std::string y) {
+Sub::Sub(std::string z, std::string x, std::string y) {
     this->arg1 = x;
     this->arg2 = y;
     this->res  = z;
@@ -86,7 +87,7 @@ std::string Mfhi::toString() {
 }
 
 
-Mfhi::Mfhi(std::string x) {
+Mflo::Mflo(std::string x) {
     this->arg1 = x;
 }
 
@@ -103,7 +104,7 @@ Move::Move(std::string a1, std::string r) {
 
 std::string Move::toString() {
     std::string str = "";
-    str += "move " + this->arg1 + ", " + this->arg2;
+    str += "move " + this->arg1 + ", " + this->res;
     return str;
 }
 

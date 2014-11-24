@@ -8,7 +8,7 @@
   *
   * @section Description
   *
-  * Keeps track of the current temp
+  * Misc functions to aid interm code generationc
   */
 
 #include <string>
