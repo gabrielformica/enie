@@ -217,3 +217,5 @@ bool Quad::zxy() {
     return (this->op == "+" || this->op == "-" || this->op == "*" ||
             this->op == "/" || this->op == "%");
 }
+
+bool Quad::isCopy() { return (this->op == ":="); }

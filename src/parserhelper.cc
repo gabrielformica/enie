@@ -146,9 +146,16 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
             program->addInst(mfhi);
             mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
         }
-
         //arg1 is not in x
+    } else if (inst->isCopy()) {  //x = y
+        Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
+        program->addInst(new Sw(chop(s->getId()), catOffset(((ArgumentVar *) inst->getResult())->getSymbol()))); //x has the value of y
+        Symbol *x = ((ArgumentVar *) inst->getResult())->getSymbol();
+        x->initializeVars();
+        mainLW(symtable, x, s);     //buscar todos los registros que tenian a x y eliminarlos
+        x->getVars()->push_back(s); //agregar que X esta en el nuevo registro s
     }
+
 }
 
 
@@ -197,4 +204,3 @@ void store_them(Symbol *reg, MipsProgram *program) {
         mainSW((*it));
     }
 }
-
