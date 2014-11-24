@@ -47,6 +47,7 @@ class Quad {
         void appendToFinal(Quad *q);
         void clean();
         bool zxy();
+        bool isCopy();
 };
 
 #endif
