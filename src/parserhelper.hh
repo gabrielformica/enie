@@ -17,7 +17,7 @@ std::vector<Type *> *getTypesFromExps(std::vector<Exp *> *exps);
 
 std::string not_implemented(SymbolTable *symtable);
 
-void getReg(Quad *, SymbolTable *);
+void getReg(Quad *, SymbolTable *, MipsProgram *);
 
 Symbol *getRegAux(Argument *, Symbol *, SymbolTable *, MipsProgram *);
 

@@ -97,10 +97,26 @@ void mainSW(Symbol *b) {
 /* getReg */
 void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
     //if quad is  z = x op y
+
     if (inst->zxy()) {
         // Get register and add instructions of x operands of the quad
         // The second argument is the symbol to ignore when looking for
         // registers.
+        std::cout << "++++++++++++++++++++++" << std::endl;
+        std::cout << inst->getResult()->toString() << std::endl;
+        std::cout << "++++++++++++++++++++++" << std::endl;
+        std::cout << inst->getArg1()->toString() << std::endl;
+        std::cout << "++++++++++++++++++++++" << std::endl;
+        std::cout << inst->getArg2()->toString() << std::endl;
+        std::cout << "++++++++++++++++++++++" << std::endl;
+
+        if (inst->getArg1() == NULL) {
+            std::cout << "++++++++++++++++++++++" << std::endl;
+            std::cout << "ARG1 ES NULL" << std::endl;
+            std::cout << "++++++++++++++++++++++" << std::endl;
+        }
+
+
         Symbol *x = getRegAux(inst->getArg1(), NULL, symtable, program);
 
         if (inst->getOp() == "+") {

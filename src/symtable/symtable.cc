@@ -153,7 +153,7 @@ std::vector<Symbol *> *SymbolTable::getVars(Symbol *s) {
 Symbol *SymbolTable::getFreeReg(Symbol *reg) {
     for (MapTable::iterator it=table.begin(); it!=table.end(); ++it) {
         if ((it->second->getId().substr(0,2) == "R_") && (it->second != reg)) {
-            if (it->second->getVars()->empty()) 
+            if (it->second->getVars()->empty())
                 return it->second;
         }
     }
@@ -163,7 +163,7 @@ Symbol *SymbolTable::getFreeReg(Symbol *reg) {
 
 /* */
 bool SymbolTable::inReg(Symbol *s) {
-    std::vector<Symbol *> *vars = s->getVars(); 
+    std::vector<Symbol *> *vars = s->getVars();
     for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
         if ((*it)->getId().substr(0,2) != "R_")
             return true;

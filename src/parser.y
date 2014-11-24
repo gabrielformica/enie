@@ -1488,7 +1488,7 @@ int main (int argc, char **argv) {
         symtable->printTable();
 
         // Clear quad comments
-        code->clearComments();
+        code->clearGarbage();
 
         // Gen blocks
         std::vector<BasicBlock *> *blocks = genBasicBlocks(code);
@@ -1518,8 +1518,8 @@ int main (int argc, char **argv) {
                         Label *label = new Label(l);
                         mips->addInst(label);
                     }
-                } else if (temp->getOp() == "goto" && temp->getResult()->toString() != "enie") {
-
+                } else if (temp->getOp() == "+") {
+                    getReg(temp, symtable, mips);
                 }
 
             }

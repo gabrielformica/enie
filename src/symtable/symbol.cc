@@ -29,6 +29,7 @@ Symbol::Symbol(std::string id, Type *t, int s, int l, int c) {
     this->scope = s;
     this->line = l;
     this->column = c;
+    this->vars = new std::vector<Symbol *>;
 }
 
 /** Class constructor */
@@ -39,6 +40,7 @@ Symbol::Symbol(std::string id, int s, int l, int c) {
     this->line = l;
     this->column = c;
     this->type = NULL;
+    this->vars = new std::vector<Symbol *>;
 }
 
 /** Class constructor with offset */
@@ -50,6 +52,7 @@ Symbol::Symbol(std::string id, Type *t, int s, int l, int c, int o) {
     this->column = c;
     this->offset = o;
     this->type = NULL;
+    this->vars = new std::vector<Symbol *>;
 }
 
 /* Return id of the symbol */

@@ -193,16 +193,22 @@ Quad *Quad::getFinal() {
     return temp;
 }
 
-bool Quad::isComment() {
-    return this->line == 0 || this->line > 0;
+bool Quad::isGarbage() {
+    bool is = this->line == 0 || this->line > 0;
+
+    if(this->result != NULL) {
+        is = is or this->result->is("ArgumentConst");
+    }
+
+    return is;
 }
 
-void Quad::clearComments() {
+void Quad::clearGarbage() {
     Quad *before = this;
     Quad *after = before->getNext();
 
     while (after != NULL) {
-        if (after->isComment()) {
+        if (after->isGarbage()) {
             before->setNext(after->getNext());
             after = after->getNext();
         } else {

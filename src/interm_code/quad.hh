@@ -39,8 +39,8 @@ class Quad {
         std::string getOp();
         Quad *getNext();
         Quad *getFinal();
-        bool isComment();
-        void clearComments();
+        bool isGarbage();
+        void clearGarbage();
         void setLine(int l);
         int getLine();
         void setNext(Quad *q);
