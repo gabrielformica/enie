@@ -143,3 +143,43 @@ std::list<Symbol *> *SymbolTable::getStillForwards() {
 
     return list;
 }
+
+std::vector<Symbol *> *SymbolTable::getVars(Symbol *s) {
+    return s->getVars();
+}
+
+
+/* */
+Symbol *SymbolTable::getFreeReg(Symbol *reg) {
+    for (MapTable::iterator it=table.begin(); it!=table.end(); ++it) {
+        if ((it->second->getId().substr(0,2) == "R_") && (it->second != reg)) {
+            if (it->second->getVars()->empty()) 
+                return it->second;
+        }
+    }
+    return NULL;
+}
+
+
+/* */
+bool SymbolTable::inReg(Symbol *s) {
+    std::vector<Symbol *> *vars = s->getVars(); 
+    for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
+        if ((*it)->getId().substr(0,2) != "R_")
+            return true;
+    }
+    return false;
+}
+
+Symbol *SymbolTable::getRandomReg(Symbol *reg) {
+    Symbol *s;
+    for (MapTable::iterator it=table.begin(); it!=table.end(); ++it) {
+        if ((it->second->getId().substr(0,2) == "R_") && (it->second != reg)) {
+                s = it->second;
+                break;
+        }
+    }
+
+    //updating var descriptor
+    return s;
+}

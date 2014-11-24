@@ -212,3 +212,8 @@ void Quad::clearComments() {
 
     }
 }
+
+bool Quad::zxy() {
+    return (this->op == "+" || this->op == "-" || this->op == "*" ||
+            this->op == "/" || this->op == "%");
+}

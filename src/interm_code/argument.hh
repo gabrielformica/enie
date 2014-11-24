@@ -35,6 +35,7 @@ class ArgumentVar: public Argument {
         ArgumentVar(Symbol *var, Type *t); 
         bool is(std::string);
         std::string toString();
+        Symbol *getSymbol();
 
 };
 

@@ -118,3 +118,9 @@ void Symbol::print() {
     std::cout << " Width:   " << type->getWidth();
     std::cout << " Tipo:    " << type->typeString() << std::endl;
 }
+
+std::vector<Symbol *> *Symbol::getVars() {
+    return this->vars;
+}
+
+void Symbol::initializeVars() { this->vars = new std::vector<Symbol *>; }

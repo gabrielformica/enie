@@ -22,6 +22,7 @@ ArgumentVar::ArgumentVar(Symbol *var, Type *t) {
 
 bool ArgumentVar::is(std::string str) { return str == "ArgumentVar"; }
 std::string ArgumentVar::toString() { return this->var->getId(); }
+Symbol *ArgumentVar::getSymbol() { return this->var; } 
 
 ArgumentConst::ArgumentConst(std::string elem, Type *t) {
     this->elem = elem; 

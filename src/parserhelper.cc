@@ -6,6 +6,8 @@
 #include "symtable/symtable.hh"
 #include "symtable/symbol.hh"
 #include "nodes/exp.hh"
+#include "interm_code/argument.hh"
+#include "mips_code/mips_program.hh"
 
 using namespace std;
 
@@ -56,4 +58,40 @@ std::string not_implemented(SymbolTable *symtable) {
     }
     
     return str;
+}
+
+/* getReg */
+
+void getReg(Quad *inst, SymbolTable *symtable) {
+    //if quad is  z = x op y 
+    if (inst->zxy()) {  
+        Symbol *x = getRegAux(inst->getArg1(), NULL, symtable);
+        Symbol *y = getRegAux(inst->getArg1(), x, symtable);
+    }
+}
+
+
+/* getRegAux:   reg is the register that can't be used */
+Symbol *getRegAux(Argument *arg, Symbol *dont_use, SymbolTable *symtable) {
+    if (arg->is("ArgumentVar")) {
+        Symbol *s = ((ArgumentVar *) arg)->getSymbol();
+        if (! symtable->inReg(s)) {
+            Symbol *reg_to_use = symtable->getFreeReg(dont_use);
+            if (reg_to_use == NULL) {
+                reg_to_use = symtable->getRandomReg(dont_use);
+                store_them(reg_to_use);
+            }
+        }
+        //LW arg->getSymbol()->getId()  reg
+    }
+}
+
+void store_them(Symbol *reg) {
+    std::vector<Symbol *> *store_list = reg->getVars();
+    for (std::vector<Symbol *>::iterator it=store_list->begin(); 
+                                         it!=store_list->end();
+                                         ++it) {
+        //new StoreWord( (*it), s)  
+        //Add them to the global vector 
+    }
 }
