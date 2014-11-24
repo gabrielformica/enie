@@ -16,5 +16,10 @@ std::vector<Type *> *getTypesFromExps(std::vector<Exp *> *exps);
 
 std::string not_implemented(SymbolTable *symtable);
 
+void getReg(Quad *, SymbolTable *); 
+
+Symbol *getRegAux(Argument *, Symbol *, SymbolTable *);
+
+void store_them(Symbol *);
 
 #endif

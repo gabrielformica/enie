@@ -17,6 +17,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 #include <unordered_map>
 #include "../sound_type_system/base/type.hh"
 
@@ -29,6 +30,7 @@ class Symbol {
         int line;
         int column;
         int offset = 0;
+        std::vector<Symbol *> *vars;
 
     public:
         Symbol(std::string id, Type *t, int s, int l, int c);
@@ -48,6 +50,8 @@ class Symbol {
         int getOffset();
         void setOffset(int);
         void print();
+        std::vector<Symbol *> *getVars();
+        void initializeVars();
 };
 
 #endif

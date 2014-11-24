@@ -46,6 +46,7 @@ class Quad {
         void setNext(Quad *q);
         void appendToFinal(Quad *q);
         void clean();
+        bool zxy();
 };
 
 #endif
