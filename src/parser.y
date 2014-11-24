@@ -28,6 +28,7 @@
     #include "sound_type_system/base/registro.hh"
     #include "sound_type_system/base/function.hh"
     #include "sound_type_system/base/union.hh"
+    #include "sound_type_system/base/cpureg.hh"
     #include "sound_type_system/base/type_error.hh"
     #include "nodes/node.hh"
     #include "nodes/exp.hh"
@@ -85,6 +86,7 @@
     Type *cadena = new Cadena();
     Type *car = new Car();
     Type *type_void = new Void();
+    Type *cpu_reg = new CpuReg();
     Node *syntax_error = new Error(new TypeError("Error sintactico"));
 
     using namespace std;
@@ -1481,6 +1483,9 @@ int main (int argc, char **argv) {
 
     if ((f_flag) && (c_flag)) {
         Quad *code = enie->genCode();
+
+        addRegisters(symtable, cpu_reg);
+        symtable->printTable();
 
         // Clear quad comments
         code->clearComments();

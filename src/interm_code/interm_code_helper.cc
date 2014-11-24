@@ -15,10 +15,15 @@
 #include "interm_code_helper.hh"
 #include "../symtable/symbol.hh"
 
+extern SymbolTable *symtable;
+
 Symbol *get_next_temp() {
     int next = next_temp++;
     std::string id = "$t" + std::to_string(next);
     Symbol *next_temp_symbol = new Symbol(id,0,0,0);
+
+    symtable->addSymbol(next_temp_symbol);
+
     return next_temp_symbol;
 }
 

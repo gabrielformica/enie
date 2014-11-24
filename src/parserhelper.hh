@@ -23,4 +23,7 @@ Symbol *getRegAux(Argument *, Symbol *, SymbolTable *, MipsProgram *);
 
 void store_them(Symbol *, MipsProgram *);
 
+void addRegisters(SymbolTable *, Type *);
+
+
 #endif

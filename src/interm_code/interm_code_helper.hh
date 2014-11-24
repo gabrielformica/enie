@@ -18,6 +18,9 @@
 #include "quad.hh"
 #include "basic_block.hh"
 #include "../symtable/symbol.hh"
+#include "../symtable/symtable.hh"
+
+extern SymbolTable *symtable;
 
 static int next_temp = 0;
 static int next_label = 0;

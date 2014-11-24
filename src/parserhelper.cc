@@ -204,3 +204,12 @@ void store_them(Symbol *reg, MipsProgram *program) {
         mainSW((*it));
     }
 }
+
+
+void addRegisters(SymbolTable *symtable, Type *t) {
+    for (int i = 0; i < 7; ++i) {
+        std::string name = "R_" + std::to_string(i);
+
+        symtable->addSymbol(new Symbol(name, t, -1, -1, -1));
+    }
+}
