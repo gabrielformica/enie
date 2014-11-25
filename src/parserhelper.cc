@@ -136,19 +136,21 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
 
         Symbol *x = getRegAux(inst->getArg1(), NULL, symtable, program);
 
-    //    if (inst->getArg1()->is("ArgumentConst")) {
-    //        Li *li = new Li(chop(x->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
-    //        program->addInst(li);
-    //    } else {
-    //        if (((ArgumentVar *)inst->getArg1())->getSymbol()->getId().substr(0, 1) == "$") {
-    //            Lw *lw = new Lw(chop(x->getId()), catOffset(((ArgumentVar*)inst->getArg1())->getSymbol()));
-    //            program->addInst(lw);
-    //            mainLW(symtable, ((ArgumentVar*)inst->getArg1())->getSymbol(), x);
-    //        } else {
-    //            Lw *lw = new Lw(chop(x->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
-    //            program->addInst(lw);
-    //        }
-    //    }
+
+
+       if (inst->getArg1()->is("ArgumentConst")) {
+           Li *li = new Li(chop(x->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
+           program->addInst(li);
+       } else {
+           if (((ArgumentVar *)inst->getArg1())->getSymbol()->getId().substr(0, 1) == "$") {
+               Lw *lw = new Lw(chop(x->getId()), catOffset(((ArgumentVar*)inst->getArg1())->getSymbol()));
+               program->addInst(lw);
+               mainLW(symtable, ((ArgumentVar*)inst->getArg1())->getSymbol(), x);
+           } else {
+               Lw *lw = new Lw(chop(x->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
+               program->addInst(lw);
+           }
+       }
 
         if (inst->getOp() == "+") {
             if (inst->getArg2()->is("ArgumentVar")) {
@@ -160,6 +162,7 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
                 AddI *addi = new AddI(chop(x->getId()), chop(x->getId()), ((ArgumentConst *)(inst->getArg2()))->getElem());
                 program->addInst(addi);
                 mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
+                mainLW(symtable, ((ArgumentVar *)inst->getResult())->getSymbol(), x);
             }
         } else if (inst->getOp() == "-") {
             Symbol *y = getRegAux(inst->getArg1(), x, symtable, program);
@@ -266,6 +269,7 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
             reg_to_use = symtable->getRandomReg(dont_use);
             store_them(reg_to_use, program);
         }
+
         // Lw *lw = new Lw(((ArgumentConst *)arg)->getElem(), chop(reg_to_use->getId()));
         // mantener registros
         // mainLW(symtable, reg_to_use, NULL);
