@@ -1486,7 +1486,7 @@ int main (int argc, char **argv) {
         std::cout << code->emit() << std::endl;
 
         addRegisters(symtable, cpu_reg);
-        symtable->printTable();
+        // symtable->printTable();
 
         // Clear quad comments
         code->clearGarbage();
@@ -1496,6 +1496,8 @@ int main (int argc, char **argv) {
         blocks->front()->clearFirst();
 
         MipsProgram *mips = new MipsProgram();
+
+        mips->addInst(new Label("main"));
 
         for (vector<BasicBlock *>::iterator it = blocks->begin();
             it != blocks->end(); ++it) {
@@ -1511,6 +1513,7 @@ int main (int argc, char **argv) {
                 if (temp->getOp() == "label") {
                     string l = temp->getResult()->toString();
 
+
                     // It's a function name
                     if (l.at(0) != '@') {
                         Label *label = new Label(l);
@@ -1519,6 +1522,15 @@ int main (int argc, char **argv) {
                         Label *label = new Label(l);
                         mips->addInst(label);
                     }
+                } else if (temp->getOp() == "goto" && temp->getResult()->toString() != "enie") {
+
+                    Jal *jal = new Jal(temp->getResult()->toString());
+                    mips->addInst(jal);
+
+                    // std::string l = temp->getResult()->toString();
+                    // std::string jump = "jal f_" + f_label;
+                    // jump += "_" + string(1, l.back());
+                    // std::cout << jump << std::endl;
                 } else if (temp->getOp() == "+"
                         || temp->getOp() == "*"
                         || temp->getOp() == "/"

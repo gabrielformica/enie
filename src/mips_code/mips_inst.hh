@@ -128,6 +128,15 @@ class Jump: public MipsInst {
         std::string toString();
 };
 
+class Jal: public MipsInst {
+    private:
+        std::string label;
+    public:
+        Jal(std::string l);
+        std::string toString();
+};
+
+
 class Beq: public MipsInst {
     private:
         std::string arg1;

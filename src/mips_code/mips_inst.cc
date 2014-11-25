@@ -118,6 +118,17 @@ std::string Jump::toString() {
     return str;
 }
 
+Jal::Jal(std::string l) {
+    this->label = l;
+}
+
+std::string Jal::toString() {
+    std::string str = "";
+    str += "jal " + this->label;
+    return str;
+}
+
+
 Beq::Beq(std::string a1, std::string a2, std::string l) {
     this->arg1 = a1;
     this->arg2 = a2;
@@ -229,6 +240,6 @@ Label::Label(std::string n) {
 }
 
 std::string Label::toString() {
-    return this->name + ":";
+    return this->name + ":" + "\n";
 }
 
