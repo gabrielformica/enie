@@ -143,9 +143,10 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
            program->addInst(li);
        } else {
            if (((ArgumentVar *)inst->getArg1())->getSymbol()->getId().substr(0, 1) == "$") {
-               Lw *lw = new Lw(chop(x->getId()), catOffset(((ArgumentVar*)inst->getArg1())->getSymbol()));
-               program->addInst(lw);
+        //       Lw *lw = new Lw(chop(x->getId()), catOffset(((ArgumentVar*)inst->getArg1())->getSymbol()));
+       //        program->addInst(lw);
                mainLW(symtable, ((ArgumentVar*)inst->getArg1())->getSymbol(), x);
+               mainLW(symtable, x,((ArgumentVar*)inst->getArg1())->getSymbol());
            } else {
                Lw *lw = new Lw(chop(x->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
                program->addInst(lw);
@@ -157,7 +158,8 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
                 Symbol *y = getRegAux(inst->getArg2(), x, symtable, program);
                 Add *add = new Add(chop(x->getId()), chop(x->getId()), chop(y->getId()));
                 program->addInst(add);
-                mainLW(symtable, x, ((ArgumentVar *)inst->getResult())->getSymbol());
+                mainLW(symtable, y, ((ArgumentVar *)inst->getResult())->getSymbol());
+                mainLW(symtable, ((ArgumentVar *)inst->getResult())->getSymbol(), y);
             } else {
                 AddI *addi = new AddI(chop(x->getId()), chop(x->getId()), ((ArgumentConst *)(inst->getArg2()))->getElem());
                 program->addInst(addi);
@@ -205,6 +207,7 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
             Lw *lw = new Lw(chop(y->getId()), catOffset(((ArgumentVar*)inst->getArg1())->getSymbol()));
             program->addInst(lw);
             mainLW(symtable, ((ArgumentVar*)inst->getResult())->getSymbol(), y);
+            mainLW(symtable, y, ((ArgumentVar*)inst->getResult())->getSymbol());
             symtable->printTable();
 
         } else { // LHS is a variable
@@ -216,6 +219,8 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
                 program->addInst(sw);
             } else {
                 Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
+                mainLW(symtable, s, ((ArgumentVar*)inst->getArg1())->getSymbol());
+                mainLW(symtable, ((ArgumentVar*)inst->getArg1())->getSymbol(), s);
                 //Lw *lw = new Lw(chop(s->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
                 Sw *sw = new Sw(catOffset(((ArgumentVar*)inst->getResult())->getSymbol()), chop(s->getId()));
                 //program->addInst(lw);
