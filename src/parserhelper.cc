@@ -73,9 +73,6 @@ std::string not_implemented(SymbolTable *symtable) {
 void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
     std::vector<Symbol *> *vars = reg->getVars();
     reg->initializeVars();
-    if (b!= NULL) {
-        reg->getVars()->push_back(b);
-    }
     for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
         Symbol *s = (*it);
         int i = 0;
@@ -98,9 +95,13 @@ void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
         std::cout << "Symbol: ";
         std::cout << s->getId() << std::endl;
 
-        symtable->printTable();
+       // symtable->printTable();
 
         s->getVars()->erase(s->getVars()->begin() + i);
+    }
+    if (b!= NULL) {
+        reg->getVars()->push_back(b);
+        b->getVars()->push_back(reg);
     }
 }
 
@@ -175,13 +176,12 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
         Symbol *x = ((ArgumentVar *) inst->getResult())->getSymbol();
         // x->initializeVars();
 
-        std::cout << "++++" << std::endl;
+        std::cout << "---++++iii" << std::endl;
         std::cout << s->getId() << std::endl;
         std::cout << x->getId() << std::endl;
-        std::cout << "++++" << std::endl;
-
+        symtable->printTable();
+        std::cout << "---++++iii" << std::endl;
         mainLW(symtable, x, s);     //buscar todos los registros que tenian a x y eliminarlos
-        x->getVars()->push_back(s); //agregar que X esta en el nuevo registro s
     }
 
 }
