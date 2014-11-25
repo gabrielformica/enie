@@ -1519,7 +1519,10 @@ int main (int argc, char **argv) {
                         Label *label = new Label(l);
                         mips->addInst(label);
                     }
-                } else if (temp->getOp() == "+") {
+                } else if (temp->getOp() == "+"
+                        || temp->getOp() == "*"
+                        || temp->getOp() == "/"
+                        || temp->getOp() == "%") {
                     getReg(temp, symtable, mips);
                 } else if (temp->getOp() == ":=") {
                     getReg(temp, symtable, mips);

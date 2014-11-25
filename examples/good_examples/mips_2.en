@@ -1,6 +1,8 @@
 enie :: ~ {
-    ent a = 2 + 2
-    ent b = 3 + 3
-    a = b + 7
-    a = a + b
+    ent a = 2 * 2
+    ent b = 3 + 3 + 2 + 8
+    a = b * 7
+    a = a / b
+    b = a
+    b = a % 16
 }
