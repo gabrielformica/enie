@@ -29,7 +29,7 @@ Symbol::Symbol(std::string id, Type *t, int s, int l, int c) {
     this->scope = s;
     this->line = l;
     this->column = c;
-    this->vars = new std::vector<Symbol *>;
+    this->vars = new std::set<Symbol *>;
 }
 
 /** Class constructor */
@@ -40,7 +40,7 @@ Symbol::Symbol(std::string id, int s, int l, int c) {
     this->line = l;
     this->column = c;
     this->type = NULL;
-    this->vars = new std::vector<Symbol *>;
+    this->vars = new std::set<Symbol *>;
 }
 
 /** Class constructor with offset */
@@ -52,7 +52,7 @@ Symbol::Symbol(std::string id, Type *t, int s, int l, int c, int o) {
     this->column = c;
     this->offset = o;
     this->type = NULL;
-    this->vars = new std::vector<Symbol *>;
+    this->vars = new std::set<Symbol *>;
 }
 
 /* Return id of the symbol */
@@ -127,7 +127,7 @@ void Symbol::print() {
 
     std::cout << " ";
 
-    for (std::vector<Symbol *>::iterator it=vars->begin();
+    for (std::set<Symbol *>::iterator it=vars->begin();
         it!=vars->end();
         it++ ) {
         std::cout << (*it)->getId() << ", ";
@@ -140,14 +140,14 @@ void Symbol::print() {
 
 }
 
-std::vector<Symbol *> *Symbol::getVars() {
+std::set<Symbol *> *Symbol::getVars() {
     return this->vars;
 }
 
-void Symbol::initializeVars() { this->vars = new std::vector<Symbol *>; }
+void Symbol::initializeVars() { this->vars = new std::set<Symbol *>; }
 
 Symbol *Symbol::getRegToUse(){
-    for (std::vector<Symbol *>::iterator it=this->vars->begin();
+    for (std::set<Symbol *>::iterator it=this->vars->begin();
         it!=this->vars->end(); ++it) {
         if ((*it)->getId().substr(0, 2) == "R_") {
             return (*it);

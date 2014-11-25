@@ -1,4 +1,5 @@
 enie :: ~ {
-    ent a = 2 + 2
-    ent b = a + 3
+    ent a = 2
+    ent b = 8
+    a = b
 }

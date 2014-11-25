@@ -201,6 +201,18 @@ std::string Lw::toString() {
     return str;
 }
 
+Li::Li(std::string a1, std::string d) {
+    this->arg1 = a1;
+    this->dir = d;
+}
+
+std::string Li::toString() {
+    std::string str = "";
+    str += "li " + this->arg1 + ", " + this->dir;
+    return str;
+}
+
+
 Sw::Sw(std::string a1, std::string d) {
     this->arg1 = a1;
     this->dir = d;

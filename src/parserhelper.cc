@@ -43,7 +43,7 @@ std::string chop(std::string str) {
 }
 
 std::string catOffset(Symbol *s) {
-    std::string str = std::to_string(s->getOffset()) + "($" + s->getId() + ")";
+    std::string str = std::to_string(s->getOffset()) + "(sp)";
     return str;
 }
 
@@ -70,54 +70,64 @@ std::string not_implemented(SymbolTable *symtable) {
 }
 
 
-void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
-    std::vector<Symbol *> *vars = reg->getVars();
-    reg->initializeVars();
-    for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
-        Symbol *s = (*it);
-        int i = 0;
-        for (std::vector<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); vit++) {
-            std::cout << "Comparando:";
-            std::cout << (*vit)->getId();
-            std::cout << " con:";
-            std::cout << reg->getId();
-            std::cout << std::endl;
-            if ((*vit) == reg) {
-                break;
-            }
-            i++;
-        }
-        std::cout << "i es:";
-        std::cout << i << std::endl;
-        std::cout << "Size vector: ";
-        std::cout << s->getVars()->size() << std::endl;
+void mainLW(SymbolTable *symtable, Symbol *a, Symbol *b) {
+    std::set<Symbol *> *vars = a->getVars();
 
-        std::cout << "Symbol: ";
-        std::cout << s->getId() << std::endl;
+    for (std::set<Symbol *>::iterator it=vars->begin(); it!=vars->end();
+        it++) {
 
-       // symtable->printTable();
+        std::set<Symbol *> *vars2 = (*it)->getVars();
 
-        s->getVars()->erase(s->getVars()->begin() + i);
+        std::set<Symbol *>::iterator val = vars2->find(a);
+        if (val != vars2->end())
+            vars2->erase(val);
+
+        vars->erase(it);
     }
-    if (b!= NULL) {
-        reg->getVars()->push_back(b);
-        b->getVars()->push_back(reg);
-    }
+
+    vars->insert(b);
+
+    // reg->initializeVars();
+    // for (std::set<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
+    //     Symbol *s = (*it);
+    //     int i = 0;
+    //     for (std::set<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); vit++) {
+    //         std::cout << "Comparando:";
+    //         std::cout << (*vit)->getId();
+    //         std::cout << " con:";
+    //         std::cout << reg->getId();
+    //         std::cout << std::endl;
+    //         if ((*vit) == reg) {
+    //             break;
+    //         }
+    //         i++;
+    //     }
+    //     std::cout << "i es:";
+    //     std::cout << i << std::endl;
+    //     std::cout << "Size vector: ";
+    //     std::cout << s->getVars()->size() << std::endl;
+
+    //     std::cout << "Symbol: ";
+    //     std::cout << s->getId() << std::endl;
+
+    //    // symtable->printTable();
+
+    //     // s->getVars()->erase(s->getVars()->begin() + i);
+    // }
+    // if (b!= NULL) {
+    //     reg->getVars()->push_back(b);
+    //     b->getVars()->push_back(reg);
+    // }
 }
 
 
 void mainSW(Symbol *b) {
-    b->getVars()->push_back(b);
+    b->getVars()->insert(b);
 }
 
 /* getReg */
 void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
     //if quad is  z = x op y
-
-    std::cout << "Entrando a getReg:" << std::endl;
-    std::cout << "  ++++++++++++++++++" << std::endl;
-    std::cout << "  " << inst->getOp() << std::endl;
-    std::cout << "  ++++++++++++++++++" << std::endl;
 
     if (inst->zxy()) {
         // Get register and add instructions of x operands of the quad
@@ -171,29 +181,57 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
         }
         //arg1 is not in x
     } else if (inst->isCopy()) {  //x = y
-        Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
-        program->addInst(new Sw(chop(s->getId()), catOffset(((ArgumentVar *) inst->getResult())->getSymbol()))); //x has the value of y
-        Symbol *x = ((ArgumentVar *) inst->getResult())->getSymbol();
-        // x->initializeVars();
 
-        std::cout << "---++++iii" << std::endl;
-        std::cout << s->getId() << std::endl;
-        std::cout << x->getId() << std::endl;
-        symtable->printTable();
-        std::cout << "---++++iii" << std::endl;
-        mainLW(symtable, x, s);     //buscar todos los registros que tenian a x y eliminarlos
+        // LHS is a temp
+        if (((ArgumentVar *)inst->getResult())->getSymbol()->getId().substr(0, 1) == "$") {
+            Symbol *y = getRegAux(inst->getArg1(), NULL, symtable, program);
+            Lw *lw = new Lw(chop(y->getId()), catOffset(((ArgumentVar*)inst->getArg1())->getSymbol()));
+            program->addInst(lw);
+
+
+
+            mainLW(symtable, y, ((ArgumentVar*)inst->getResult())->getSymbol());
+
+            symtable->printTable();
+
+        } else { // LHS is a variable
+            if (inst->getArg1()->is("ArgumentConst")) { // RHS is constant
+                Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
+                Li *li = new Li(chop(s->getId()), ((ArgumentConst*)inst->getArg1())->getElem());
+                program->addInst(li);
+                Sw *sw = new Sw(catOffset(((ArgumentVar*)inst->getResult())->getSymbol()), chop(s->getId()));
+                program->addInst(sw);
+            } else {
+                Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
+                Sw *sw = new Sw(catOffset(((ArgumentVar*)inst->getResult())->getSymbol()), chop(s->getId()));
+                program->addInst(sw);
+            }
+        }
+
+
+        // Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
+        // program->addInst(new Sw(chop(s->getId()), catOffset(((ArgumentVar *) inst->getResult())->getSymbol()))); //x has the value of y
+        // Symbol *x = ((ArgumentVar *) inst->getResult())->getSymbol();
+        // // x->initializeVars();
+
+        // std::cout << "---++++iii" << std::endl;
+        // std::cout << s->getId() << std::endl;
+        // std::cout << x->getId() << std::endl;
+        // symtable->printTable();
+        // std::cout << "---++++iii" << std::endl;
+        // mainLW(symtable, x, s);     //buscar todos los registros que tenian a x y eliminarlos
     }
 
 }
 
 
-/* getRegAux:   reg is the register that can't be used */
+/* getRegAux:   dont_use is the register that can't be used */
 Symbol *getRegAux(Argument *arg, Symbol *dont_use,
                     SymbolTable *symtable,
                     MipsProgram *program) {
 
-
     Symbol *reg_to_use;
+
     if (arg->is("ArgumentVar")) {
         Symbol *s = ((ArgumentVar *) arg)->getSymbol();
 
@@ -207,8 +245,8 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
             reg_to_use = s->getRegToUse();
         }
 
-        Lw *lw = new Lw(catOffset(((ArgumentVar *)arg)->getSymbol()), chop(reg_to_use->getId()));
-        program->addInst(lw);
+        // Lw *lw = new Lw(catOffset(((ArgumentVar *)arg)->getSymbol()), chop(reg_to_use->getId()));
+        // program->addInst(lw);
         mainLW(symtable, reg_to_use, ((ArgumentVar *)arg)->getSymbol());
     } else if (arg->is("ArgumentConst")) {
         reg_to_use = symtable->getFreeReg(dont_use);
@@ -216,18 +254,21 @@ Symbol *getRegAux(Argument *arg, Symbol *dont_use,
             reg_to_use = symtable->getRandomReg(dont_use);
             store_them(reg_to_use, program);
         }
-        Lw *lw = new Lw(((ArgumentConst *)arg)->getElem(), chop(reg_to_use->getId()));
+        // Lw *lw = new Lw(((ArgumentConst *)arg)->getElem(), chop(reg_to_use->getId()));
         // mantener registros
-        mainLW(symtable, reg_to_use, NULL);
-        program->addInst(lw);
+        // mainLW(symtable, reg_to_use, NULL);
+        // program->addInst(lw);
     }
 
     return reg_to_use;
 }
 
 void store_them(Symbol *reg, MipsProgram *program) {
-    std::vector<Symbol *> *store_list = reg->getVars();
-    for (std::vector<Symbol *>::iterator it=store_list->begin();
+    // FLAG
+    std::cout << "ENTRO EN STORE_THEM" << std::endl;
+
+    std::set<Symbol *> *store_list = reg->getVars();
+    for (std::set<Symbol *>::iterator it=store_list->begin();
                                          it!=store_list->end();
                                          ++it) {
         Sw *sw = new Sw( chop(reg->getId()), catOffset((*it)) );

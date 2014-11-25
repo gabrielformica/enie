@@ -18,6 +18,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <set>
 #include <unordered_map>
 #include "symbol.hh"
 
@@ -44,7 +45,7 @@ class SymbolTable {
         void printTable();
         std::list<Symbol *> *getAllSymbols();
         std::list<Symbol *> *getStillForwards();
-        std::vector<Symbol *> *getVars(Symbol *);
+        std::set<Symbol *> *getVars(Symbol *);
         Symbol *getFreeReg(Symbol *);
         bool inReg(Symbol *);
         Symbol *getRandomReg(Symbol *);

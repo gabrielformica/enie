@@ -208,6 +208,16 @@ class Lw: public MipsInst {
         std::string toString();
 };
 
+class Li: public MipsInst {
+    private:
+        std::string arg1;
+        std::string dir;
+
+    public:
+        Li(std::string a1, std::string d);
+        std::string toString();
+};
+
 class Sw: public MipsInst {
     private:
         std::string arg1;
