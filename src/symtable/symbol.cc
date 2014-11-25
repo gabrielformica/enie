@@ -124,7 +124,19 @@ void Symbol::print() {
         std::cout << " Width:   " << type->getWidth();
         std::cout << " Tipo:    " << type->typeString();
     }
-    std::cout << std::endl;
+
+    std::cout << " ";
+
+    for (std::vector<Symbol *>::iterator it=vars->begin();
+        it!=vars->end();
+        it++ ) {
+        std::cout << (*it)->getId() << ", ";
+    }
+
+
+    std::cout << " " << std::endl;
+
+
 
 }
 

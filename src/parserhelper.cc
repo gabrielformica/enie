@@ -79,12 +79,27 @@ void mainLW(SymbolTable *symtable, Symbol *reg, Symbol *b) {
     for (std::vector<Symbol *>::iterator it=vars->begin(); it!=vars->end(); ++it) {
         Symbol *s = (*it);
         int i = 0;
-        for (std::vector<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); ++vit) {
+        for (std::vector<Symbol *>::iterator vit=s->getVars()->begin(); vit!=s->getVars()->end(); vit++) {
+            std::cout << "Comparando:";
+            std::cout << (*vit)->getId();
+            std::cout << " con:";
+            std::cout << reg->getId();
+            std::cout << std::endl;
             if ((*vit) == reg) {
                 break;
             }
             i++;
         }
+        std::cout << "i es:";
+        std::cout << i << std::endl;
+        std::cout << "Size vector: ";
+        std::cout << s->getVars()->size() << std::endl;
+
+        std::cout << "Symbol: ";
+        std::cout << s->getId() << std::endl;
+
+        symtable->printTable();
+
         s->getVars()->erase(s->getVars()->begin() + i);
     }
 }
@@ -97,6 +112,11 @@ void mainSW(Symbol *b) {
 /* getReg */
 void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
     //if quad is  z = x op y
+
+    std::cout << "Entrando a getReg:" << std::endl;
+    std::cout << "  ++++++++++++++++++" << std::endl;
+    std::cout << "  " << inst->getOp() << std::endl;
+    std::cout << "  ++++++++++++++++++" << std::endl;
 
     if (inst->zxy()) {
         // Get register and add instructions of x operands of the quad
@@ -153,7 +173,13 @@ void getReg(Quad *inst, SymbolTable *symtable, MipsProgram *program) {
         Symbol *s = getRegAux(inst->getArg1(), NULL, symtable, program);
         program->addInst(new Sw(chop(s->getId()), catOffset(((ArgumentVar *) inst->getResult())->getSymbol()))); //x has the value of y
         Symbol *x = ((ArgumentVar *) inst->getResult())->getSymbol();
-        x->initializeVars();
+        // x->initializeVars();
+
+        std::cout << "++++" << std::endl;
+        std::cout << s->getId() << std::endl;
+        std::cout << x->getId() << std::endl;
+        std::cout << "++++" << std::endl;
+
         mainLW(symtable, x, s);     //buscar todos los registros que tenian a x y eliminarlos
         x->getVars()->push_back(s); //agregar que X esta en el nuevo registro s
     }

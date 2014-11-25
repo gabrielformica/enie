@@ -1521,6 +1521,8 @@ int main (int argc, char **argv) {
                     }
                 } else if (temp->getOp() == "+") {
                     getReg(temp, symtable, mips);
+                } else if (temp->getOp() == ":=") {
+                    getReg(temp, symtable, mips);
                 }
 
             }
